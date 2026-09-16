@@ -1,5 +1,58 @@
 # Vigie Billets, Vigie Parc, Vigie Inventory & Suite Vigie — Installation Windows
 
+## Les programmes
+
+Trois applications web indépendantes de C.T Informatique. Chacune a son propre `package.json`, ses propres dépendances et tourne comme un service Windows séparé.
+
+### Vigie Billets — Billetterie de support
+
+Système de gestion des billets de service pour une équipe de support technique.
+
+- Création, suivi et fermeture de billets (statuts : ouvert, en cours, en attente, fermé)
+- Pointage automatique du temps travaillé par billet — démarre à l'ouverture du formulaire de création, se met en pause pendant le statut "en attente", se ferme à la fermeture du billet
+- Statistiques et indicateurs de performance (KPI) : temps de résolution moyen, respect du SLA, charge active par technicien, taux de réouverture
+- Niveaux de compétence technicien (N1/N2/N3), assignés par un superviseur ou un admin
+- Gestion des clients et des employés, rôles (technicien / superviseur / admin) avec permissions configurables
+- Messagerie interne entre employés, pièces jointes sur les billets
+- Authentification à deux facteurs (TOTP), historique de connexions
+- Sauvegardes SQL automatiques et manuelles
+- Notifications courriel au client (SMTP configurable)
+
+**Port par défaut :** 3500 · **Base de données :** `tickets_db`
+
+### Vigie Parc — Inventaire de parc informatique
+
+Compagnon de Vigie Billets, pour le suivi du parc d'équipement d'une entreprise.
+
+- Inventaire des actifs (appareils, statut, garantie, emplacement, personne/client assigné)
+- Fournisseurs, licences logicielles et contrats de service
+- Comptes employés et permissions propres à Vigie Parc (indépendants de ceux de Vigie Billets)
+- Partage volontairement la base de données de Vigie Billets pour réutiliser directement les mêmes clients, sans ressaisie ni synchronisation — **nécessite donc que Vigie Billets soit installé en premier**
+
+**Port par défaut :** 3501 · **Base de données :** `tickets_db` (partagée avec Vigie Billets)
+
+### Vigie Inventory — Inventaire générique autonome
+
+Le même type d'inventaire que Vigie Parc, mais pensé comme produit indépendant pour n'importe quelle entreprise (pas seulement de l'informatique).
+
+- Actifs, catégories et départements entièrement personnalisables (informatique, outils, véhicules, équipement de cuisine…)
+- Champs personnalisés configurables par catégorie
+- Fournisseurs, contrats, notifications
+- Base de données et comptes complètement séparés — aucune dépendance à Vigie Billets ni Vigie Parc
+
+**Port par défaut :** 3502 · **Base de données :** `vigie_inventory_db` (indépendante)
+
+### Stack technique (commune aux trois)
+
+- **Backend :** Node.js + [Express](https://expressjs.com/)
+- **Base de données :** PostgreSQL, via le module [`pg`](https://node-postgres.com/) — requêtes SQL directes (pas d'ORM), migrations idempotentes exécutées au démarrage du serveur
+- **Authentification :** jetons JWT (`jsonwebtoken`), mots de passe hachés avec `bcryptjs`
+- **Sécurité :** `helmet` (en-têtes HTTP), `express-rate-limit`, secrets (`JWT_SECRET`, `PGPASSWORD`) obligatoires via variables d'environnement
+- **Frontend :** HTML/CSS/JavaScript "vanilla" (aucun framework), page unique (SPA) servie directement par Express
+- **Déploiement :** service Windows via [NSSM](https://nssm.cc/), installateurs [Inno Setup](https://jrsoftware.org/isinfo.php) (ce dépôt)
+
+Code source des applications : [vigie-suite](https://github.com/christisback/vigie-suite) (privé).
+
 ## Quel fichier utiliser
 
 **Suite Vigie** (icône unifiée dans la barre système pour les 3 apps — voir sa propre section plus bas) :
