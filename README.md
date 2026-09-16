@@ -58,8 +58,6 @@ Code source des applications : [vigie-suite](https://github.com/christisback/vig
 **Suite Vigie** (icône unifiée dans la barre système pour les 3 apps — voir sa propre section plus bas) :
 - `Vigie-Suite-Installateur.exe` (~2 Mo) — à installer **en plus** d'au moins une des 3 apps ci-dessous, dans n'importe quel ordre.
 
-**Vigie-Tout-MiseAJour.exe** (~9 Mo) — met à jour **en un seul clic** les 3 programmes déjà installés sur ce poste (détecte automatiquement lesquels le sont, ignore les autres). Pratique pour ne pas avoir à lancer 3 mises à jour séparées. Ne fait rien si aucun des 3 n'est installé, et n'installe jamais rien pour la première fois — voir sa propre section plus bas.
-
 **Vigie Billets** (billetterie de support, indépendant) :
 - **Première installation** sur un nouveau PC → `Vigie-Billets-Installateur.exe` (~420 Mo, tout-en-un hors-ligne : inclut Node.js et PostgreSQL).
 - **Mise à jour** d'une installation existante → `Vigie-Billets-MiseAJour.exe` (~4 Mo, rapide, suppose que Node.js/PostgreSQL sont déjà installés).
@@ -150,17 +148,6 @@ Vigie Inventory est un inventaire de matériel générique destiné à n'importe
 - Icône dans la barre système (Redémarrer / Démarrer / Arrêter), raccourci bureau, comme pour Vigie Billets — reprise par **Suite Vigie** si elle est installée.
 - Identifiant admin par défaut : `ADMIN001` / `Admin1234!` (changement du mot de passe obligatoire à la première connexion).
 - Pour adapter l'outil : Paramètres → Catégories de matériel / Départements / Champs personnalisés.
-
-## Mise à jour groupée — Vigie-Tout-MiseAJour.exe
-
-Met à jour Vigie Billets, Vigie Parc **et** Vigie Inventory en une seule exécution, sans avoir à lancer 3 installateurs séparément.
-
-1. Double-cliquez sur `Vigie-Tout-MiseAJour.exe` (droits administrateur requis).
-2. Une fenêtre liste les programmes détectés sur ce poste — confirmez pour continuer.
-3. Chaque programme détecté est mis à jour dans son propre dossier d'installation existant (retrouvé automatiquement, même si l'emplacement par défaut a été changé) ; son service Windows redémarre ensuite.
-4. Un programme non installé sur ce poste est simplement ignoré — aucun des 3 n'est jamais installé pour la première fois par cet outil.
-
-Équivalent à lancer `Vigie-Billets-MiseAJour.exe`, `Vigie-Parc-Installateur.exe` et `Vigie-Inventory-MiseAJour.exe` un par un, mais en un seul clic.
 
 ## Installation — Suite Vigie
 
