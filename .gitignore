@@ -1,0 +1,12 @@
+# Copie de travail temporaire assemblée avant compilation — contient node_modules
+# et une copie complète du code de chaque appli, déjà versionné dans son propre dépôt
+payload/
+
+# Sortie de compilation (fichiers .exe générés par Inno Setup)
+output/
+
+# Outils tiers binaires (nssm.exe) et certificat — pas du code source
+_setup/
+
+*.exe
+*.msi

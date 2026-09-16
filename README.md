@@ -1,0 +1,121 @@
+# Vigie Billets, Vigie Parc, Vigie Inventory & Suite Vigie — Installation Windows
+
+## Quel fichier utiliser
+
+**Suite Vigie** (icône unifiée dans la barre système pour les 3 apps — voir sa propre section plus bas) :
+- `Vigie-Suite-Installateur.exe` (~2 Mo) — à installer **en plus** d'au moins une des 3 apps ci-dessous, dans n'importe quel ordre.
+
+**Vigie-Tout-MiseAJour.exe** (~9 Mo) — met à jour **en un seul clic** les 3 programmes déjà installés sur ce poste (détecte automatiquement lesquels le sont, ignore les autres). Pratique pour ne pas avoir à lancer 3 mises à jour séparées. Ne fait rien si aucun des 3 n'est installé, et n'installe jamais rien pour la première fois — voir sa propre section plus bas.
+
+**Vigie Billets** (billetterie de support, indépendant) :
+- **Première installation** sur un nouveau PC → `Vigie-Billets-Installateur.exe` (~420 Mo, tout-en-un hors-ligne : inclut Node.js et PostgreSQL).
+- **Mise à jour** d'une installation existante → `Vigie-Billets-MiseAJour.exe` (~4 Mo, rapide, suppose que Node.js/PostgreSQL sont déjà installés).
+
+**Vigie Parc** (inventaire de parc informatique, compagnon de Vigie Billets — voir sa propre section plus bas) :
+- `Vigie-Parc-Installateur.exe` (~4 Mo) — **nécessite que Vigie Billets soit déjà installé** sur le même poste (il réutilise son Node.js, son PostgreSQL et sa base de données).
+
+**Vigie Inventory** (inventaire de matériel générique, pour n'importe quelle entreprise — voir sa propre section plus bas) — **produit autonome, aucune dépendance** à Vigie Billets ni à Vigie Parc :
+- **Première installation** sur un nouveau PC → `Vigie-Inventory-Installateur.exe` (~420 Mo, tout-en-un hors-ligne : inclut Node.js et PostgreSQL).
+- **Mise à jour** d'une installation existante → `Vigie-Inventory-MiseAJour.exe` (~4 Mo, rapide, suppose que Node.js/PostgreSQL sont déjà installés).
+
+## Avant d'installer sur un NOUVEAU PC : éviter le blocage de sécurité
+
+Tous les installateurs sont signés numériquement avec le certificat de l'éditeur (**C.T Informatique**), mais ce certificat est auto-généré — il n'est pas encore reconnu par une autorité de certification publique, donc Windows ne lui fait pas automatiquement confiance sur un PC qui ne l'a jamais vu. Sur certains PC Windows 11, une protection appelée **Smart App Control** ("Contrôle d'application intelligente") peut donc quand même bloquer complètement le lancement de l'installateur avant même qu'il ait pu installer son propre certificat dans le magasin de confiance de Windows. Voici comment vérifier et éviter ce problème **avant** de lancer l'installateur.
+
+### Étape 1 — Vérifier si c'est actif
+
+Ouvrez PowerShell **en administrateur** et tapez :
+
+```powershell
+Get-MpComputerStatus | Select-Object SmartAppControlState
+```
+
+- **`On`** → actif, va bloquer l'installateur. Passez à l'étape 2.
+- **`Eval`** → encore en mode évaluation, pas de blocage strict pour l'instant. Vous pouvez généralement installer normalement.
+- **Aucun résultat / erreur** → la fonctionnalité n'existe pas sur ce PC (souvent parce que le matériel ne répond pas aux critères requis, comme le Secure Boot). Aucun blocage de ce type n'est possible ici.
+
+### Étape 2 — Si c'est `On`
+
+**⚠️ Important à savoir avant de choisir une option : Smart App Control ne peut PAS être réactivé après coup.** Une fois désactivé, il ne peut être remis en marche qu'en réinstallant Windows au complet — ce n'est **pas** un interrupteur temporaire comme l'antivirus. Pour cette raison, essayez d'abord l'option réversible ci-dessous.
+
+**Option A — Réversible (à essayer en premier) : désactiver temporairement la protection en temps réel de Windows Defender**
+1. Sécurité Windows → Protection contre les virus et menaces → Gérer les paramètres.
+2. Basculez **Protection en temps réel** sur Désactivé.
+3. Installez Vigie Billets normalement.
+4. Remettez **Protection en temps réel** sur Activé immédiatement après l'installation.
+
+Si l'installateur passe avec cette option seule, tant mieux — Smart App Control n'était probablement pas la cause réelle du blocage.
+
+**Option B — Permanente mais irréversible : désactiver Smart App Control**
+1. `Win + R`, tapez `windowsdefender://smartappcontrol`, Entrée.
+2. Basculez sur **Désactivé**.
+3. Confirmez que vous comprenez que ceci est définitif pour ce PC.
+
+## Installation — Vigie Billets
+
+1. Double-cliquez sur le fichier `.exe` choisi ci-dessus (une fenêtre "Contrôle de compte d'utilisateur" apparaîtra — cliquez **Oui**, l'installation nécessite les droits administrateur).
+2. Suivez l'assistant (langue déjà en français, choix du dossier d'installation — laissez la valeur par défaut sauf raison particulière).
+3. Si une installation existante est détectée, l'assistant propose **Mettre à jour**, **Réinstaller** ou **Désinstaller** — choisissez selon le cas.
+4. L'installation peut prendre plusieurs minutes (Node.js et PostgreSQL s'installent silencieusement en arrière-plan si absents).
+5. Une fois terminé, l'application s'ouvre automatiquement dans le navigateur à `http://localhost:3500`.
+
+### Après l'installation
+
+- Un fichier `IMPORTANT - Identifiants.txt` est créé dans le dossier d'installation (et copié sur le bureau) avec les mots de passe générés (PostgreSQL, secret de sécurité interne) — à conserver en lieu sûr, puis à supprimer du bureau.
+- Une icône apparaît dans la barre des tâches (barre système, en bas à droite) pour redémarrer le serveur facilement — clic droit dessus pour les options (Redémarrer / Démarrer / Arrêter). Si **Suite Vigie** est aussi installée, c'est son icône unifiée qui prend le relais automatiquement (voir plus bas) au lieu d'une icône dédiée à Vigie Billets.
+- Identifiant admin par défaut : `ADMIN001` / `Admin1234!` (changement du mot de passe obligatoire à la première connexion).
+- Pour l'accès depuis d'autres appareils sur le réseau : voir l'adresse IP réseau affichée à la fin de l'installation, ou dans le fichier récapitulatif.
+
+## Installation — Vigie Parc
+
+Vigie Parc est un compagnon de Vigie Billets pour l'inventaire de parc informatique (appareils, licences, fournisseurs, contrats). Il a ses propres comptes employés/techniciens/admin (indépendants de Vigie Billets) mais réutilise la même base de données PostgreSQL.
+
+**Prérequis : Vigie Billets doit déjà être installé sur ce poste** (Node.js, PostgreSQL et la base `tickets_db` doivent exister) — l'installateur de Vigie Parc s'arrête proprement avec un message clair si ce n'est pas le cas, plutôt que de tout réinstaller en double.
+
+1. Double-cliquez sur `Vigie-Parc-Installateur.exe` (droits administrateur requis, comme pour Vigie Billets).
+2. Suivez l'assistant — même principe que Vigie Billets (Mettre à jour / Réinstaller / Désinstaller si une version existe déjà).
+3. Une fois terminé, l'application s'ouvre automatiquement à `http://localhost:3501`.
+
+### Après l'installation
+
+- Un fichier `IMPORTANT - Identifiants.txt` est créé dans le dossier d'installation (et copié sur le bureau).
+- Icône dans la barre système (Redémarrer / Démarrer / Arrêter), raccourci bureau, comme pour Vigie Billets — reprise par **Suite Vigie** si elle est installée.
+- Identifiant admin par défaut : `ADMIN001` / `Admin1234!` (changement du mot de passe obligatoire à la première connexion).
+
+## Installation — Vigie Inventory
+
+Vigie Inventory est un inventaire de matériel générique destiné à n'importe quelle entreprise (articles, licences, fournisseurs, contrats) — **produit autonome**, avec sa propre base de données et ses propres comptes, sans aucun lien avec Vigie Billets ou Vigie Parc. Les catégories de matériel, les départements et des champs personnalisés se configurent dans Paramètres pour adapter l'outil au domaine de l'entreprise (informatique, outils, véhicules, équipement de cuisine…).
+
+1. Double-cliquez sur le fichier `.exe` choisi ci-dessus (droits administrateur requis).
+2. Suivez l'assistant — même principe que Vigie Billets (Mettre à jour / Réinstaller / Désinstaller si une version existe déjà).
+3. Avec l'installateur complet, l'installation peut prendre plusieurs minutes (Node.js et PostgreSQL s'installent silencieusement en arrière-plan si absents — comme pour Vigie Billets, aucun autre logiciel Vigie n'est requis).
+4. Une fois terminé, l'application s'ouvre automatiquement à `http://localhost:3502`.
+
+### Après l'installation
+
+- Un fichier `IMPORTANT - Identifiants.txt` est créé dans le dossier d'installation (et copié sur le bureau) avec les mots de passe générés (PostgreSQL, secret de sécurité interne) — à conserver en lieu sûr, puis à supprimer du bureau.
+- Icône dans la barre système (Redémarrer / Démarrer / Arrêter), raccourci bureau, comme pour Vigie Billets — reprise par **Suite Vigie** si elle est installée.
+- Identifiant admin par défaut : `ADMIN001` / `Admin1234!` (changement du mot de passe obligatoire à la première connexion).
+- Pour adapter l'outil : Paramètres → Catégories de matériel / Départements / Champs personnalisés.
+
+## Mise à jour groupée — Vigie-Tout-MiseAJour.exe
+
+Met à jour Vigie Billets, Vigie Parc **et** Vigie Inventory en une seule exécution, sans avoir à lancer 3 installateurs séparément.
+
+1. Double-cliquez sur `Vigie-Tout-MiseAJour.exe` (droits administrateur requis).
+2. Une fenêtre liste les programmes détectés sur ce poste — confirmez pour continuer.
+3. Chaque programme détecté est mis à jour dans son propre dossier d'installation existant (retrouvé automatiquement, même si l'emplacement par défaut a été changé) ; son service Windows redémarre ensuite.
+4. Un programme non installé sur ce poste est simplement ignoré — aucun des 3 n'est jamais installé pour la première fois par cet outil.
+
+Équivalent à lancer `Vigie-Billets-MiseAJour.exe`, `Vigie-Parc-Installateur.exe` et `Vigie-Inventory-MiseAJour.exe` un par un, mais en un seul clic.
+
+## Installation — Suite Vigie
+
+Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Inventory par **une seule icône** dans la barre système, avec un sous-menu par application (Ouvrir / Redémarrer / Démarrer / Arrêter). Elle ne contient aucun serveur ni base de données — c'est uniquement une icône de gestion.
+
+**Peut s'installer avant ou après les 3 apps, dans n'importe quel ordre.**
+
+1. Double-cliquez sur `Vigie-Suite-Installateur.exe` (droits administrateur requis). Installation quasi instantanée.
+2. L'icône détecte automatiquement, à son démarrage, quelles applications (Billets / Parc / Inventory) sont installées sur ce poste — les icônes individuelles existantes sont retirées pour éviter les doublons.
+3. Si une des 3 apps est installée ou mise à jour **après** Suite Vigie, son installateur relance automatiquement l'icône Suite Vigie pour qu'elle la détecte, sans avoir besoin de redémarrer Windows.
+4. Clic droit sur l'icône pour voir le sous-menu de chaque application détectée ; double-clic pour ouvrir la première.
