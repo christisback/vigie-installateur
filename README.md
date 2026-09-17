@@ -46,8 +46,8 @@ Le même type d'inventaire que Vigie Parc, mais pensé comme produit indépendan
 
 Outil de formation pour équipes de soutien informatique — aucun lien technique avec les trois autres programmes.
 
-- 100 scénarios de mise en situation (70 niveau N1 simple, 30 niveau N2 intermédiaire)
-- Chaque scénario fournit une entreprise et un contact fictifs (nom, courriel, adresse, numéro de poste) et un problème décrit du point de vue du client
+- 200 scénarios de mise en situation (140 niveau N1 simple, 60 niveau N2 intermédiaire)
+- Chaque scénario fournit une entreprise et un contact fictifs (nom, courriel, téléphone, adresse, numéro de poste) et un problème décrit du point de vue du client
 - Un élève joue le client avec Vigie Simulation, un autre joue le technicien avec Vigie Billets — exercice mené hors informatique (téléphone, en personne)
 - **Aucune base de données, aucun compte** — les scénarios sont un fichier de données chargé au démarrage
 
