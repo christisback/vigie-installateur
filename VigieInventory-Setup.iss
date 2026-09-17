@@ -13,7 +13,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Inventory"
-#define MyAppVersion "1.7"
+#define MyAppVersion "1.8"
 #define MyAppPublisher "C.T Informatique"
 #define MyAppURL "http://localhost:3502"
 

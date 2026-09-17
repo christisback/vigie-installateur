@@ -146,9 +146,19 @@ try {
 }
 
 # ── 7) Fichier de récapitulatif ──────────────────────────────────────────
+# Préfère l'adaptateur Wi-Fi/Ethernet réel — sinon, sur un poste avec un VPN
+# actif (NordVPN, Tailscale, etc.), ce filtre pouvait choisir l'adresse du
+# tunnel VPN à la place, une adresse qu'aucun autre appareil du réseau
+# local ne peut jamais joindre.
 $LanIp = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {
-  $_.IPAddress -notmatch '^169\.254\.' -and $_.IPAddress -ne '127.0.0.1' -and $_.PrefixOrigin -ne 'WellKnown'
+  $_.IPAddress -notmatch '^169\.254\.' -and $_.IPAddress -ne '127.0.0.1' -and $_.PrefixOrigin -ne 'WellKnown' -and
+  $_.InterfaceAlias -match '^(Wi-?Fi|Ethernet)'
 } | Select-Object -First 1 -ExpandProperty IPAddress)
+if (-not $LanIp) {
+  $LanIp = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {
+    $_.IPAddress -notmatch '^169\.254\.' -and $_.IPAddress -ne '127.0.0.1' -and $_.PrefixOrigin -ne 'WellKnown'
+  } | Select-Object -First 1 -ExpandProperty IPAddress)
+}
 
 $infoPath = Join-Path $InstallDir "IMPORTANT - Identifiants.txt"
 @"
