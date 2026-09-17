@@ -187,3 +187,7 @@ Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Invento
 2. L'icône détecte automatiquement, à son démarrage, quelles applications (Billets / Parc / Inventory) sont installées sur ce poste — les icônes individuelles existantes sont retirées pour éviter les doublons.
 3. Si une des 3 apps est installée ou mise à jour **après** Suite Vigie, son installateur relance automatiquement l'icône Suite Vigie pour qu'elle la détecte, sans avoir besoin de redémarrer Windows.
 4. Clic droit sur l'icône pour voir le sous-menu de chaque application détectée ; double-clic pour ouvrir la première.
+
+## Raccourcis sur les autres postes du réseau
+
+Pour créer un raccourci bureau (avec le bon logo) vers une application qui tourne sur **un autre poste** (pas besoin d'y installer quoi que ce soit) : voir [`shortcut-creator/`](shortcut-creator/) — deux petits fichiers à copier sur le poste voulu (`Creer-Raccourci-Vigie.bat` + `.ps1`), on double-clique, on choisit l'application et l'adresse IP du serveur, et le raccourci se crée avec le logo téléchargé automatiquement.
