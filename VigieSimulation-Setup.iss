@@ -10,7 +10,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Simulation"
-#define MyAppVersion "1.3"
+#define MyAppVersion "1.4"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
