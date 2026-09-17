@@ -56,10 +56,17 @@ $pgOk  = Test-Path $psql
 if (-not $pgOk) {
   $PgPassword = -join ((48..57)+(65..90)+(97..122) | Get-Random -Count 24 | ForEach-Object {[char]$_})
   Log "Installation de PostgreSQL 18 (peut prendre quelques minutes)..."
+  # Les valeurs contenant des espaces (chemins sous "Program Files") doivent être
+  # explicitement entre guillemets ICI — Start-Process -ArgumentList ne met PAS
+  # automatiquement des guillemets autour des éléments d'un tableau qui en
+  # contiennent, il les joint tel quel par un espace. Sans ces guillemets,
+  # "C:\Program Files\PostgreSQL\18" devient DEUX arguments distincts pour
+  # l'installateur PostgreSQL ("C:\Program" et "Files\PostgreSQL\18"), qui
+  # échoue alors avec "option attendu mais contient Files\PostgreSQL\18".
   $pgArgs = @(
     '--mode', 'unattended', '--unattendedmodeui', 'minimal',
-    '--installdir', 'C:\Program Files\PostgreSQL\18',
-    '--datadir', 'C:\Program Files\PostgreSQL\18\data',
+    '--installdir', '"C:\Program Files\PostgreSQL\18"',
+    '--datadir', '"C:\Program Files\PostgreSQL\18\data"',
     '--serverport', '5432',
     '--superpassword', $PgPassword,
     '--servicename', 'postgresql-x64-18',
