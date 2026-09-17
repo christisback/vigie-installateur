@@ -188,6 +188,12 @@ Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Invento
 3. Si une des 4 apps est installée ou mise à jour **après** Suite Vigie, l'icône la détecte d'elle-même dans les 5 secondes suivantes (vérification périodique) — pas besoin de la relancer ni de redémarrer Windows.
 4. Clic droit sur l'icône pour voir le sous-menu de chaque application détectée ; double-clic pour ouvrir la première.
 
+### Désinstallation
+
+Désinstaller Suite Vigie (Panneau de configuration → Applications) demande : **« Désinstaller aussi Vigie Billets, Vigie Parc, Vigie Inventory et Vigie Simulation ? »**
+- **Oui** → tous les programmes Vigie présents sur ce poste sont désinstallés (services Windows, fichiers, icônes). **Les bases de données PostgreSQL ne sont jamais touchées**, même en répondant Oui — seuls les programmes eux-mêmes sont retirés.
+- **Non** → seule l'icône Suite Vigie est retirée ; les programmes restent installés et fonctionnels.
+
 ## Raccourcis sur les autres postes du réseau
 
 Pour créer un raccourci bureau (avec le bon logo) vers une application qui tourne sur **un autre poste** (pas besoin d'y installer quoi que ce soit) : voir [`shortcut-creator/`](shortcut-creator/)  deux petits fichiers à copier sur le poste voulu (`Creer-Raccourci-Vigie.bat` + `.ps1`), on double-clique, on choisit l'application et l'adresse IP du serveur, et le raccourci se crée avec le logo téléchargé automatiquement.
