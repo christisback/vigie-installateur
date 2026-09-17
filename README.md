@@ -66,8 +66,8 @@ Code source des applications : [vigie-suite](https://github.com/christisback/vig
 
 ## Quel fichier utiliser
 
-**Suite Vigie** (icône unifiée dans la barre système pour les 3 apps  voir sa propre section plus bas) :
-- `Vigie-Suite-Installateur.exe` (~2 Mo)  à installer **en plus** d'au moins une des 3 apps ci-dessous, dans n'importe quel ordre.
+**Suite Vigie** (icône unifiée dans la barre système pour les 4 apps  voir sa propre section plus bas) :
+- `Vigie-Suite-Installateur.exe` (~2 Mo)  à installer **en plus** d'au moins une des 4 apps ci-dessous, dans n'importe quel ordre.
 
 **Vigie Billets** (billetterie de support, indépendant) :
 - **Première installation** sur un nouveau PC → `Vigie-Billets-Installateur.exe` (~420 Mo, tout-en-un hors-ligne : inclut Node.js et PostgreSQL).
@@ -179,13 +179,13 @@ Vigie Simulation est un outil de formation indépendant  pas de base de données
 
 ## Installation  Suite Vigie
 
-Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Inventory par **une seule icône** dans la barre système, avec un sous-menu par application (Ouvrir / Redémarrer / Démarrer / Arrêter). Elle ne contient aucun serveur ni base de données — c'est uniquement une icône de gestion.
+Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Inventory / Simulation par **une seule icône** dans la barre système, avec un sous-menu par application (Ouvrir / Redémarrer / Démarrer / Arrêter). Elle ne contient aucun serveur ni base de données — c'est uniquement une icône de gestion.
 
-**Peut s'installer avant ou après les 3 apps, dans n'importe quel ordre.**
+**Peut s'installer avant ou après les 4 apps, dans n'importe quel ordre.**
 
 1. Double-cliquez sur `Vigie-Suite-Installateur.exe` (droits administrateur requis). Installation quasi instantanée.
-2. L'icône détecte automatiquement, à son démarrage, quelles applications (Billets / Parc / Inventory) sont installées sur ce poste — les icônes individuelles existantes sont retirées pour éviter les doublons.
-3. Si une des 3 apps est installée ou mise à jour **après** Suite Vigie, son installateur relance automatiquement l'icône Suite Vigie pour qu'elle la détecte, sans avoir besoin de redémarrer Windows.
+2. L'icône détecte automatiquement, à son démarrage, quelles applications (Billets / Parc / Inventory / Simulation) sont installées sur ce poste — les icônes individuelles existantes sont retirées pour éviter les doublons.
+3. Si une des 4 apps est installée ou mise à jour **après** Suite Vigie, l'icône la détecte d'elle-même dans les 5 secondes suivantes (vérification périodique) — pas besoin de la relancer ni de redémarrer Windows.
 4. Clic droit sur l'icône pour voir le sous-menu de chaque application détectée ; double-clic pour ouvrir la première.
 
 ## Raccourcis sur les autres postes du réseau

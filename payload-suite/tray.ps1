@@ -44,9 +44,14 @@ $AllApps = @(
   @{ Name = "Vigie Inventory";  Service = "VigieInventory";  Url = "http://localhost:3502" },
   @{ Name = "Vigie Simulation"; Service = "VigieSimulation"; Url = "http://localhost:3503" }
 )
-$Apps = $AllApps | Where-Object { Get-Service -Name $_.Service -ErrorAction SilentlyContinue }
 
-if (-not $Apps -or $Apps.Count -eq 0) {
+function Get-DetectedApps {
+  $AllApps | Where-Object { Get-Service -Name $_.Service -ErrorAction SilentlyContinue }
+}
+
+$Apps = @(Get-DetectedApps)
+
+if ($Apps.Count -eq 0) {
   [System.Windows.Forms.MessageBox]::Show(
     "Aucun programme de la Suite Vigie (Billets / Parc / Inventory / Simulation) n'a été détecté sur ce poste.",
     "Suite Vigie", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning) | Out-Null
@@ -78,73 +83,94 @@ function Update-Status {
 }
 
 # ── Menu contextuel (clic droit) : un sous-menu par application détectée ────
-$menu = New-Object System.Windows.Forms.ContextMenuStrip
+# Reconstruit à chaque changement de la liste d'apps détectées (voir la
+# vérification périodique plus bas) — sinon une app installée/mise à jour
+# après le démarrage de l'icône n'apparaîtrait jamais dans le menu tant que
+# l'icône n'est pas relancée manuellement.
+function Build-Menu {
+  $menu = New-Object System.Windows.Forms.ContextMenuStrip
 
-foreach ($app in $Apps) {
-  $appName = $app.Name
-  $svcName = $app.Service
-  $appUrl  = $app.Url
+  foreach ($app in $Apps) {
+    $appName = $app.Name
+    $svcName = $app.Service
+    $appUrl  = $app.Url
 
-  $sub = New-Object System.Windows.Forms.ToolStripMenuItem($appName)
+    $sub = New-Object System.Windows.Forms.ToolStripMenuItem($appName)
 
-  $openItem = $sub.DropDownItems.Add("Ouvrir")
-  $openItem.Add_Click({ Start-Process $appUrl }.GetNewClosure())
+    $openItem = $sub.DropDownItems.Add("Ouvrir")
+    $openItem.Add_Click({ Start-Process $appUrl }.GetNewClosure())
 
-  $sub.DropDownItems.Add("-") | Out-Null
+    $sub.DropDownItems.Add("-") | Out-Null
 
-  $restartItem = $sub.DropDownItems.Add("Redémarrer le serveur")
-  $restartItem.Add_Click({
-    Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Restart-Service -Name '$svcName' -Force" -Verb RunAs
-    Start-Sleep -Seconds 2
-    Update-Status
-    $notifyIcon.ShowBalloonTip(3000, $appName, "Le serveur redémarre...", [System.Windows.Forms.ToolTipIcon]::Info)
-  }.GetNewClosure())
+    $restartItem = $sub.DropDownItems.Add("Redémarrer le serveur")
+    $restartItem.Add_Click({
+      Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Restart-Service -Name '$svcName' -Force" -Verb RunAs
+      Start-Sleep -Seconds 2
+      Update-Status
+      $notifyIcon.ShowBalloonTip(3000, $appName, "Le serveur redémarre...", [System.Windows.Forms.ToolTipIcon]::Info)
+    }.GetNewClosure())
 
-  $stopItem = $sub.DropDownItems.Add("Fermer le serveur")
-  $stopItem.Add_Click({
-    Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Stop-Service -Name '$svcName' -Force" -Verb RunAs
-    Start-Sleep -Seconds 2
-    Update-Status
-    $notifyIcon.ShowBalloonTip(3000, $appName, "Le serveur a été arrêté.", [System.Windows.Forms.ToolTipIcon]::Warning)
-  }.GetNewClosure())
+    $stopItem = $sub.DropDownItems.Add("Fermer le serveur")
+    $stopItem.Add_Click({
+      Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Stop-Service -Name '$svcName' -Force" -Verb RunAs
+      Start-Sleep -Seconds 2
+      Update-Status
+      $notifyIcon.ShowBalloonTip(3000, $appName, "Le serveur a été arrêté.", [System.Windows.Forms.ToolTipIcon]::Warning)
+    }.GetNewClosure())
 
-  $startItem = $sub.DropDownItems.Add("Démarrer le serveur")
-  $startItem.Add_Click({
-    Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Start-Service -Name '$svcName'" -Verb RunAs
-    Start-Sleep -Seconds 2
-    Update-Status
-    $notifyIcon.ShowBalloonTip(3000, $appName, "Le serveur démarre...", [System.Windows.Forms.ToolTipIcon]::Info)
-  }.GetNewClosure())
+    $startItem = $sub.DropDownItems.Add("Démarrer le serveur")
+    $startItem.Add_Click({
+      Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Start-Service -Name '$svcName'" -Verb RunAs
+      Start-Sleep -Seconds 2
+      Update-Status
+      $notifyIcon.ShowBalloonTip(3000, $appName, "Le serveur démarre...", [System.Windows.Forms.ToolTipIcon]::Info)
+    }.GetNewClosure())
 
-  $menu.Items.Add($sub) | Out-Null
+    $menu.Items.Add($sub) | Out-Null
+  }
+
+  $menu.Items.Add("-") | Out-Null
+
+  $quitAllItem = $menu.Items.Add("Tout arrêter et quitter")
+  $quitAllItem.Add_Click({
+    $svcNamesQuoted = ($Apps | ForEach-Object { "'$($_.Service)'" }) -join ','
+    Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Stop-Service -Name $svcNamesQuoted -Force -ErrorAction SilentlyContinue" -Verb RunAs -Wait
+    $notifyIcon.Visible = $false
+    [System.Windows.Forms.Application]::Exit()
+  })
+
+  $quitIconOnlyItem = $menu.Items.Add("Quitter l'icône seulement (les serveurs continuent)")
+  $quitIconOnlyItem.Add_Click({
+    $notifyIcon.Visible = $false
+    [System.Windows.Forms.Application]::Exit()
+  })
+
+  $notifyIcon.ContextMenuStrip = $menu
 }
 
-$menu.Items.Add("-") | Out-Null
-
-$quitAllItem = $menu.Items.Add("Tout arrêter et quitter")
-$quitAllItem.Add_Click({
-  $svcNamesQuoted = ($Apps | ForEach-Object { "'$($_.Service)'" }) -join ','
-  Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Stop-Service -Name $svcNamesQuoted -Force -ErrorAction SilentlyContinue" -Verb RunAs -Wait
-  $notifyIcon.Visible = $false
-  [System.Windows.Forms.Application]::Exit()
-})
-
-$quitIconOnlyItem = $menu.Items.Add("Quitter l'icône seulement (les serveurs continuent)")
-$quitIconOnlyItem.Add_Click({
-  $notifyIcon.Visible = $false
-  [System.Windows.Forms.Application]::Exit()
-})
-
-$notifyIcon.ContextMenuStrip = $menu
+Build-Menu
 $notifyIcon.Add_MouseDoubleClick({
   # Double-clic : ouvre la première application détectée
   Start-Process $Apps[0].Url
 })
 
-# ── Vérification périodique du statut (toutes les 5 secondes) ────────────────
+# ── Vérification périodique du statut ET de la liste d'apps détectées
+# (toutes les 5 secondes) ─────────────────────────────────────────────────
+$script:DetectedKey = ($Apps | ForEach-Object { $_.Service } | Sort-Object) -join ','
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 5000
-$timer.Add_Tick({ Update-Status })
+$timer.Add_Tick({
+  $current = @(Get-DetectedApps)
+  $currentKey = ($current | ForEach-Object { $_.Service } | Sort-Object) -join ','
+  if ($currentKey -ne $script:DetectedKey) {
+    $script:DetectedKey = $currentKey
+    if ($current.Count -gt 0) {
+      $script:Apps = $current
+      Build-Menu
+    }
+  }
+  Update-Status
+})
 $timer.Start()
 
 Update-Status

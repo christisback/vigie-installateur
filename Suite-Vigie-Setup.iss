@@ -13,7 +13,7 @@
 ; ============================================================================
 
 #define MyAppName "Suite Vigie"
-#define MyAppVersion "1.2"
+#define MyAppVersion "1.3"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
