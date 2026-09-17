@@ -76,9 +76,9 @@ Code source des applications : [vigie-suite](https://github.com/christisback/vig
 **Vigie Parc** (inventaire de parc informatique, compagnon de Vigie Billets  voir sa propre section plus bas) :
 - `Vigie-Parc-Installateur.exe` (~4 Mo)  **nécessite que Vigie Billets soit déjà installé** sur le même poste (il réutilise son Node.js, son PostgreSQL et sa base de données).
 
-**Vigie Inventory** (inventaire de matériel générique, pour n'importe quelle entreprise  voir sa propre section plus bas)  **produit autonome, aucune dépendance** à Vigie Billets ni à Vigie Parc :
-- **Première installation** sur un nouveau PC → `Vigie-Inventory-Installateur.exe` (~420 Mo, tout-en-un hors-ligne : inclut Node.js et PostgreSQL).
-- **Mise à jour** d'une installation existante → `Vigie-Inventory-MiseAJour.exe` (~4 Mo, rapide, suppose que Node.js/PostgreSQL sont déjà installés).
+**Vigie Inventory** (inventaire de matériel générique, pour n'importe quelle entreprise  voir sa propre section plus bas)  **aucune dépendance de code** à Vigie Billets ni à Vigie Parc, mais **nécessite qu'une instance PostgreSQL soit déjà présente sur le poste** (via Vigie Billets, par exemple) :
+- `Vigie-Inventory-Installateur.exe` (~36 Mo) — inclut Node.js, mais pas PostgreSQL. Installez Vigie Billets d'abord si PostgreSQL n'est pas déjà sur ce poste.
+- `Vigie-Inventory-MiseAJour.exe` — identique à l'installateur ci-dessus (même détection de Node.js/PostgreSQL déjà présents), gardé sous ce nom pour compatibilité avec `VigieTout-MiseAJour.exe`.
 
 **Vigie Simulation** (scénarios de formation, indépendant  voir sa propre section plus bas) :
 - `Vigie-Simulation-Installateur.exe` (~35 Mo)  sert à la fois pour la première installation et les mises à jour (pas besoin de PostgreSQL, donc pas de gros installateur séparé).
