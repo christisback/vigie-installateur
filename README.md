@@ -1,8 +1,8 @@
-# Vigie Billets, Vigie Parc, Vigie Inventory & Suite Vigie — Installation Windows
+# Vigie Billets, Vigie Parc, Vigie Inventory, Vigie Simulation & Suite Vigie — Installation Windows
 
 ## Les programmes
 
-Trois applications web indépendantes de C.T Informatique. Chacune a son propre `package.json`, ses propres dépendances et tourne comme un service Windows séparé.
+Applications web indépendantes de C.T Informatique. Chacune a son propre `package.json`, ses propres dépendances et tourne comme un service Windows séparé.
 
 ### Vigie Billets — Billetterie de support
 
@@ -42,12 +42,23 @@ Le même type d'inventaire que Vigie Parc, mais pensé comme produit indépendan
 
 **Port par défaut :** 3502 · **Base de données :** `vigie_inventory_db` (indépendante)
 
-### Stack technique (commune aux trois)
+### Vigie Simulation — Scénarios de formation
+
+Outil de formation pour équipes de soutien informatique — aucun lien technique avec les trois autres programmes.
+
+- 100 scénarios de mise en situation (70 niveau N1 simple, 30 niveau N2 intermédiaire)
+- Chaque scénario fournit une entreprise et un contact fictifs (nom, courriel, adresse, numéro de poste) et un problème décrit du point de vue du client
+- Un élève joue le client avec Vigie Simulation, un autre joue le technicien avec Vigie Billets — exercice mené hors informatique (téléphone, en personne)
+- **Aucune base de données, aucun compte** — les scénarios sont un fichier de données chargé au démarrage
+
+**Port par défaut :** 3503 · **Base de données :** aucune
+
+### Stack technique
 
 - **Backend :** Node.js + [Express](https://expressjs.com/)
-- **Base de données :** PostgreSQL, via le module [`pg`](https://node-postgres.com/) — requêtes SQL directes (pas d'ORM), migrations idempotentes exécutées au démarrage du serveur
-- **Authentification :** jetons JWT (`jsonwebtoken`), mots de passe hachés avec `bcryptjs`
-- **Sécurité :** `helmet` (en-têtes HTTP), `express-rate-limit`, secrets (`JWT_SECRET`, `PGPASSWORD`) obligatoires via variables d'environnement
+- **Base de données :** PostgreSQL pour Billets/Parc/Inventory, via le module [`pg`](https://node-postgres.com/) — requêtes SQL directes (pas d'ORM), migrations idempotentes exécutées au démarrage du serveur. Vigie Simulation n'en a pas besoin.
+- **Authentification :** jetons JWT (`jsonwebtoken`), mots de passe hachés avec `bcryptjs` (sauf Vigie Simulation, sans compte)
+- **Sécurité :** `helmet` (en-têtes HTTP), `express-rate-limit`, secrets (`JWT_SECRET`, `PGPASSWORD`) obligatoires via variables d'environnement pour les apps avec base de données
 - **Frontend :** HTML/CSS/JavaScript "vanilla" (aucun framework), page unique (SPA) servie directement par Express
 - **Déploiement :** service Windows via [NSSM](https://nssm.cc/), installateurs [Inno Setup](https://jrsoftware.org/isinfo.php) (ce dépôt)
 
@@ -68,6 +79,9 @@ Code source des applications : [vigie-suite](https://github.com/christisback/vig
 **Vigie Inventory** (inventaire de matériel générique, pour n'importe quelle entreprise — voir sa propre section plus bas) — **produit autonome, aucune dépendance** à Vigie Billets ni à Vigie Parc :
 - **Première installation** sur un nouveau PC → `Vigie-Inventory-Installateur.exe` (~420 Mo, tout-en-un hors-ligne : inclut Node.js et PostgreSQL).
 - **Mise à jour** d'une installation existante → `Vigie-Inventory-MiseAJour.exe` (~4 Mo, rapide, suppose que Node.js/PostgreSQL sont déjà installés).
+
+**Vigie Simulation** (scénarios de formation, indépendant — voir sa propre section plus bas) :
+- `Vigie-Simulation-Installateur.exe` (~35 Mo) — sert à la fois pour la première installation et les mises à jour (pas besoin de PostgreSQL, donc pas de gros installateur séparé).
 
 ## Avant d'installer sur un NOUVEAU PC : éviter le blocage de sécurité
 
@@ -148,6 +162,20 @@ Vigie Inventory est un inventaire de matériel générique destiné à n'importe
 - Icône dans la barre système (Redémarrer / Démarrer / Arrêter), raccourci bureau, comme pour Vigie Billets — reprise par **Suite Vigie** si elle est installée.
 - Identifiant admin par défaut : `ADMIN001` / `Admin1234!` (changement du mot de passe obligatoire à la première connexion).
 - Pour adapter l'outil : Paramètres → Catégories de matériel / Départements / Champs personnalisés.
+
+## Installation — Vigie Simulation
+
+Vigie Simulation est un outil de formation indépendant — pas de base de données, pas de compte à créer.
+
+1. Double-cliquez sur `Vigie-Simulation-Installateur.exe` (droits administrateur requis). Installation rapide (~1 minute, pas de PostgreSQL à installer).
+2. Suivez l'assistant — même principe que les autres (Node.js s'installe silencieusement si absent).
+3. Une fois terminé, l'application s'ouvre automatiquement à `http://localhost:3503`.
+
+### Après l'installation
+
+- Un fichier `IMPORTANT - Installation.txt` est créé dans le dossier d'installation.
+- Raccourci bureau vers l'application.
+- Aucun identifiant à retenir — ouvrez la page et cliquez « Piger un scénario ».
 
 ## Installation — Suite Vigie
 

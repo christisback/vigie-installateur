@@ -1,6 +1,11 @@
 # Copie de travail temporaire assemblée avant compilation — contient node_modules
 # et une copie complète du code de chaque appli, déjà versionné dans son propre dépôt
 payload/
+payload-simulation/
+
+# Scripts HA-Serveur retirés volontairement du dépôt public — gardés en local uniquement
+HA-Serveur-Setup.iss
+HA-Serveur-MiseAJour.iss
 
 # Sortie de compilation (fichiers .exe générés par Inno Setup)
 output/

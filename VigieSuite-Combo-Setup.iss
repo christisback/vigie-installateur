@@ -57,27 +57,31 @@ Name: "custom"; Description: "Sélection personnalisée"; Flags: iscustom
 Name: "billets"; Description: "Vigie Billets — billetterie de support (port 3500)"; Types: full custom
 Name: "parc"; Description: "Vigie Parc — inventaire de parc informatique (port 3501, nécessite Vigie Billets)"; Types: full custom
 Name: "inventory"; Description: "Vigie Inventory — inventaire générique autonome (port 3502)"; Types: full custom
+Name: "simulation"; Description: "Vigie Simulation — scénarios de soutien informatique pour la formation (port 3503)"; Types: full custom
 Name: "suite"; Description: "Suite Vigie — icône unifiée dans la barre système"; Types: full custom
 
 [Files]
-Source: "..\Vigie-Billets-Installateur.exe";   DestDir: "{tmp}"; Flags: dontcopy; Components: billets
-Source: "..\Vigie-Parc-Installateur.exe";      DestDir: "{tmp}"; Flags: dontcopy; Components: parc
-Source: "..\Vigie-Inventory-Installateur.exe"; DestDir: "{tmp}"; Flags: dontcopy; Components: inventory
-Source: "..\Vigie-Suite-Installateur.exe";     DestDir: "{tmp}"; Flags: dontcopy; Components: suite
+Source: "..\Vigie-Billets-Installateur.exe";     DestDir: "{tmp}"; Flags: dontcopy; Components: billets
+Source: "..\Vigie-Parc-Installateur.exe";        DestDir: "{tmp}"; Flags: dontcopy; Components: parc
+Source: "..\Vigie-Inventory-Installateur.exe";   DestDir: "{tmp}"; Flags: dontcopy; Components: inventory
+Source: "..\Vigie-Simulation-Installateur.exe";  DestDir: "{tmp}"; Flags: dontcopy; Components: simulation
+Source: "..\Vigie-Suite-Installateur.exe";       DestDir: "{tmp}"; Flags: dontcopy; Components: suite
 
 [Run]
-Filename: "{tmp}\Vigie-Billets-Installateur.exe";   Parameters: "/SP-"; StatusMsg: "Installation de Vigie Billets…";   Check: WizardIsComponentSelected('billets');   Flags: waituntilterminated
-Filename: "{tmp}\Vigie-Parc-Installateur.exe";      Parameters: "/SP-"; StatusMsg: "Installation de Vigie Parc…";      Check: WizardIsComponentSelected('parc');      Flags: waituntilterminated
-Filename: "{tmp}\Vigie-Inventory-Installateur.exe"; Parameters: "/SP-"; StatusMsg: "Installation de Vigie Inventory…"; Check: WizardIsComponentSelected('inventory'); Flags: waituntilterminated
-Filename: "{tmp}\Vigie-Suite-Installateur.exe";     Parameters: "/SP-"; StatusMsg: "Installation de Suite Vigie…";     Check: WizardIsComponentSelected('suite');     Flags: waituntilterminated
+Filename: "{tmp}\Vigie-Billets-Installateur.exe";     Parameters: "/SP-"; StatusMsg: "Installation de Vigie Billets…";     Check: WizardIsComponentSelected('billets');     Flags: waituntilterminated
+Filename: "{tmp}\Vigie-Parc-Installateur.exe";        Parameters: "/SP-"; StatusMsg: "Installation de Vigie Parc…";        Check: WizardIsComponentSelected('parc');        Flags: waituntilterminated
+Filename: "{tmp}\Vigie-Inventory-Installateur.exe";   Parameters: "/SP-"; StatusMsg: "Installation de Vigie Inventory…";   Check: WizardIsComponentSelected('inventory');   Flags: waituntilterminated
+Filename: "{tmp}\Vigie-Simulation-Installateur.exe";  Parameters: "/SP-"; StatusMsg: "Installation de Vigie Simulation…"; Check: WizardIsComponentSelected('simulation');  Flags: waituntilterminated
+Filename: "{tmp}\Vigie-Suite-Installateur.exe";       Parameters: "/SP-"; StatusMsg: "Installation de Suite Vigie…";       Check: WizardIsComponentSelected('suite');       Flags: waituntilterminated
 
 [Code]
 // Indices dans [Components], dans l'ordre déclaré ci-dessus.
 const
-  IdxBillets   = 0;
-  IdxParc      = 1;
-  IdxInventory = 2;
-  IdxSuite     = 3;
+  IdxBillets    = 0;
+  IdxParc       = 1;
+  IdxInventory  = 2;
+  IdxSimulation = 3;
+  IdxSuite      = 4;
 
 // Vigie Parc partage la base de données de Vigie Billets — il ne peut pas
 // s'installer seul. Cocher Parc force donc Billets automatiquement.
@@ -123,6 +127,8 @@ begin
       ExtractTemporaryFile('Vigie-Parc-Installateur.exe');
     if WizardIsComponentSelected('inventory') then
       ExtractTemporaryFile('Vigie-Inventory-Installateur.exe');
+    if WizardIsComponentSelected('simulation') then
+      ExtractTemporaryFile('Vigie-Simulation-Installateur.exe');
     if WizardIsComponentSelected('suite') then
       ExtractTemporaryFile('Vigie-Suite-Installateur.exe');
   end;
