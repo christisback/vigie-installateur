@@ -1,4 +1,4 @@
-# Vigie Billets, Vigie Parc, Vigie Inventory, Vigie Simulation & Suite Vigie — Installation Windows
+# Vigie Billets, Vigie Parc, Vigie Inventory, Vigie Simulation & Suite Vigie  Installation Windows
 
 ## Les programmes
 
