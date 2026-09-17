@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88" role="img" aria-label="Suite Vigie">
+  <title>Suite Vigie</title>
+  <rect x="0" y="0" width="88" height="88" rx="20" fill="#14263F"/>
+  <rect x="14" y="14" width="26" height="26" rx="7" fill="#F6F1E7"/>
+  <rect x="48" y="14" width="26" height="26" rx="7" fill="#F6F1E7"/>
+  <rect x="14" y="48" width="26" height="26" rx="7" fill="#F6F1E7"/>
+  <circle cx="61" cy="61" r="14" fill="#E9A13B"/>
+  <circle cx="61" cy="61" r="6" fill="#14263F"/>
+</svg>

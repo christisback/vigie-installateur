@@ -10,7 +10,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Simulation"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.2"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -55,10 +55,12 @@ Filename: "http://localhost:3503"; Description: "Ouvrir {#MyAppName} maintenant"
 [UninstallRun]
 Filename: "{app}\_setup\nssm.exe"; Parameters: "stop VigieSimulation"; Flags: runhidden; RunOnceId: "StopSvc"
 Filename: "{app}\_setup\nssm.exe"; Parameters: "remove VigieSimulation confirm"; Flags: runhidden; RunOnceId: "RemoveSvc"
+Filename: "powershell.exe"; Parameters: "-NoProfile -WindowStyle Hidden -Command ""Get-CimInstance Win32_Process | Where-Object {{ $_.CommandLine -like '*tray-simulation.ps1*' }} | ForEach-Object {{ Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }}"""; Flags: runhidden; RunOnceId: "KillTray"
 Filename: "powershell.exe"; Parameters: "-NoProfile -WindowStyle Hidden -Command ""Remove-NetFirewallRule -DisplayName 'Vigie Simulation (port 3503)' -ErrorAction SilentlyContinue"""; Flags: runhidden; RunOnceId: "RemoveFirewallRule"
 
 [UninstallDelete]
-Type: files; Name: "{commonstartup}\Vigie Simulation.lnk"
+Type: files; Name: "{commondesktop}\Vigie Simulation.lnk"
+Type: files; Name: "{commonstartup}\Vigie Simulation (icône).lnk"
 
 [Code]
 const
@@ -90,6 +92,12 @@ begin
     Exec(NssmExe, 'stop VigieSimulation', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
   else
     Exec('net.exe', 'stop VigieSimulation', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+
+  // Tue l'icône système (nom de script distinct des autres apps — tray-simulation.ps1 —
+  // pour ne jamais tuer par erreur l'icône de Billets/Parc/Inventory par ce même motif).
+  Exec('powershell.exe',
+    '-NoProfile -WindowStyle Hidden -Command "Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like ''*tray-simulation.ps1*'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"',
+    '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
 end;
 
 function InitializeSetup(): Boolean;

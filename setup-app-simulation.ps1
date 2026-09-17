@@ -89,6 +89,22 @@ $Shortcut.TargetPath = "http://localhost:3503"
 $Shortcut.IconLocation = Join-Path $InstallDir "public\brand\vigie-simulation.ico"
 $Shortcut.Save()
 
+# ── 4b) Icône dans la barre système (démarre avec Windows, pour tous les comptes) ──
+Log "Configuration de l'icône dans la barre système..."
+$StartupFolder = "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
+$TrayShortcut = $WshShell.CreateShortcut((Join-Path $StartupFolder "Vigie Simulation (icône).lnk"))
+$TrayShortcut.TargetPath = "powershell.exe"
+$TrayShortcut.Arguments = "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$InstallDir\tray-simulation.ps1`" -InstallDir `"$InstallDir`" -ServiceName `"$ServiceName`""
+$TrayShortcut.WorkingDirectory = $InstallDir
+$TrayShortcut.WindowStyle = 7
+$TrayShortcut.Save()
+try {
+  $trayProc = Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$InstallDir\tray-simulation.ps1`" -InstallDir `"$InstallDir`" -ServiceName `"$ServiceName`"" -PassThru
+  Log "Icône système démarrée (PID $($trayProc.Id))."
+} catch {
+  Log "⚠️ Icône système non démarrée: $($_.Exception.Message)"
+}
+
 # ── 5) Fichier de récapitulatif ──────────────────────────────────────────
 $LanIp = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {
   $_.IPAddress -notmatch '^169\.254\.' -and $_.IPAddress -ne '127.0.0.1' -and $_.PrefixOrigin -ne 'WellKnown'

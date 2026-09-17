@@ -13,6 +13,13 @@ output/
 # Outils tiers binaires (nssm.exe) et certificat — pas du code source
 _setup/
 
+# Suite Vigie n'a pas de payload/ dupliqué ailleurs (contrairement aux autres
+# apps) — son _setup/setup-app.ps1 est du vrai code source, donc on le garde
+# malgré la règle _setup/ ci-dessus. Le certificat reste exclu, comme partout.
+!payload-suite/_setup/
+payload-suite/_setup/*
+!payload-suite/_setup/setup-app.ps1
+
 *.exe
 *.msi
 *.zip
