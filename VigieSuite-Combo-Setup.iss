@@ -20,10 +20,17 @@
 ; d'installation existante peut afficher une boîte de dialogue personnalisée
 ; qui ignore le mode silencieux et bloquerait indéfiniment une exécution
 ; cachée. /SP- supprime seulement l'invite "Ceci va installer..." d'Inno.
+;
+; Vigie Billets : Vigie-Billets-Installateur.exe (avec PostgreSQL intégré)
+; contient un bug connu qui fait échouer l'installation silencieuse de
+; PostgreSQL sur un poste qui ne l'a pas déjà. Ce combiné choisit donc
+; automatiquement Vigie-Billets-MiseAJour.exe (corrigé) si PostgreSQL est
+; déjà présent sur le poste, et avertit l'utilisateur sinon. Voir
+; GetBilletsInstallerFile dans [Code].
 ; ============================================================================
 
 #define MyAppName "Suite Vigie — Installateur combiné"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.2"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -62,13 +69,14 @@ Name: "suite"; Description: "Suite Vigie — icône unifiée dans la barre syst�
 
 [Files]
 Source: "..\Vigie-Billets-Installateur.exe";     DestDir: "{tmp}"; Flags: dontcopy; Components: billets
+Source: "..\Vigie-Billets-MiseAJour.exe";        DestDir: "{tmp}"; Flags: dontcopy; Components: billets
 Source: "..\Vigie-Parc-Installateur.exe";        DestDir: "{tmp}"; Flags: dontcopy; Components: parc
 Source: "..\Vigie-Inventory-Installateur.exe";   DestDir: "{tmp}"; Flags: dontcopy; Components: inventory
 Source: "..\Vigie-Simulation-Installateur.exe";  DestDir: "{tmp}"; Flags: dontcopy; Components: simulation
 Source: "..\Vigie-Suite-Installateur.exe";       DestDir: "{tmp}"; Flags: dontcopy; Components: suite
 
 [Run]
-Filename: "{tmp}\Vigie-Billets-Installateur.exe";     Parameters: "/SP-"; StatusMsg: "Installation de Vigie Billets…";     Check: WizardIsComponentSelected('billets');     Flags: waituntilterminated
+Filename: "{tmp}\{code:GetBilletsInstallerFile}";     Parameters: "/SP-"; StatusMsg: "Installation de Vigie Billets…";     Check: WizardIsComponentSelected('billets');     Flags: waituntilterminated
 Filename: "{tmp}\Vigie-Parc-Installateur.exe";        Parameters: "/SP-"; StatusMsg: "Installation de Vigie Parc…";        Check: WizardIsComponentSelected('parc');        Flags: waituntilterminated
 Filename: "{tmp}\Vigie-Inventory-Installateur.exe";   Parameters: "/SP-"; StatusMsg: "Installation de Vigie Inventory…";   Check: WizardIsComponentSelected('inventory');   Flags: waituntilterminated
 Filename: "{tmp}\Vigie-Simulation-Installateur.exe";  Parameters: "/SP-"; StatusMsg: "Installation de Vigie Simulation…"; Check: WizardIsComponentSelected('simulation');  Flags: waituntilterminated
@@ -105,11 +113,42 @@ begin
   WizardForm.ComponentsList.OnClickCheck := @ComponentsListClickCheck;
 end;
 
+// Vigie-Billets-Installateur.exe (le gros fichier avec PostgreSQL intégré)
+// contient un bug connu : son installation silencieuse de PostgreSQL échoue
+// sur un poste qui ne l'a pas encore ("option attendu mais contient
+// Files\PostgreSQL\18" — bug de citation PowerShell). Vigie-Billets-MiseAJour.exe
+// contient le correctif mais suppose PostgreSQL déjà présent. On choisit
+// donc automatiquement le bon fichier selon ce qui est réellement présent
+// sur CE poste, pour éviter le bug dans le cas le plus courant (PostgreSQL
+// déjà installé, ce qui est le cas de la plupart des postes de ce parc).
+function PostgresAlreadyPresent(): Boolean;
+begin
+  Result := FileExists('C:\Program Files\PostgreSQL\18\bin\psql.exe');
+end;
+
+function GetBilletsInstallerFile(Param: String): String;
+begin
+  if PostgresAlreadyPresent() then
+    Result := 'Vigie-Billets-MiseAJour.exe'
+  else
+    Result := 'Vigie-Billets-Installateur.exe';
+end;
+
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
   Result := True;
   if CurPageID = wpSelectComponents then
+  begin
     EnforceParcRequiresBillets;
+    if WizardIsComponentSelected('billets') and not PostgresAlreadyPresent() then
+    begin
+      Result := (MsgBox(
+        'PostgreSQL n''est pas encore installé sur ce poste. L''installation automatique de PostgreSQL par Vigie Billets contient actuellement un bug connu qui peut faire échouer l''installation.' + #13#10 + #13#10 +
+        'Il est recommandé d''installer PostgreSQL 18 manuellement d''abord (postgresql.org, mot de passe superutilisateur 123 pour rester cohérent avec les autres postes), puis de relancer cet installateur.' + #13#10 + #13#10 +
+        'Continuer quand même avec l''installation automatique (risque d''échec) ?',
+        mbConfirmation, MB_YESNO) = IDYES);
+    end;
+  end;
 end;
 
 // Les fichiers marqués "dontcopy" dans [Files] ne sont JAMAIS extraits
@@ -122,7 +161,7 @@ begin
   if CurStep = ssInstall then
   begin
     if WizardIsComponentSelected('billets') then
-      ExtractTemporaryFile('Vigie-Billets-Installateur.exe');
+      ExtractTemporaryFile(GetBilletsInstallerFile(''));
     if WizardIsComponentSelected('parc') then
       ExtractTemporaryFile('Vigie-Parc-Installateur.exe');
     if WizardIsComponentSelected('inventory') then
