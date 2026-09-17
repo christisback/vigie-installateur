@@ -40,7 +40,7 @@ Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 Source: "payload-simulation\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "http://localhost:3503"
+Name: "{group}\{#MyAppName}"; Filename: "http://localhost:3503"; IconFilename: "{app}\public\brand\vigie-simulation.ico"
 Name: "{group}\Désinstaller {#MyAppName}"; Filename: "{uninstallexe}"
 
 [Run]

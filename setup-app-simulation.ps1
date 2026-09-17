@@ -86,6 +86,7 @@ try {
 $WshShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut("$env:PUBLIC\Desktop\Vigie Simulation.lnk")
 $Shortcut.TargetPath = "http://localhost:3503"
+$Shortcut.IconLocation = Join-Path $InstallDir "public\brand\vigie-simulation.ico"
 $Shortcut.Save()
 
 # ── 5) Fichier de récapitulatif ──────────────────────────────────────────
