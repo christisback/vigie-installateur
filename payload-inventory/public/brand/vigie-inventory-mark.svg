@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88" role="img" aria-label="Vigie Inventory">
+  <title>Vigie Inventory</title>
+  <rect x="0" y="0" width="88" height="88" rx="20" fill="#14263F"/>
+  <!-- Boîte/caisse ouverte -->
+  <path d="M20 38 L44 28 L68 38 L68 62 L44 72 L20 62 Z" fill="#F6F1E7"/>
+  <path d="M20 38 L44 48 L68 38" fill="none" stroke="#5B6A82" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <line x1="44" y1="48" x2="44" y2="72" stroke="#5B6A82" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="64" cy="26" r="4.5" fill="#2DD4BF"/>
+</svg>

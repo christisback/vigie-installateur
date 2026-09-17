@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vigie Inventory</title>
+<link rel="icon" href="/brand/favicon-32.png" sizes="32x32">
+<link rel="icon" href="/brand/favicon-16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="/brand/apple-touch-icon-180.png">
+<meta name="theme-color" content="#14263F">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#f6f7f9;--bg2:#ffffff;--bg3:#eef1f5;--bdr:#dde1e7;--ac:#0d9488;--ac2:#0f766e;--gold:#b45309;--grn:#059669;--red:#dc2626;--org:#ea580c;--pur:#7c3aed;--txt:#1a2233;--txt2:#57607a;--txt3:#8891a3;--card:#ffffff;--r:10px;--r-lg:16px;--sh-sm:0 1px 2px rgba(15,23,42,.06);--sh:0 1px 2px rgba(15,23,42,.05),0 8px 24px -8px rgba(15,23,42,.12)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#1b1a18;--bg2:#252320;--bg3:#2f2c27;--bdr:#3d3934;--ac:#2dd4bf;--ac2:#5eead4;--gold:#f0a537;--grn:#22c55e;--red:#f4776b;--org:#f2914a;--pur:#b39ddb;--txt:#f3f1ec;--txt2:#b3ada2;--txt3:#7d766c;--card:#252320;--sh-sm:0 1px 2px rgba(0,0,0,.4);--sh:0 1px 2px rgba(0,0,0,.3),0 8px 24px -8px rgba(0,0,0,.5)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column}
+h1,h2,h3{font-family:'Syne',sans-serif}
+a{color:var(--ac);text-decoration:none}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:.7rem .9rem;color:var(--txt);font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(13,148,136,.15)}
+label{display:block;font-size:.78rem;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+.fg{margin-bottom:1.1rem}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fr3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;margin-bottom:1.1rem}
+@media(max-width:640px){.fr,.fr3{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.2rem;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.875rem;font-weight:600;transition:transform .15s,background .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.bp{background:var(--ac);color:#fff}.bp:hover{background:var(--ac2)}
+.bg{background:var(--bg3);color:var(--txt2);border:1px solid var(--bdr)}.bg:hover{color:var(--txt)}
+.bd{background:var(--red);color:#fff}
+.bfull{width:100%;justify-content:center}
+
+#loginPage{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.lcard{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:3rem;width:100%;max-width:400px;box-shadow:var(--sh)}
+.lhead{text-align:center;margin-bottom:2rem}
+.lhead h1{font-size:1.7rem;font-weight:800}.lhead h1 span{color:var(--ac)}
+.lhead p{color:var(--txt2);font-size:.85rem;margin-top:.3rem}
+.lerr{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);color:var(--red);border-radius:8px;padding:.7rem .9rem;font-size:.82rem;margin-bottom:1rem;display:none}
+
+#app{display:none;flex-direction:column;min-height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:.6rem 1rem;display:flex;align-items:center;gap:.35rem;position:sticky;top:0;z-index:100;flex-wrap:wrap;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+.logo-wrap{display:flex;align-items:center;gap:.5rem;margin-right:1.5rem;font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem}
+.logo-wrap span{color:var(--ac)}
+.nb{display:flex;align-items:center;justify-content:center;gap:.35rem;padding:.4rem .75rem;border-radius:7px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;background:transparent;color:var(--txt2);transition:all .2s;flex-shrink:0;white-space:nowrap}
+.nb:hover,.nb.act{background:var(--bg3);color:var(--txt)}
+.uchip{margin-left:auto;display:flex;align-items:center;gap:.6rem;padding:.4rem .8rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:20px;font-size:.8rem;color:var(--txt2)}
+.lang-toggle{display:flex;align-items:center;gap:0;border:1px solid var(--bdr);border-radius:20px;overflow:hidden;flex-shrink:0}
+.lt-btn{border:none;background:transparent;color:var(--txt2);font-family:'Inter',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.03em;padding:.32rem .65rem;cursor:pointer;transition:all .2s}
+.lt-btn:hover{background:var(--bg3);color:var(--txt)}
+.lt-btn.act{background:var(--ac);color:#fff}
+
+.content{flex:1;padding:1.75rem;max-width:1300px;margin:0 auto;width:100%}
+footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:.875rem 1.5rem;text-align:center;font-size:.8rem;color:var(--txt3)}
+.page{display:none}.page.act{display:block}
+.ph{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
+.ph h2{font-size:1.35rem;flex:1}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.25rem;box-shadow:var(--sh-sm)}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}}
+.scard .sl{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--txt2);margin-bottom:.5rem}
+.scard .sv{font-family:Arial,sans-serif;font-size:1.9rem;font-weight:800}
+.scard.clickable{cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+.scard.clickable:hover{transform:translateY(-2px);box-shadow:var(--sh);border-color:var(--ac)}
+
+.filter-banner{display:flex;align-items:center;gap:.75rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:.6rem 1rem;margin-bottom:1rem;font-size:.82rem;color:var(--txt2)}
+.filter-banner button{background:none;border:1px solid var(--bdr);border-radius:6px;padding:.25rem .6rem;font-size:.75rem;color:var(--txt);cursor:pointer;font-family:'Inter',sans-serif}
+.filter-banner button:hover{background:var(--bg2)}
+
+.filters{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.sw{position:relative;flex:1;min-width:200px}
+#scanInput{border-color:var(--ac);border-width:2px}
+#scanInput:focus{box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--bdr)}
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg3);padding:.75rem 1rem;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--txt2);border-bottom:1px solid var(--bdr)}
+td{padding:.8rem 1rem;border-bottom:1px solid var(--bdr);font-size:.85rem}
+tr:last-child td{border-bottom:none}
+tr.clickable{cursor:pointer}
+tr.clickable:hover td{background:var(--bg3)}
+
+.badge{display:inline-flex;align-items:center;padding:.25rem .6rem;border-radius:5px;font-size:.72rem;font-weight:600}
+.b-grn{background:rgba(5,150,105,.10);color:var(--grn)}
+.b-org{background:rgba(234,88,12,.10);color:var(--org)}
+.b-gray{background:rgba(100,116,139,.10);color:#64748b}
+.b-red{background:rgba(220,38,38,.10);color:var(--red)}
+
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem}
+.mo.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r-lg);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 48px rgba(15,23,42,.25)}
+.mh{padding:1.25rem 1.5rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.mc{background:none;border:none;color:var(--txt2);font-size:1.3rem;cursor:pointer;line-height:1}
+.mb{padding:1.5rem}
+.mf{padding:1rem 1.5rem;border-top:1px solid var(--bdr);display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap}
+
+.empty{color:var(--txt3);text-align:center;padding:3rem 1rem;font-size:.9rem}
+.tc{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem}
+.ti{padding:.875rem 1.25rem;border-radius:10px;font-size:.85rem;font-weight:500;min-width:240px;max-width:380px;box-shadow:0 4px 16px rgba(15,23,42,.14);background:var(--card)}
+.tsuc{border:1px solid #bbf7d0;border-left:4px solid #059669;color:#065f46}
+.terr{border:1px solid #fecaca;border-left:4px solid #dc2626;color:#991b1b}
+:root[data-theme="dark"] .tsuc{border-color:#065f46;color:#6ee7b7}
+:root[data-theme="dark"] .terr{border-color:#991b1b;color:#fca5a5}
+.addr-wrap{position:relative}
+.addr-sugg-box{position:absolute;top:100%;left:0;right:0;z-index:50;margin-top:.25rem;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);max-height:220px;overflow-y:auto;display:none}
+.addr-sugg{padding:.6rem .9rem;cursor:pointer;font-size:.82rem;color:var(--txt2);border-bottom:1px solid var(--bdr)}
+.addr-sugg:last-child{border-bottom:none}
+.addr-sugg:hover{background:var(--bg3);color:var(--txt)}
+</style>
+</head>
+<body>
+
+<div id="loginPage">
+  <div class="lcard">
+    <div class="lhead">
+      <h1>Vigie <span>Inventory</span></h1>
+      <p>Inventaire de matériel — articles, fournisseurs, contrats</p>
+    </div>
+    <div class="lerr" id="loginError"></div>
+    <div class="fg"><label>Numéro d'employé</label><input type="text" id="loginEmpNum" autocomplete="username"></div>
+    <div class="fg"><label>Mot de passe</label><input type="password" id="loginPass" autocomplete="current-password"></div>
+    <button class="btn bp bfull" id="loginBtn">Se connecter</button>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="logo-wrap"><img src="/brand/mark-1024.png" alt="" width="28" height="28" style="border-radius:6px">Vigie <span>Inventory</span></div>
+    <button class="nb act" id="nav-dashboard">Accueil</button>
+    <button class="nb" id="nav-inventaire">Inventaire</button>
+    <button class="nb" id="nav-fournisseurs">Fournisseurs</button>
+    <button class="nb" id="nav-contrats">Contrats</button>
+    <button class="nb" id="nav-equipe" style="display:none">Équipe</button>
+    <button class="nb" id="nav-parametres" style="display:none">Paramètres</button>
+    <div style="position:relative;margin-left:.25rem;flex-shrink:0">
+      <button class="nb" id="notifBtn">Notifications<span id="notifBadge" style="display:none;background:var(--red);color:#fff;font-size:.65rem;font-weight:700;padding:.1rem .35rem;border-radius:10px;margin-left:.3rem;font-family:'IBM Plex Mono',monospace"></span></button>
+      <div id="notifDropdown" style="display:none;position:absolute;top:110%;right:0;width:340px;max-height:400px;overflow-y:auto;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);z-index:200"></div>
+    </div>
+    <div class="lang-toggle" id="themeToggleTopbar"><button type="button" class="lt-btn" data-theme-opt="light" title="Clair">☀️</button><button type="button" class="lt-btn" data-theme-opt="dark" title="Sombre">🌙</button></div>
+    <button class="btn bg" id="pwChangeBtn" style="flex-shrink:0;margin-left:auto;padding:.4rem .7rem;font-size:.78rem">Mot de passe</button>
+    <button class="btn bg" id="logoutBtn" style="flex-shrink:0;padding:.4rem .7rem;font-size:.78rem">Quitter</button>
+  </div>
+
+  <div class="content">
+
+    <div class="page act" id="page-dashboard">
+      <div class="ph"><h2>Accueil</h2></div>
+      <div class="g4" id="statsGrid"></div>
+      <div class="card">
+        <div style="font-family:Syne;font-weight:800;font-size:1rem;margin-bottom:.75rem">À propos de Vigie Inventory</div>
+        <p style="color:var(--txt2);font-size:.85rem;line-height:1.6">
+          Vigie Inventory suit le matériel de l'organisation (articles, outils, véhicules…), les fournisseurs
+          et les contrats. Les catégories de matériel, les départements et les champs
+          personnalisés se gèrent dans Paramètres pour adapter l'outil à n'importe quel domaine d'activité.
+        </p>
+      </div>
+    </div>
+
+    <div class="page" id="page-inventaire">
+      <div class="ph"><h2>Inventaire</h2><button class="btn bp" id="newAssetBtn">+ Nouvel article</button></div>
+      <div class="filters">
+        <div class="sw" style="max-width:260px;flex:none"><input type="text" id="scanInput" placeholder="Scanner un code…" autocomplete="off"></div>
+        <div class="sw"><input type="text" id="assetSearch" placeholder="Rechercher par type, marque, modèle, numéro de série…"></div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Code</th><th>Type</th><th>Marque / Modèle</th><th>N° de série</th><th>Qté</th><th>Prix d'achat</th><th>Prix de vente</th><th>Garantie jusqu'à</th></tr></thead>
+        <tbody id="assetTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="page" id="page-fournisseurs">
+      <div class="ph"><h2>Fournisseurs</h2><button class="btn bp" id="newVendorBtn">+ Nouveau fournisseur</button></div>
+      <div class="tw"><table>
+        <thead><tr><th>Nom</th><th>Contact</th><th>Téléphone</th><th>Courriel</th></tr></thead>
+        <tbody id="vendorTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="page" id="page-contrats">
+      <div class="ph"><h2>Contrats</h2><button class="btn bp" id="newContractBtn">+ Nouveau contrat</button></div>
+      <div class="tw"><table>
+        <thead><tr><th>Titre</th><th>Type</th><th>Fournisseur</th><th>Fin</th><th>Coût</th></tr></thead>
+        <tbody id="contractTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="page" id="page-equipe">
+      <div class="ph"><h2>Équipe</h2><button class="btn bp" id="newEmployeeBtn">+ Ajouter</button></div>
+      <div class="tw"><table>
+        <thead><tr><th>N° employé</th><th>Nom</th><th>Rôle</th><th>Actions</th></tr></thead>
+        <tbody id="employeeTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="page" id="page-parametres">
+      <div class="ph"><h2>Paramètres — Permissions</h2></div>
+      <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
+        Choisis ce que les techniciens et superviseurs ont le droit de créer, modifier ou supprimer.
+        L'administrateur a toujours accès à tout. Tout le monde peut consulter (voir) les listes, peu importe ces réglages.
+      </p>
+      <div class="tw"><table>
+        <thead><tr><th>Permission</th><th style="text-align:center">Technicien</th><th style="text-align:center">Superviseur</th></tr></thead>
+        <tbody id="permissionsTableBody"></tbody>
+      </table></div>
+
+      <div class="ph" style="margin-top:1.75rem"><h2 style="font-size:1.1rem">Catégories de matériel</h2><button class="btn bp" id="newCategoryBtn">+ Nouvelle catégorie</button></div>
+      <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
+        Les types d'articles proposés à la création (ex. Ordinateur portable, Outil, Véhicule, Équipement de cuisine…) — adapte-les à ton domaine.
+      </p>
+      <div class="tw"><table>
+        <thead><tr><th>Nom</th><th>Code</th><th>Actions</th></tr></thead>
+        <tbody id="categoryTableBody"></tbody>
+      </table></div>
+
+      <div class="ph" style="margin-top:1.75rem"><h2 style="font-size:1.1rem">Départements</h2><button class="btn bp" id="newDepartmentBtn">+ Nouveau département</button></div>
+      <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
+        Utilisés pour le générateur automatique de code d'inventaire (ex. Comptabilité → COMPTA).
+      </p>
+      <div class="tw"><table>
+        <thead><tr><th>Nom</th><th>Code</th><th>Actions</th></tr></thead>
+        <tbody id="departmentTableBody"></tbody>
+      </table></div>
+
+      <div class="ph" style="margin-top:1.75rem"><h2 style="font-size:1.1rem">Champs personnalisés</h2><button class="btn bp" id="newCustomFieldBtn">+ Nouveau champ</button></div>
+      <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
+        Ajoute tes propres champs sur la fiche d'un article (ex. « Kilométrage » pour un véhicule, « Date de calibration » pour un outil).
+      </p>
+      <div class="tw"><table>
+        <thead><tr><th>Nom du champ</th><th>Type</th><th>Actions</th></tr></thead>
+        <tbody id="customFieldTableBody"></tbody>
+      </table></div>
+    </div>
+
+  </div>
+  <footer id="footerBar">© Vigie Inventory By C.T Informatique 2026 — Tous droits réservés</footer>
+</div>
+
+<div class="mo" id="modal-asset">
+  <div class="modal">
+    <div class="mh"><h3 id="assetModalTitle">+ Nouvel article</h3><button class="mc" id="closeAssetModal">×</button></div>
+    <div class="mb">
+      <div class="fg"><label>Type *</label><select id="as-type"><option value="">— Choisir —</option></select></div>
+      <div class="fr">
+        <div class="fg"><label>Marque</label><input type="text" id="as-brand"></div>
+        <div class="fg"><label>Modèle</label><input type="text" id="as-model"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Numéro de série</label><input type="text" id="as-serial"></div>
+        <div class="fg"><label>Garantie jusqu'à</label><input type="date" id="as-warranty"></div>
+      </div>
+      <div class="fr3">
+        <div class="fg"><label>Quantité</label><input type="number" id="as-quantity" step="1" min="0" value="1"></div>
+        <div class="fg"><label>Prix d'achat ($)</label><input type="number" id="as-purchase-price" step="0.01" min="0"></div>
+        <div class="fg"><label>Prix de vente ($)</label><input type="number" id="as-sale-price" step="0.01" min="0"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Département</label><select id="as-department"><option value="">— Aucun —</option></select></div>
+        <div class="fg">
+          <label>Code d'inventaire</label>
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="as-tag" placeholder="Généré automatiquement" style="flex:1">
+            <button type="button" class="btn bg" id="as-tag-regen" title="Régénérer le code" style="flex-shrink:0;padding:.65rem .9rem">↻</button>
+          </div>
+        </div>
+      </div>
+      <div class="fg"><label>Emplacement</label><input type="text" id="as-location" placeholder="Bureau 204, Entrepôt A…"></div>
+      <div id="as-customfields-container"></div>
+      <div class="fg"><label>Notes</label><textarea id="as-notes" style="min-height:80px"></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn bd" id="deleteAssetBtn" style="display:none;margin-right:auto">Supprimer</button>
+      <button class="btn bg" id="cancelAssetModal">Annuler</button>
+      <button class="btn bp" id="saveAssetBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="modal-vendor">
+  <div class="modal">
+    <div class="mh"><h3 id="vendorModalTitle">+ Nouveau fournisseur</h3><button class="mc" id="closeVendorModal">×</button></div>
+    <div class="mb">
+      <div class="fg"><label>Nom *</label><input type="text" id="ve-name"></div>
+      <div class="fg"><label>Personne-ressource</label><input type="text" id="ve-contact"></div>
+      <div class="fr">
+        <div class="fg"><label>Téléphone</label><input type="tel" id="ve-phone" placeholder="514-555-5555"></div>
+        <div class="fg"><label>Courriel</label><input type="email" id="ve-email"></div>
+      </div>
+      <div class="fg addr-wrap"><label>Adresse</label><input type="text" id="ve-address" placeholder="123 Rue Principale" autocomplete="off"><div class="addr-sugg-box" id="ve-address-sugg"></div></div>
+      <div class="fr3">
+        <div class="fg"><label>Ville</label><input type="text" id="ve-city"></div>
+        <div class="fg"><label>Province</label><select id="ve-province"><option value="QC">Québec</option><option value="ON">Ontario</option><option value="BC">Colombie-Britannique</option><option value="AB">Alberta</option><option value="MB">Manitoba</option><option value="SK">Saskatchewan</option><option value="NS">Nouvelle-Écosse</option><option value="NB">Nouveau-Brunswick</option><option value="NL">Terre-Neuve-et-Labrador</option><option value="PE">Île-du-Prince-Édouard</option></select></div>
+        <div class="fg"><label>Code postal</label><input type="text" id="ve-postal"></div>
+      </div>
+      <div class="fg"><label>Notes</label><textarea id="ve-notes" style="min-height:70px"></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn bd" id="deleteVendorBtn" style="display:none;margin-right:auto">Supprimer</button>
+      <button class="btn bg" id="cancelVendorModal">Annuler</button>
+      <button class="btn bp" id="saveVendorBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="modal-contract">
+  <div class="modal">
+    <div class="mh"><h3 id="contractModalTitle">+ Nouveau contrat</h3><button class="mc" id="closeContractModal">×</button></div>
+    <div class="mb">
+      <div class="fg"><label>Titre *</label><input type="text" id="co-title" placeholder="Entretien annuel — serveurs"></div>
+      <div class="fr">
+        <div class="fg"><label>Type</label>
+          <select id="co-type">
+            <option value="garantie">Garantie</option>
+            <option value="entretien">Entretien</option>
+            <option value="location">Location</option>
+            <option value="support">Support</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="fg"><label>Fournisseur</label><select id="co-vendor"><option value="">— Aucun —</option></select></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Date de début</label><input type="date" id="co-start"></div>
+        <div class="fg"><label>Date de fin</label><input type="date" id="co-end"></div>
+      </div>
+      <div class="fg"><label>Coût ($)</label><input type="number" id="co-cost" step="0.01" min="0"></div>
+      <div class="fg"><label>Articles couverts</label><input type="text" id="co-covered" placeholder="Ex : tous les postes du bureau 2e étage"></div>
+      <div class="fg"><label>Notes</label><textarea id="co-notes" style="min-height:70px"></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn bd" id="deleteContractBtn" style="display:none;margin-right:auto">Supprimer</button>
+      <button class="btn bg" id="cancelContractModal">Annuler</button>
+      <button class="btn bp" id="saveContractBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="modal-employee">
+  <div class="modal">
+    <div class="mh"><h3 id="employeeModalTitle">+ Nouvel employé</h3><button class="mc" id="closeEmployeeModal">×</button></div>
+    <div class="mb">
+      <div class="fr">
+        <div class="fg"><label>Numéro d'employé *</label><input type="text" id="em-empnum"></div>
+        <div class="fg"><label>Rôle</label>
+          <select id="em-role">
+            <option value="employee">Technicien</option>
+            <option value="gestionnaire">Superviseur</option>
+            <option value="admin">Administrateur</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Nom complet *</label><input type="text" id="em-name"></div>
+      <div class="fg"><label id="em-pass-label">Mot de passe *</label><input type="password" id="em-pass" placeholder="Laisser vide pour ne pas changer" autocomplete="new-password"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bd" id="deleteEmployeeBtn" style="display:none;margin-right:auto">Supprimer</button>
+      <button class="btn bg" id="cancelEmployeeModal">Annuler</button>
+      <button class="btn bp" id="saveEmployeeBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="modal-department">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h3 id="departmentModalTitle">+ Nouveau département</h3><button class="mc" id="closeDepartmentModal">×</button></div>
+    <div class="mb">
+      <div class="fg"><label>Nom *</label><input type="text" id="dp-name" placeholder="Comptabilité"></div>
+      <div class="fg"><label>Code (utilisé dans le code d'inventaire) *</label><input type="text" id="dp-code" placeholder="COMPTA" maxlength="10" style="text-transform:uppercase"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bd" id="deleteDepartmentBtn" style="display:none;margin-right:auto">Supprimer</button>
+      <button class="btn bg" id="cancelDepartmentModal">Annuler</button>
+      <button class="btn bp" id="saveDepartmentBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="modal-category">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h3 id="categoryModalTitle">+ Nouvelle catégorie</h3><button class="mc" id="closeCategoryModal">×</button></div>
+    <div class="mb">
+      <div class="fg"><label>Nom *</label><input type="text" id="cat-name" placeholder="Véhicule, Outil, Équipement de cuisine…"></div>
+      <div class="fg"><label>Code (utilisé dans le code d'inventaire) *</label><input type="text" id="cat-code" placeholder="VEH" maxlength="6" style="text-transform:uppercase"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bd" id="deleteCategoryBtn" style="display:none;margin-right:auto">Supprimer</button>
+      <button class="btn bg" id="cancelCategoryModal">Annuler</button>
+      <button class="btn bp" id="saveCategoryBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="modal-customfield">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h3>+ Nouveau champ personnalisé</h3><button class="mc" id="closeCustomFieldModal">×</button></div>
+    <div class="mb">
+      <div class="fg"><label>Nom du champ *</label><input type="text" id="cf-label" placeholder="Kilométrage, Date de calibration…"></div>
+      <div class="fg"><label>Type</label>
+        <select id="cf-type">
+          <option value="text">Texte</option>
+          <option value="number">Nombre</option>
+          <option value="date">Date</option>
+        </select>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bg" id="cancelCustomFieldModal">Annuler</button>
+      <button class="btn bp" id="saveCustomFieldBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="modal-pwchange">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h3>Changer le mot de passe</h3><button class="mc" id="closePwChangeModal">×</button></div>
+    <div class="mb">
+      <div class="fg" id="pw-current-wrap"><label>Mot de passe actuel</label><input type="password" id="pw-current" autocomplete="current-password"></div>
+      <div class="fg"><label>Nouveau mot de passe (min. 8 caractères)</label><input type="password" id="pw-new" autocomplete="new-password"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bg" id="cancelPwChangeModal">Annuler</button>
+      <button class="btn bp" id="savePwChangeBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="tc" id="toastContainer"></div>
+
+<script>
+var THEME = 'light';
+try{ var _t=localStorage.getItem('vi_theme'); if(_t==='dark'){ THEME='dark'; document.documentElement.setAttribute('data-theme','dark'); } }catch(e){}
+
+var API = '';
+
+function setTheme(theme){
+  if(theme!=='light'&&theme!=='dark') return;
+  THEME = theme;
+  localStorage.setItem('vi_theme', theme);
+  if(theme==='dark') document.documentElement.setAttribute('data-theme','dark');
+  else document.documentElement.removeAttribute('data-theme');
+  updateThemeToggleUI();
+}
+function updateThemeToggleUI(){
+  document.querySelectorAll('[data-theme-opt]').forEach(function(b){
+    b.classList.toggle('act', b.getAttribute('data-theme-opt')===THEME);
+  });
+}
+var TOKEN = localStorage.getItem('vi_token') || null;
+var ME = null;
+try { ME = JSON.parse(localStorage.getItem('vi_user') || 'null'); } catch(e) {}
+var ALL_EMPS = [], ASSET_EDITING_ID = null, ASSET_CACHE = [];
+var ASSET_TAG_AUTO = true, ASSET_TAG_TIMER = null;
+function tagSlug(s, maxLen){
+  var noAccent = (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'');
+  var clean = noAccent.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  return maxLen ? clean.slice(0, maxLen) : clean;
+}
+function computeAssetTagPrefix(){
+  var typeName = document.getElementById('as-type').value.trim();
+  var brand = document.getElementById('as-brand').value.trim();
+  var deptName = document.getElementById('as-department').value.trim();
+  if(!typeName || !brand) return '';
+  // Le code de catégorie et le code de département viennent des catalogues
+  // gérés dans Paramètres (ex. Ordinateur portable → P, Comptabilité → COMPTA)
+  var catMatch = CATEGORY_CACHE.find(function(c){ return c.name===typeName; });
+  var typePrefix = catMatch ? catMatch.code : tagSlug(typeName, 3);
+  var brandPart = tagSlug(brand);
+  if(!typePrefix || !brandPart) return '';
+  var deptMatch = deptName ? DEPARTMENT_CACHE.find(function(d){ return d.name===deptName; }) : null;
+  var deptPart = deptMatch ? deptMatch.code : (deptName ? tagSlug(deptName, 4) : '');
+  return typePrefix + brandPart + '-' + (deptPart ? deptPart + '-' : '');
+}
+function refreshAssetTagSuggestion(){
+  if(!ASSET_TAG_AUTO) return;
+  clearTimeout(ASSET_TAG_TIMER);
+  ASSET_TAG_TIMER = setTimeout(function(){
+    var prefix = computeAssetTagPrefix();
+    var tagInput = document.getElementById('as-tag');
+    if(!prefix){ tagInput.value=''; return; }
+    apiFetch('/api/assets/next-tag?prefix='+encodeURIComponent(prefix), function(r){
+      if(!r || !ASSET_TAG_AUTO) return;
+      tagInput.value = r.tag;
+    });
+  }, 350);
+}
+var EMPLOYEE_EDITING_ID = null, NOTIF_POLL_INTERVAL = null, NOTIF_CACHE = [];
+var MY_PERMS = {};
+function can(perm){ return ME && (ME.role==='admin' || !!MY_PERMS[perm]); }
+
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function fmtDate(d){ if(!d) return '—'; var dt=new Date(d); return dt.toLocaleDateString('fr-CA'); }
+
+// ── Formatage automatique (téléphone, adresse, code postal) ──────────────
+function formatPhone(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var raw = el.value.replace(/\D/g, '').slice(0, 10);
+  if (raw.length <= 3)      el.value = raw;
+  else if (raw.length <= 6) el.value = raw.slice(0,3) + '-' + raw.slice(3);
+  else                      el.value = raw.slice(0,3) + '-' + raw.slice(3,6) + '-' + raw.slice(6);
+}
+function formatAddress(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var pos = el.selectionStart;
+  var val = el.value;
+  var newVal = val.replace(/(^|[\s-])([a-zàâäéèêëîïôùûüç])/g, function(m, sep, letter) {
+    return sep + letter.toUpperCase();
+  });
+  if (newVal !== val) {
+    el.value = newVal;
+    try { el.setSelectionRange(pos, pos); } catch (e) {}
+  }
+}
+function formatPostal(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var raw = el.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6);
+  el.value = raw.length <= 3 ? raw : raw.slice(0, 3) + ' ' + raw.slice(3);
+}
+var ADDR_SUGG_TIMER = null;
+function mergeHouseNumber(typedValue, suggestedStreet) {
+  var m = typedValue.trim().match(/^(\d+[a-zA-Z]?)\s+/);
+  if (m && !/^\d/.test(suggestedStreet)) return m[1] + ' ' + suggestedStreet;
+  return suggestedStreet;
+}
+function wireAddressAutocomplete(addressId, cityId, provinceId, postalId) {
+  var input = document.getElementById(addressId);
+  var box   = document.getElementById(addressId + '-sugg');
+  if (!input || !box) return;
+  input.addEventListener('input', function(){
+    clearTimeout(ADDR_SUGG_TIMER);
+    var q = input.value.trim();
+    if (q.length < 4) { box.style.display = 'none'; box.innerHTML = ''; return; }
+    ADDR_SUGG_TIMER = setTimeout(function(){
+      apiFetch('/api/geocode/suggest?q=' + encodeURIComponent(q), function(list) {
+        if (!list || !list.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+        box.innerHTML = list.map(function(s, i) {
+          return '<div class="addr-sugg" data-i="' + i + '">' + esc(s.label) + '</div>';
+        }).join('');
+        box.style.display = 'block';
+        box.querySelectorAll('.addr-sugg').forEach(function(el) {
+          el.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            var s = list[+el.getAttribute('data-i')];
+            input.value = mergeHouseNumber(input.value, s.address);
+            var c = document.getElementById(cityId);     if (c && s.city)     c.value = s.city;
+            var p = document.getElementById(provinceId);  if (p && s.province) p.value = s.province;
+            var pc = document.getElementById(postalId);   if (pc && s.postal)  pc.value = s.postal;
+            box.style.display = 'none'; box.innerHTML = '';
+          });
+        });
+      });
+    }, 400);
+  });
+  input.addEventListener('blur', function(){
+    setTimeout(function(){ box.style.display = 'none'; }, 150);
+  });
+}
+function toast(msg, type){
+  var c = document.getElementById('toastContainer');
+  var el = document.createElement('div');
+  el.className = 'ti ' + (type==='error'?'terr':'tsuc');
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 3500);
+}
+
+function apiFetch(url, cb){
+  fetch(API+url, { headers: { 'Authorization': 'Bearer '+TOKEN } })
+    .then(function(r){ if(r.status===401){ doLogout(); return null; } return r.json().then(function(d){ return {ok:r.ok, data:d}; }); })
+    .then(function(res){ if(!res) return; if(!res.ok){ toast(res.data.error||'Erreur','error'); cb(null); return; } cb(res.data); })
+    .catch(function(e){ toast('Erreur réseau: '+e.message,'error'); cb(null); });
+}
+function apiSend(method, url, body, cb){
+  fetch(API+url, { method: method, headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+TOKEN }, body: JSON.stringify(body) })
+    .then(function(r){ if(r.status===401){ doLogout(); return null; } return r.json().then(function(d){ return {ok:r.ok, data:d}; }); })
+    .then(function(res){ if(!res) return; if(!res.ok){ toast(res.data.error||'Erreur','error'); cb(null); return; } cb(res.data); })
+    .catch(function(e){ toast('Erreur réseau: '+e.message,'error'); cb(null); });
+}
+function apiPost(url, body, cb){ apiSend('POST', url, body, cb); }
+function apiPut(url, body, cb){ apiSend('PUT', url, body, cb); }
+function apiDelete(url, cb){
+  fetch(API+url, { method:'DELETE', headers:{ 'Authorization':'Bearer '+TOKEN } })
+    .then(function(r){ if(r.status===401){ doLogout(); return null; } return r.json().then(function(d){ return {ok:r.ok, data:d}; }); })
+    .then(function(res){ if(!res) return; if(!res.ok){ toast(res.data.error||'Erreur','error'); cb(null); return; } cb(res.data); })
+    .catch(function(e){ toast('Erreur réseau: '+e.message,'error'); cb(null); });
+}
+
+function doLogin(){
+  var empNum = document.getElementById('loginEmpNum').value.trim();
+  var pass = document.getElementById('loginPass').value;
+  var errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if(!empNum || !pass){ errEl.textContent = 'Veuillez remplir tous les champs'; errEl.style.display='block'; return; }
+  fetch(API+'/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ employeeNumber: empNum, password: pass }) })
+    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, data:d}; }); })
+    .then(function(res){
+      if(!res.ok){ errEl.textContent = res.data.error || 'Erreur de connexion'; errEl.style.display='block'; return; }
+      TOKEN = res.data.token; ME = res.data.user;
+      localStorage.setItem('vi_token', TOKEN);
+      localStorage.setItem('vi_user', JSON.stringify(ME));
+      showApp();
+    })
+    .catch(function(e){ errEl.textContent = 'Erreur réseau: '+e.message; errEl.style.display='block'; });
+}
+function doLogout(){
+  TOKEN = null; ME = null;
+  if(NOTIF_POLL_INTERVAL) clearInterval(NOTIF_POLL_INTERVAL);
+  localStorage.removeItem('vi_token'); localStorage.removeItem('vi_user');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+}
+function showApp(){
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('nav-equipe').style.display = ME.role==='admin' ? 'flex' : 'none';
+  document.getElementById('nav-parametres').style.display = ME.role==='admin' ? 'flex' : 'none';
+  loadVendorDropdowns();
+  loadDepartmentDropdown();
+  loadCategoryDropdown();
+  loadCustomFieldDefs();
+  apiFetch('/api/my-permissions', function(perms){
+    if(perms) MY_PERMS = perms;
+    applyPermissionUI();
+  });
+  showPage('dashboard');
+  loadUnreadCount();
+  NOTIF_POLL_INTERVAL = setInterval(loadUnreadCount, 30000);
+  if(ME.mustChangePassword){ toast('Pensez à changer votre mot de passe temporaire','error'); }
+}
+
+function applyPermissionUI(){
+  document.getElementById('newAssetBtn').style.display = can('manage_assets') ? '' : 'none';
+  document.getElementById('newVendorBtn').style.display = can('manage_vendors') ? '' : 'none';
+  document.getElementById('newContractBtn').style.display = can('manage_contracts') ? '' : 'none';
+}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('act'); });
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('act'); });
+  document.getElementById('page-'+name).classList.add('act');
+  document.getElementById('nav-'+name).classList.add('act');
+  if(name==='dashboard') loadDashboard();
+  if(name==='inventaire'){ loadAssets(); setTimeout(function(){ var si=document.getElementById('scanInput'); if(si) si.focus(); }, 50); }
+  if(name==='fournisseurs') loadVendors();
+  if(name==='contrats') loadContracts();
+  if(name==='equipe') loadEmployeesPage();
+  if(name==='parametres'){ loadPermissionsPage(); loadCategoriesPage(); loadDepartmentsPage(); loadCustomFieldsPage(); }
+}
+
+function loadDashboard(){
+  apiFetch('/api/stats', function(s){
+    if(!s) return;
+    var grid = document.getElementById('statsGrid');
+    var cards = [
+      { lbl:'Total articles', val:s.total, color:'var(--txt)', nav:'inventaire' },
+      { lbl:'Quantité en stock', val:s.totalQuantity, color:'var(--ac)', nav:'inventaire' },
+      { lbl:'Valeur d\'inventaire', val:'$'+parseFloat(s.inventoryValue||0).toFixed(2), color:'var(--grn)', nav:'' },
+      { lbl:'Garantie < 60 jours', val:s.warrantySoon, color:'var(--gold)', nav:'inventaire', expiry:'warranty' },
+      { lbl:'Contrats expirent < 60 jours', val:s.contractsExpiringSoon, color:'var(--gold)', nav:'contrats', expiry:'contract' }
+    ];
+    grid.innerHTML = cards.map(function(c){
+      return '<div class="card scard'+(c.nav?' clickable':'')+'" data-nav="'+c.nav+'" data-status="'+(c.status||'')+'" data-expiry="'+(c.expiry||'')+'">'+
+        '<div class="sl">'+c.lbl+'</div><div class="sv" style="color:'+c.color+'">'+c.val+'</div></div>';
+    }).join('');
+    grid.querySelectorAll('.scard').forEach(function(card){
+      card.addEventListener('click', function(){ goToDashCard(card.getAttribute('data-nav'), card.getAttribute('data-status'), card.getAttribute('data-expiry')); });
+    });
+  });
+}
+
+var DASH_FILTER = null; // { page, label } — filtre "d'un clic" venant du dashboard
+
+var DASH_EXPIRY_LABELS = {
+  warranty: 'Garantie expirant dans moins de 60 jours',
+  contract: 'Contrats expirant dans moins de 60 jours'
+};
+
+function goToDashCard(nav, status, expiry){
+  if(!nav) return;
+  DASH_FILTER = expiry ? { page: nav, kind: expiry, label: DASH_EXPIRY_LABELS[expiry] } : null;
+  if(nav === 'inventaire'){
+    document.getElementById('assetSearch').value = '';
+  }
+  showPage(nav);
+  renderFilterBanner();
+}
+
+function isExpiringSoon(dateStr){
+  if(!dateStr) return false;
+  var d = new Date(dateStr).getTime();
+  var now = Date.now();
+  return d >= now && d < now + 60 * 86400000;
+}
+
+function clearDashFilter(page){
+  DASH_FILTER = null;
+  renderFilterBanner();
+  if(page === 'inventaire') loadAssets();
+  if(page === 'contrats') loadContracts();
+}
+
+function renderFilterBanner(){
+  ['inventaire','contrats'].forEach(function(p){
+    var existing = document.getElementById('fb-'+p);
+    if(existing) existing.remove();
+    if(DASH_FILTER && DASH_FILTER.page === p){
+      var ph = document.querySelector('#page-'+p+' .ph');
+      var b = document.createElement('div');
+      b.className = 'filter-banner';
+      b.id = 'fb-'+p;
+      b.innerHTML = '<span>Filtré : '+esc(DASH_FILTER.label)+'</span><button type="button">Réinitialiser</button>';
+      b.querySelector('button').addEventListener('click', function(){ clearDashFilter(p); });
+      ph.insertAdjacentElement('afterend', b);
+    }
+  });
+}
+
+// ── Fournisseurs ─────────────────────────────────────────────────────────
+var VENDOR_CACHE = [];
+function loadVendorDropdowns(){
+  apiFetch('/api/vendors', function(vendors){
+    if(!vendors) return;
+    VENDOR_CACHE = vendors;
+    var opts = '<option value="">— Aucun —</option>' + vendors.map(function(v){ return '<option value="'+v.id+'">'+esc(v.name)+'</option>'; }).join('');
+    document.getElementById('co-vendor').innerHTML = opts;
+  });
+}
+var VENDOR_EDITING_ID = null;
+function loadVendors(){
+  var tbody = document.getElementById('vendorTableBody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty">Chargement…</td></tr>';
+  apiFetch('/api/vendors', function(vendors){
+    if(!vendors) return;
+    VENDOR_CACHE = vendors;
+    if(!vendors.length){ tbody.innerHTML = '<tr><td colspan="4" class="empty">Aucun fournisseur trouvé.</td></tr>'; return; }
+    tbody.innerHTML = vendors.map(function(v){
+      return '<tr class="clickable" data-vendor-id="'+v.id+'">'+
+        '<td>'+esc(v.name)+'</td>'+
+        '<td>'+esc(v.contactName||'—')+'</td>'+
+        '<td>'+esc(v.phone||'—')+'</td>'+
+        '<td>'+esc(v.email||'—')+'</td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-vendor-id]').forEach(function(row){
+      row.addEventListener('click', function(){ openVendorModal(row.getAttribute('data-vendor-id')); });
+    });
+  });
+}
+function openVendorModal(id){
+  VENDOR_EDITING_ID = id || null;
+  document.getElementById('vendorModalTitle').textContent = id ? 'Modifier le fournisseur' : '+ Nouveau fournisseur';
+  document.getElementById('deleteVendorBtn').style.display = (id && can('manage_vendors')) ? 'inline-flex' : 'none';
+  document.getElementById('saveVendorBtn').style.display = can('manage_vendors') ? '' : 'none';
+  ['ve-name','ve-contact','ve-phone','ve-email','ve-address','ve-city','ve-postal','ve-notes'].forEach(function(f){ document.getElementById(f).value = ''; });
+  document.getElementById('ve-province').value = 'QC';
+  if(id){
+    var v = VENDOR_CACHE.find(function(x){ return x.id===id; });
+    if(v){
+      document.getElementById('ve-name').value = v.name||'';
+      document.getElementById('ve-contact').value = v.contactName||'';
+      document.getElementById('ve-phone').value = v.phone||'';
+      document.getElementById('ve-email').value = v.email||'';
+      document.getElementById('ve-address').value = v.address||'';
+      document.getElementById('ve-city').value = v.city||'';
+      document.getElementById('ve-province').value = v.province||'QC';
+      document.getElementById('ve-postal').value = v.postal||'';
+      document.getElementById('ve-notes').value = v.notes||'';
+    }
+  }
+  document.getElementById('modal-vendor').classList.add('open');
+}
+function closeVendorModal(){ document.getElementById('modal-vendor').classList.remove('open'); }
+function saveVendor(){
+  var name = document.getElementById('ve-name').value.trim();
+  if(!name){ toast('Le nom est obligatoire','error'); return; }
+  var body = {
+    name: name,
+    contactName: document.getElementById('ve-contact').value.trim(),
+    phone: document.getElementById('ve-phone').value.trim(),
+    email: document.getElementById('ve-email').value.trim(),
+    address: document.getElementById('ve-address').value.trim(),
+    city: document.getElementById('ve-city').value.trim(),
+    province: document.getElementById('ve-province').value,
+    postal: document.getElementById('ve-postal').value.trim(),
+    notes: document.getElementById('ve-notes').value.trim()
+  };
+  var cb = function(r){
+    if(!r) return;
+    toast(VENDOR_EDITING_ID?'Fournisseur mis à jour':'Fournisseur créé','success');
+    closeVendorModal(); loadVendors(); loadVendorDropdowns();
+  };
+  if(VENDOR_EDITING_ID) apiPut('/api/vendors/'+VENDOR_EDITING_ID, body, cb);
+  else apiPost('/api/vendors', body, cb);
+}
+function deleteVendor(){
+  if(!VENDOR_EDITING_ID) return;
+  if(!confirm('Supprimer ce fournisseur ?')) return;
+  apiDelete('/api/vendors/'+VENDOR_EDITING_ID, function(r){ if(!r) return; toast('Fournisseur supprimé','success'); closeVendorModal(); loadVendors(); loadVendorDropdowns(); });
+}
+
+// ── Contrats ─────────────────────────────────────────────────────────────
+var CONTRACT_EDITING_ID = null, CONTRACT_CACHE = [];
+function contractTypeLabel(t){
+  var map = { garantie:'Garantie', entretien:'Entretien', location:'Location', support:'Support', autre:'Autre' };
+  return map[t] || t;
+}
+function loadContracts(){
+  var tbody = document.getElementById('contractTableBody');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty">Chargement…</td></tr>';
+  apiFetch('/api/contracts', function(contracts){
+    if(!contracts) return;
+    if(DASH_FILTER && DASH_FILTER.page==='contrats' && DASH_FILTER.kind==='contract'){
+      contracts = contracts.filter(function(c){ return isExpiringSoon(c.endDate); });
+    }
+    CONTRACT_CACHE = contracts;
+    if(!contracts.length){ tbody.innerHTML = '<tr><td colspan="5" class="empty">Aucun contrat trouvé.</td></tr>'; return; }
+    tbody.innerHTML = contracts.map(function(c){
+      return '<tr class="clickable" data-contract-id="'+c.id+'">'+
+        '<td>'+esc(c.title)+'</td>'+
+        '<td>'+contractTypeLabel(c.type)+'</td>'+
+        '<td>'+esc(c.vendorName||'—')+'</td>'+
+        '<td>'+fmtDate(c.endDate)+'</td>'+
+        '<td>'+(c.cost!=null?('$'+c.cost.toFixed(2)):'—')+'</td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-contract-id]').forEach(function(row){
+      row.addEventListener('click', function(){ openContractModal(row.getAttribute('data-contract-id')); });
+    });
+  });
+}
+function openContractModal(id){
+  CONTRACT_EDITING_ID = id || null;
+  document.getElementById('contractModalTitle').textContent = id ? 'Modifier le contrat' : '+ Nouveau contrat';
+  document.getElementById('deleteContractBtn').style.display = (id && can('manage_contracts')) ? 'inline-flex' : 'none';
+  document.getElementById('saveContractBtn').style.display = can('manage_contracts') ? '' : 'none';
+  ['co-title','co-vendor','co-start','co-end','co-cost','co-covered','co-notes'].forEach(function(f){ document.getElementById(f).value = ''; });
+  document.getElementById('co-type').value = 'entretien';
+  if(id){
+    var c = CONTRACT_CACHE.find(function(x){ return x.id===id; });
+    if(c){
+      document.getElementById('co-title').value = c.title||'';
+      document.getElementById('co-type').value = c.type||'entretien';
+      document.getElementById('co-vendor').value = c.vendorId||'';
+      document.getElementById('co-start').value = c.startDate ? c.startDate.substring(0,10) : '';
+      document.getElementById('co-end').value = c.endDate ? c.endDate.substring(0,10) : '';
+      document.getElementById('co-cost').value = c.cost!=null ? c.cost : '';
+      document.getElementById('co-covered').value = c.coveredAssets||'';
+      document.getElementById('co-notes').value = c.notes||'';
+    }
+  }
+  document.getElementById('modal-contract').classList.add('open');
+}
+function closeContractModal(){ document.getElementById('modal-contract').classList.remove('open'); }
+function saveContract(){
+  var title = document.getElementById('co-title').value.trim();
+  if(!title){ toast('Le titre est obligatoire','error'); return; }
+  var body = {
+    title: title,
+    type: document.getElementById('co-type').value,
+    vendorId: document.getElementById('co-vendor').value || null,
+    startDate: document.getElementById('co-start').value || null,
+    endDate: document.getElementById('co-end').value || null,
+    cost: document.getElementById('co-cost').value || null,
+    coveredAssets: document.getElementById('co-covered').value.trim(),
+    notes: document.getElementById('co-notes').value.trim()
+  };
+  var cb = function(r){ if(!r) return; toast(CONTRACT_EDITING_ID?'Contrat mis à jour':'Contrat créé','success'); closeContractModal(); loadContracts(); };
+  if(CONTRACT_EDITING_ID) apiPut('/api/contracts/'+CONTRACT_EDITING_ID, body, cb);
+  else apiPost('/api/contracts', body, cb);
+}
+function deleteContract(){
+  if(!CONTRACT_EDITING_ID) return;
+  if(!confirm('Supprimer ce contrat ?')) return;
+  apiDelete('/api/contracts/'+CONTRACT_EDITING_ID, function(r){ if(!r) return; toast('Contrat supprimé','success'); closeContractModal(); loadContracts(); });
+}
+
+// ── Équipe ───────────────────────────────────────────────────────────────
+function roleLabel(role){
+  var map = { employee:'Technicien', gestionnaire:'Superviseur', admin:'Administrateur' };
+  return map[role] || role;
+}
+function loadEmployeesPage(){
+  var tbody = document.getElementById('employeeTableBody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty">Chargement…</td></tr>';
+  apiFetch('/api/employees', function(emps){
+    if(!emps) return;
+    ALL_EMPS = emps;
+    if(!emps.length){ tbody.innerHTML = '<tr><td colspan="4" class="empty">Aucun employé.</td></tr>'; return; }
+    tbody.innerHTML = emps.map(function(e){
+      return '<tr>'+
+        '<td><code>'+esc(e.employeeNumber)+'</code></td>'+
+        '<td>'+esc(e.name)+'</td>'+
+        '<td>'+roleLabel(e.role)+'</td>'+
+        '<td><button class="btn bg" style="padding:.35rem .7rem;font-size:.78rem" data-edit-emp="'+e.id+'">Modifier</button></td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-edit-emp]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openEmployeeModal(btn.getAttribute('data-edit-emp')); });
+    });
+  });
+}
+function openEmployeeModal(id){
+  EMPLOYEE_EDITING_ID = id || null;
+  document.getElementById('employeeModalTitle').textContent = id ? 'Modifier l\'employé' : '+ Nouvel employé';
+  document.getElementById('deleteEmployeeBtn').style.display = (id && id!==ME.id) ? 'inline-flex' : 'none';
+  document.getElementById('em-empnum').disabled = !!id;
+  document.getElementById('em-pass-label').textContent = id ? 'Nouveau mot de passe' : 'Mot de passe *';
+  ['em-empnum','em-name','em-pass'].forEach(function(f){ document.getElementById(f).value = ''; });
+  document.getElementById('em-role').value = 'employee';
+  if(id){
+    var e = ALL_EMPS.find(function(x){ return x.id===id; });
+    if(e){
+      document.getElementById('em-empnum').value = e.employeeNumber||'';
+      document.getElementById('em-name').value = e.name||'';
+      document.getElementById('em-role').value = e.role||'employee';
+    }
+  }
+  document.getElementById('modal-employee').classList.add('open');
+}
+function closeEmployeeModal(){ document.getElementById('modal-employee').classList.remove('open'); }
+function saveEmployee(){
+  var empNum = document.getElementById('em-empnum').value.trim();
+  var name = document.getElementById('em-name').value.trim();
+  var role = document.getElementById('em-role').value;
+  var pass = document.getElementById('em-pass').value;
+  if(!name){ toast('Le nom est obligatoire','error'); return; }
+  if(EMPLOYEE_EDITING_ID){
+    var body = { name: name, role: role };
+    if(pass) body.password = pass;
+    apiPut('/api/employees/'+EMPLOYEE_EDITING_ID, body, function(r){
+      if(!r) return;
+      toast('Employé mis à jour','success'); closeEmployeeModal(); loadEmployeesPage();
+    });
+  } else {
+    if(!empNum){ toast('Le numéro d\'employé est obligatoire','error'); return; }
+    if(!pass){ toast('Le mot de passe est obligatoire','error'); return; }
+    apiPost('/api/employees', { employeeNumber: empNum, name: name, role: role, password: pass }, function(r){
+      if(!r) return;
+      toast('Employé créé','success'); closeEmployeeModal(); loadEmployeesPage();
+    });
+  }
+}
+function deleteEmployee(){
+  if(!EMPLOYEE_EDITING_ID) return;
+  if(!confirm('Supprimer cet employé ?')) return;
+  apiDelete('/api/employees/'+EMPLOYEE_EDITING_ID, function(r){
+    if(!r) return;
+    toast('Employé supprimé','success'); closeEmployeeModal(); loadEmployeesPage();
+  });
+}
+
+// ── Permissions ──────────────────────────────────────────────────────────
+var PERMISSION_LABELS = {
+  manage_assets:   'Gérer l\'inventaire (créer / modifier / supprimer)',
+  manage_vendors:  'Gérer les fournisseurs',
+  manage_contracts:'Gérer les contrats'
+};
+function loadPermissionsPage(){
+  var tbody = document.getElementById('permissionsTableBody');
+  tbody.innerHTML = '<tr><td colspan="3" class="empty">Chargement…</td></tr>';
+  apiFetch('/api/permissions', function(rows){
+    if(!rows) return;
+    var matrix = {};
+    rows.forEach(function(r){ matrix[r.role+':'+r.permission] = r.allowed; });
+    var perms = Object.keys(PERMISSION_LABELS);
+    tbody.innerHTML = perms.map(function(p){
+      var techChecked = matrix['employee:'+p] ? 'checked' : '';
+      var supChecked = matrix['gestionnaire:'+p] ? 'checked' : '';
+      return '<tr>'+
+        '<td>'+PERMISSION_LABELS[p]+'</td>'+
+        '<td style="text-align:center"><input type="checkbox" style="width:auto" data-perm-role="employee" data-perm-key="'+p+'" '+techChecked+'></td>'+
+        '<td style="text-align:center"><input type="checkbox" style="width:auto" data-perm-role="gestionnaire" data-perm-key="'+p+'" '+supChecked+'></td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-perm-role]').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        apiPut('/api/permissions', { role: cb.getAttribute('data-perm-role'), permission: cb.getAttribute('data-perm-key'), allowed: cb.checked }, function(r){
+          if(!r){ cb.checked = !cb.checked; return; }
+          toast('Permission mise à jour','success');
+        });
+      });
+    });
+  });
+}
+
+// ── Catégories de matériel ───────────────────────────────────────────────
+var CATEGORY_EDITING_ID = null, CATEGORY_CACHE = [];
+var CATEGORY_FROM_ASSET_MODAL = false;
+function loadCategoryDropdown(){
+  apiFetch('/api/categories', function(cats){
+    if(!cats) return;
+    CATEGORY_CACHE = cats;
+    var sel = document.getElementById('as-type');
+    var current = sel.value;
+    sel.innerHTML = '<option value="">— Choisir —</option>' + cats.map(function(c){
+      return '<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>';
+    }).join('') + '<option value="__new__">+ Ajouter un type…</option>';
+    sel.value = current;
+  });
+}
+function loadCategoriesPage(){
+  var tbody = document.getElementById('categoryTableBody');
+  tbody.innerHTML = '<tr><td colspan="3" class="empty">Chargement…</td></tr>';
+  apiFetch('/api/categories', function(cats){
+    if(!cats) return;
+    CATEGORY_CACHE = cats;
+    if(!cats.length){ tbody.innerHTML = '<tr><td colspan="3" class="empty">Aucune catégorie.</td></tr>'; return; }
+    tbody.innerHTML = cats.map(function(c){
+      return '<tr>'+
+        '<td>'+esc(c.name)+'</td>'+
+        '<td><code>'+esc(c.code)+'</code></td>'+
+        '<td><button class="btn bg" style="padding:.35rem .7rem;font-size:.78rem" data-edit-cat="'+c.id+'">Modifier</button></td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-edit-cat]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openCategoryModal(btn.getAttribute('data-edit-cat')); });
+    });
+    var asTypeSel = document.getElementById('as-type');
+    var current = asTypeSel.value;
+    asTypeSel.innerHTML = '<option value="">— Choisir —</option>' + cats.map(function(c){
+      return '<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>';
+    }).join('') + '<option value="__new__">+ Ajouter un type…</option>';
+    asTypeSel.value = current;
+  });
+}
+function openCategoryModal(id){
+  CATEGORY_EDITING_ID = id || null;
+  document.getElementById('categoryModalTitle').textContent = id ? 'Modifier la catégorie' : '+ Nouvelle catégorie';
+  document.getElementById('deleteCategoryBtn').style.display = id ? 'inline-flex' : 'none';
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-code').value = '';
+  if(id){
+    var c = CATEGORY_CACHE.find(function(x){ return x.id===id; });
+    if(c){
+      document.getElementById('cat-name').value = c.name||'';
+      document.getElementById('cat-code').value = c.code||'';
+    }
+  }
+  document.getElementById('modal-category').classList.add('open');
+}
+function closeCategoryModal(){ document.getElementById('modal-category').classList.remove('open'); CATEGORY_FROM_ASSET_MODAL = false; }
+function saveCategory(){
+  var name = document.getElementById('cat-name').value.trim();
+  var code = document.getElementById('cat-code').value.trim();
+  if(!name || !code){ toast('Le nom et le code sont obligatoires','error'); return; }
+  var body = { name: name, code: code };
+  var wasNew = !CATEGORY_EDITING_ID;
+  var fromAssetModal = CATEGORY_FROM_ASSET_MODAL;
+  var cb = function(r){
+    if(!r) return;
+    toast(CATEGORY_EDITING_ID ? 'Catégorie mise à jour' : 'Catégorie créée', 'success');
+    closeCategoryModal();
+    loadCategoriesPage();
+    if(wasNew && fromAssetModal){
+      document.getElementById('as-type').value = name;
+      refreshAssetTagSuggestion();
+    }
+  };
+  if(CATEGORY_EDITING_ID) apiPut('/api/categories/'+CATEGORY_EDITING_ID, body, cb);
+  else apiPost('/api/categories', body, cb);
+}
+function deleteCategory(){
+  if(!CATEGORY_EDITING_ID) return;
+  if(!confirm('Supprimer cette catégorie ?')) return;
+  apiDelete('/api/categories/'+CATEGORY_EDITING_ID, function(r){
+    if(!r) return;
+    toast('Catégorie supprimée','success');
+    closeCategoryModal();
+    loadCategoriesPage();
+  });
+}
+
+// ── Départements ─────────────────────────────────────────────────────────
+var DEPARTMENT_EDITING_ID = null, DEPARTMENT_CACHE = [];
+function loadDepartmentDropdown(){
+  apiFetch('/api/departments', function(depts){
+    if(!depts) return;
+    DEPARTMENT_CACHE = depts;
+    var sel = document.getElementById('as-department');
+    var current = sel.value;
+    sel.innerHTML = '<option value="">— Aucun —</option>' + depts.map(function(d){
+      return '<option value="'+esc(d.name)+'">'+esc(d.name)+'</option>';
+    }).join('');
+    sel.value = current;
+  });
+}
+function loadDepartmentsPage(){
+  var tbody = document.getElementById('departmentTableBody');
+  tbody.innerHTML = '<tr><td colspan="3" class="empty">Chargement…</td></tr>';
+  apiFetch('/api/departments', function(depts){
+    if(!depts) return;
+    DEPARTMENT_CACHE = depts;
+    if(!depts.length){ tbody.innerHTML = '<tr><td colspan="3" class="empty">Aucun département.</td></tr>'; return; }
+    tbody.innerHTML = depts.map(function(d){
+      return '<tr>'+
+        '<td>'+esc(d.name)+'</td>'+
+        '<td><code>'+esc(d.code)+'</code></td>'+
+        '<td><button class="btn bg" style="padding:.35rem .7rem;font-size:.78rem" data-edit-dept="'+d.id+'">Modifier</button></td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-edit-dept]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openDepartmentModal(btn.getAttribute('data-edit-dept')); });
+    });
+    var asDeptSel = document.getElementById('as-department');
+    var current = asDeptSel.value;
+    asDeptSel.innerHTML = '<option value="">— Aucun —</option>' + depts.map(function(d){
+      return '<option value="'+esc(d.name)+'">'+esc(d.name)+'</option>';
+    }).join('');
+    asDeptSel.value = current;
+  });
+}
+function openDepartmentModal(id){
+  DEPARTMENT_EDITING_ID = id || null;
+  document.getElementById('departmentModalTitle').textContent = id ? 'Modifier le département' : '+ Nouveau département';
+  document.getElementById('deleteDepartmentBtn').style.display = id ? 'inline-flex' : 'none';
+  document.getElementById('dp-name').value = '';
+  document.getElementById('dp-code').value = '';
+  if(id){
+    var d = DEPARTMENT_CACHE.find(function(x){ return x.id===id; });
+    if(d){
+      document.getElementById('dp-name').value = d.name||'';
+      document.getElementById('dp-code').value = d.code||'';
+    }
+  }
+  document.getElementById('modal-department').classList.add('open');
+}
+function closeDepartmentModal(){ document.getElementById('modal-department').classList.remove('open'); }
+function saveDepartment(){
+  var name = document.getElementById('dp-name').value.trim();
+  var code = document.getElementById('dp-code').value.trim();
+  if(!name || !code){ toast('Le nom et le code sont obligatoires','error'); return; }
+  var body = { name: name, code: code };
+  var cb = function(r){
+    if(!r) return;
+    toast(DEPARTMENT_EDITING_ID ? 'Département mis à jour' : 'Département créé', 'success');
+    closeDepartmentModal();
+    loadDepartmentsPage();
+  };
+  if(DEPARTMENT_EDITING_ID) apiPut('/api/departments/'+DEPARTMENT_EDITING_ID, body, cb);
+  else apiPost('/api/departments', body, cb);
+}
+function deleteDepartment(){
+  if(!DEPARTMENT_EDITING_ID) return;
+  if(!confirm('Supprimer ce département ?')) return;
+  apiDelete('/api/departments/'+DEPARTMENT_EDITING_ID, function(r){
+    if(!r) return;
+    toast('Département supprimé','success');
+    closeDepartmentModal();
+    loadDepartmentsPage();
+  });
+}
+
+// ── Champs personnalisés ─────────────────────────────────────────────────
+var CUSTOM_FIELD_CACHE = [];
+function loadCustomFieldDefs(){
+  apiFetch('/api/custom-fields', function(fields){
+    if(!fields) return;
+    CUSTOM_FIELD_CACHE = fields;
+  });
+}
+function loadCustomFieldsPage(){
+  var tbody = document.getElementById('customFieldTableBody');
+  tbody.innerHTML = '<tr><td colspan="3" class="empty">Chargement…</td></tr>';
+  apiFetch('/api/custom-fields', function(fields){
+    if(!fields) return;
+    CUSTOM_FIELD_CACHE = fields;
+    if(!fields.length){ tbody.innerHTML = '<tr><td colspan="3" class="empty">Aucun champ personnalisé.</td></tr>'; return; }
+    var typeLabels = { text:'Texte', number:'Nombre', date:'Date' };
+    tbody.innerHTML = fields.map(function(f){
+      return '<tr>'+
+        '<td>'+esc(f.label)+'</td>'+
+        '<td>'+(typeLabels[f.fieldType]||f.fieldType)+'</td>'+
+        '<td><button class="btn bd" style="padding:.35rem .7rem;font-size:.78rem" data-del-cf="'+f.id+'">Supprimer</button></td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-del-cf]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(!confirm('Supprimer ce champ personnalisé ? Les valeurs déjà saisies resteront sur les articles mais ne seront plus modifiables via ce champ.')) return;
+        apiDelete('/api/custom-fields/'+btn.getAttribute('data-del-cf'), function(r){
+          if(!r) return;
+          toast('Champ supprimé','success');
+          loadCustomFieldsPage();
+        });
+      });
+    });
+  });
+}
+function openCustomFieldModal(){
+  document.getElementById('cf-label').value = '';
+  document.getElementById('cf-type').value = 'text';
+  document.getElementById('modal-customfield').classList.add('open');
+}
+function closeCustomFieldModal(){ document.getElementById('modal-customfield').classList.remove('open'); }
+function saveCustomField(){
+  var label = document.getElementById('cf-label').value.trim();
+  var fieldType = document.getElementById('cf-type').value;
+  if(!label){ toast('Le nom du champ est obligatoire','error'); return; }
+  apiPost('/api/custom-fields', { label: label, fieldType: fieldType }, function(r){
+    if(!r) return;
+    toast('Champ créé','success');
+    closeCustomFieldModal();
+    loadCustomFieldsPage();
+  });
+}
+function renderAssetCustomFields(values){
+  values = values || {};
+  var container = document.getElementById('as-customfields-container');
+  if(!CUSTOM_FIELD_CACHE.length){ container.innerHTML = ''; return; }
+  container.innerHTML = CUSTOM_FIELD_CACHE.map(function(f){
+    var inputType = f.fieldType==='number' ? 'number' : (f.fieldType==='date' ? 'date' : 'text');
+    var val = values[f.label]!=null ? esc(values[f.label]) : '';
+    return '<div class="fg"><label>'+esc(f.label)+'</label><input type="'+inputType+'" data-cf-label="'+esc(f.label)+'" value="'+val+'"></div>';
+  }).join('');
+}
+function collectAssetCustomFields(){
+  var out = {};
+  document.querySelectorAll('#as-customfields-container [data-cf-label]').forEach(function(el){
+    var v = el.value;
+    if(v!=='' && v!=null) out[el.getAttribute('data-cf-label')] = v;
+  });
+  return out;
+}
+
+// ── Notifications ────────────────────────────────────────────────────────
+function loadUnreadCount(){
+  apiFetch('/api/notifications/unread-count', function(r){
+    if(!r) return;
+    var badge = document.getElementById('notifBadge');
+    if(r.count > 0){ badge.textContent = r.count; badge.style.display = 'inline'; }
+    else badge.style.display = 'none';
+  });
+}
+function toggleNotifDropdown(){
+  var dd = document.getElementById('notifDropdown');
+  var isOpen = dd.style.display === 'block';
+  if(isOpen){ dd.style.display = 'none'; return; }
+  dd.style.display = 'block';
+  dd.innerHTML = '<div style="padding:1rem;color:var(--txt3);font-size:.85rem">Chargement…</div>';
+  apiFetch('/api/notifications', function(notifs){
+    if(!notifs) return;
+    NOTIF_CACHE = notifs;
+    if(!notifs.length){ dd.innerHTML = '<div style="padding:1rem;color:var(--txt3);font-size:.85rem">Aucune notification.</div>'; return; }
+    dd.innerHTML = notifs.map(function(n){
+      return '<div style="padding:.75rem 1rem;border-bottom:1px solid var(--bdr);font-size:.82rem;'+(n.isRead?'color:var(--txt2)':'color:var(--txt);font-weight:600;background:rgba(13,148,136,.05)')+'">'+
+        esc(n.body)+
+        '<div style="font-size:.7rem;color:var(--txt3);margin-top:.3rem;font-family:monospace">'+fmtDate(n.createdAt)+'</div>'+
+      '</div>';
+    }).join('');
+    apiPut('/api/notifications/mark-read', {}, function(){ loadUnreadCount(); });
+  });
+}
+document.addEventListener('click', function(e){
+  var wrap = document.getElementById('notifBtn').parentElement;
+  if(!wrap.contains(e.target)) document.getElementById('notifDropdown').style.display = 'none';
+});
+
+// ── Changer le mot de passe ──────────────────────────────────────────────
+function openPwChangeModal(){
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-current').value='';
+  document.getElementById('pw-current-wrap').style.display = (ME && ME.mustChangePassword) ? 'none' : '';
+  document.getElementById('modal-pwchange').classList.add('open');
+}
+function closePwChangeModal(){ document.getElementById('modal-pwchange').classList.remove('open'); }
+function savePwChange(){
+  var pw = document.getElementById('pw-new').value;
+  var curPw = document.getElementById('pw-current').value;
+  if(!pw || pw.length<8){ toast('Le mot de passe doit contenir au moins 8 caractères','error'); return; }
+  if(!(ME && ME.mustChangePassword) && !curPw){ toast('Le mot de passe actuel est requis','error'); return; }
+  apiPut('/api/change-password', { currentPassword: curPw, newPassword: pw }, function(r){
+    if(!r) return;
+    ME.mustChangePassword = false;
+    localStorage.setItem('vi_user', JSON.stringify(ME));
+    toast('Mot de passe changé','success');
+    closePwChangeModal();
+  });
+}
+
+function fmtPrice(v){ return v!=null ? ('$'+parseFloat(v).toFixed(2)) : '—'; }
+
+function loadAssets(){
+  var tbody = document.getElementById('assetTableBody');
+  tbody.innerHTML = '<tr><td colspan="8" class="empty">Chargement…</td></tr>';
+  var search = document.getElementById('assetSearch').value.trim();
+  var qs = [];
+  if(search) qs.push('search='+encodeURIComponent(search));
+  apiFetch('/api/assets'+(qs.length?'?'+qs.join('&'):''), function(assets){
+    if(!assets) return;
+    if(DASH_FILTER && DASH_FILTER.page==='inventaire' && DASH_FILTER.kind==='warranty'){
+      assets = assets.filter(function(a){ return isExpiringSoon(a.warrantyUntil); });
+    }
+    ASSET_CACHE = assets;
+    if(!assets.length){ tbody.innerHTML = '<tr><td colspan="8" class="empty">Aucun article trouvé.</td></tr>'; return; }
+    tbody.innerHTML = assets.map(function(a){
+      return '<tr class="clickable" data-asset-id="'+a.id+'">'+
+        '<td><code>'+esc(a.tag||'—')+'</code></td>'+
+        '<td>'+esc(a.type)+'</td>'+
+        '<td>'+esc([a.brand,a.model].filter(Boolean).join(' — ')||'—')+'</td>'+
+        '<td><code>'+esc(a.serialNumber||'—')+'</code></td>'+
+        '<td>'+(a.quantity!=null?a.quantity:1)+'</td>'+
+        '<td>'+fmtPrice(a.purchasePrice)+'</td>'+
+        '<td>'+fmtPrice(a.salePrice)+'</td>'+
+        '<td>'+fmtDate(a.warrantyUntil)+'</td>'+
+      '</tr>';
+    }).join('');
+    tbody.querySelectorAll('[data-asset-id]').forEach(function(row){
+      row.addEventListener('click', function(){ openAssetModal(row.getAttribute('data-asset-id')); });
+    });
+  });
+}
+
+// Scanner Bluetooth/USB (mode clavier) : tape le code puis Entrée — on
+// cherche une correspondance exacte (code d'inventaire ou n° de série).
+function scanForAsset(){
+  var input = document.getElementById('scanInput');
+  var code = input.value.trim();
+  input.value = '';
+  if(!code) return;
+  apiFetch('/api/assets/scan?code='+encodeURIComponent(code), function(asset){
+    input.focus();
+    if(!asset) return; // apiFetch a déjà affiché le message d'erreur du serveur
+    if(!ASSET_CACHE.some(function(a){ return a.id===asset.id; })) ASSET_CACHE.push(asset);
+    openAssetModal(asset.id);
+  });
+}
+
+function openAssetModal(id){
+  ASSET_EDITING_ID = id || null;
+  document.getElementById('assetModalTitle').textContent = id ? 'Modifier l\'article' : '+ Nouvel article';
+  document.getElementById('deleteAssetBtn').style.display = (id && can('manage_assets')) ? 'inline-flex' : 'none';
+  document.getElementById('saveAssetBtn').style.display = can('manage_assets') ? '' : 'none';
+  var fields = ['as-type','as-brand','as-model','as-serial','as-warranty','as-purchase-price','as-sale-price','as-location','as-department','as-tag','as-notes'];
+  fields.forEach(function(f){ document.getElementById(f).value = ''; });
+  document.getElementById('as-quantity').value = '1';
+  ASSET_TAG_AUTO = true;
+
+  var customValues = {};
+  if(id){
+    var a = ASSET_CACHE.find(function(x){ return x.id===id; });
+    if(a){
+      document.getElementById('as-type').value = a.type||'';
+      document.getElementById('as-brand').value = a.brand||'';
+      document.getElementById('as-model').value = a.model||'';
+      document.getElementById('as-serial').value = a.serialNumber||'';
+      document.getElementById('as-warranty').value = a.warrantyUntil ? a.warrantyUntil.substring(0,10) : '';
+      document.getElementById('as-quantity').value = a.quantity!=null ? a.quantity : 1;
+      document.getElementById('as-purchase-price').value = a.purchasePrice!=null ? a.purchasePrice : '';
+      document.getElementById('as-sale-price').value = a.salePrice!=null ? a.salePrice : '';
+      document.getElementById('as-location').value = a.location||'';
+      document.getElementById('as-department').value = a.department||'';
+      document.getElementById('as-tag').value = a.tag||'';
+      document.getElementById('as-notes').value = a.notes||'';
+      customValues = a.customFields || {};
+      ASSET_TAG_AUTO = false; // ne pas écraser le code existant d'un article déjà créé
+    }
+  }
+  renderAssetCustomFields(customValues);
+  document.getElementById('modal-asset').classList.add('open');
+}
+function closeAssetModal(){ document.getElementById('modal-asset').classList.remove('open'); }
+
+function saveAsset(){
+  var type = document.getElementById('as-type').value.trim();
+  if(!type){ toast('Le type est obligatoire','error'); return; }
+  var body = {
+    type: type,
+    brand: document.getElementById('as-brand').value.trim(),
+    model: document.getElementById('as-model').value.trim(),
+    serialNumber: document.getElementById('as-serial').value.trim(),
+    warrantyUntil: document.getElementById('as-warranty').value || null,
+    quantity: document.getElementById('as-quantity').value || 1,
+    purchasePrice: document.getElementById('as-purchase-price').value || null,
+    salePrice: document.getElementById('as-sale-price').value || null,
+    location: document.getElementById('as-location').value.trim(),
+    department: document.getElementById('as-department').value.trim(),
+    tag: document.getElementById('as-tag').value.trim(),
+    customFields: collectAssetCustomFields(),
+    notes: document.getElementById('as-notes').value.trim()
+  };
+  var cb = function(r){
+    if(!r) return;
+    toast(ASSET_EDITING_ID ? 'Article mis à jour' : 'Article créé', 'success');
+    closeAssetModal();
+    loadAssets();
+  };
+  if(ASSET_EDITING_ID) apiPut('/api/assets/'+ASSET_EDITING_ID, body, cb);
+  else apiPost('/api/assets', body, cb);
+}
+function deleteAsset(){
+  if(!ASSET_EDITING_ID) return;
+  if(!confirm('Supprimer cet article ?')) return;
+  apiDelete('/api/assets/'+ASSET_EDITING_ID, function(r){
+    if(!r) return;
+    toast('Article supprimé', 'success');
+    closeAssetModal();
+    loadAssets();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('loginPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  document.getElementById('nav-dashboard').addEventListener('click', function(){ showPage('dashboard'); });
+  document.getElementById('nav-inventaire').addEventListener('click', function(){ DASH_FILTER=null; renderFilterBanner(); showPage('inventaire'); });
+  document.getElementById('newAssetBtn').addEventListener('click', function(){ openAssetModal(null); });
+  document.getElementById('closeAssetModal').addEventListener('click', closeAssetModal);
+  document.getElementById('cancelAssetModal').addEventListener('click', closeAssetModal);
+  document.getElementById('saveAssetBtn').addEventListener('click', saveAsset);
+  document.getElementById('deleteAssetBtn').addEventListener('click', deleteAsset);
+  document.getElementById('as-type').addEventListener('change', function(){
+    if(this.value === '__new__'){
+      this.value = '';
+      CATEGORY_FROM_ASSET_MODAL = true;
+      openCategoryModal(null);
+      return;
+    }
+    refreshAssetTagSuggestion();
+  });
+  document.getElementById('as-brand').addEventListener('input', refreshAssetTagSuggestion);
+  document.getElementById('as-department').addEventListener('change', refreshAssetTagSuggestion);
+  document.getElementById('as-tag').addEventListener('input', function(){ ASSET_TAG_AUTO = false; });
+  document.getElementById('as-tag-regen').addEventListener('click', function(){ ASSET_TAG_AUTO = true; refreshAssetTagSuggestion(); });
+
+  document.getElementById('newDepartmentBtn').addEventListener('click', function(){ openDepartmentModal(null); });
+  document.getElementById('closeDepartmentModal').addEventListener('click', closeDepartmentModal);
+  document.getElementById('cancelDepartmentModal').addEventListener('click', closeDepartmentModal);
+  document.getElementById('saveDepartmentBtn').addEventListener('click', saveDepartment);
+  document.getElementById('deleteDepartmentBtn').addEventListener('click', deleteDepartment);
+
+  document.getElementById('newCategoryBtn').addEventListener('click', function(){ openCategoryModal(null); });
+  document.getElementById('closeCategoryModal').addEventListener('click', closeCategoryModal);
+  document.getElementById('cancelCategoryModal').addEventListener('click', closeCategoryModal);
+  document.getElementById('saveCategoryBtn').addEventListener('click', saveCategory);
+  document.getElementById('deleteCategoryBtn').addEventListener('click', deleteCategory);
+
+  document.getElementById('newCustomFieldBtn').addEventListener('click', openCustomFieldModal);
+  document.getElementById('closeCustomFieldModal').addEventListener('click', closeCustomFieldModal);
+  document.getElementById('cancelCustomFieldModal').addEventListener('click', closeCustomFieldModal);
+  document.getElementById('saveCustomFieldBtn').addEventListener('click', saveCustomField);
+
+  document.getElementById('scanInput').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); scanForAsset(); } });
+  document.getElementById('assetSearch').addEventListener('input', function(){ if(DASH_FILTER&&DASH_FILTER.page==='inventaire'){ DASH_FILTER=null; renderFilterBanner(); } loadAssets(); });
+
+  document.getElementById('nav-fournisseurs').addEventListener('click', function(){ showPage('fournisseurs'); });
+  document.getElementById('newVendorBtn').addEventListener('click', function(){ openVendorModal(null); });
+  document.getElementById('closeVendorModal').addEventListener('click', closeVendorModal);
+  document.getElementById('cancelVendorModal').addEventListener('click', closeVendorModal);
+  document.getElementById('saveVendorBtn').addEventListener('click', saveVendor);
+  document.getElementById('deleteVendorBtn').addEventListener('click', deleteVendor);
+
+  // Formatage automatique — téléphone, majuscules, code postal, adresse
+  ['ve-phone'].forEach(function(id){ document.getElementById(id).addEventListener('input', function(){ formatPhone(id); }); });
+  ['ve-postal'].forEach(function(id){ document.getElementById(id).addEventListener('input', function(){ formatPostal(id); }); });
+  ['ve-name','ve-contact','em-name','as-brand','as-model','as-location','li-name','co-title'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', function(){ formatAddress(id); });
+  });
+  ['ve-address','ve-city'].forEach(function(id){ document.getElementById(id).addEventListener('blur', function(){ formatAddress(id); }); });
+  wireAddressAutocomplete('ve-address','ve-city','ve-province','ve-postal');
+
+  document.getElementById('nav-contrats').addEventListener('click', function(){ DASH_FILTER=null; renderFilterBanner(); showPage('contrats'); });
+  document.getElementById('newContractBtn').addEventListener('click', function(){ openContractModal(null); });
+  document.getElementById('closeContractModal').addEventListener('click', closeContractModal);
+  document.getElementById('cancelContractModal').addEventListener('click', closeContractModal);
+  document.getElementById('saveContractBtn').addEventListener('click', saveContract);
+  document.getElementById('deleteContractBtn').addEventListener('click', deleteContract);
+
+  document.getElementById('nav-equipe').addEventListener('click', function(){ showPage('equipe'); });
+  document.getElementById('nav-parametres').addEventListener('click', function(){ showPage('parametres'); });
+  document.getElementById('newEmployeeBtn').addEventListener('click', function(){ openEmployeeModal(null); });
+  document.getElementById('closeEmployeeModal').addEventListener('click', closeEmployeeModal);
+  document.getElementById('cancelEmployeeModal').addEventListener('click', closeEmployeeModal);
+  document.getElementById('saveEmployeeBtn').addEventListener('click', saveEmployee);
+  document.getElementById('deleteEmployeeBtn').addEventListener('click', deleteEmployee);
+
+  document.getElementById('notifBtn').addEventListener('click', function(e){ e.stopPropagation(); toggleNotifDropdown(); });
+
+  document.getElementById('pwChangeBtn').addEventListener('click', openPwChangeModal);
+  document.getElementById('closePwChangeModal').addEventListener('click', closePwChangeModal);
+  document.getElementById('cancelPwChangeModal').addEventListener('click', closePwChangeModal);
+  document.getElementById('savePwChangeBtn').addEventListener('click', savePwChange);
+
+  document.querySelectorAll('#themeToggleTopbar [data-theme-opt]').forEach(function(b){
+    b.addEventListener('click', function(){ setTheme(b.getAttribute('data-theme-opt')); });
+  });
+  updateThemeToggleUI();
+
+  if(TOKEN && ME) showApp();
+});
+</script>
+</body>
+</html>

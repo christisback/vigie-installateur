@@ -3,6 +3,11 @@
 payload/
 payload-simulation/
 
+# payload-parc/ et payload-inventory/ NE sont PAS ignorés en entier (leur
+# setup-app*.ps1 est du vrai code source, voir plus bas) — mais leur
+# node_modules doit rester exclu comme pour tous les autres payloads.
+node_modules/
+
 # Scripts HA-Serveur retirés volontairement du dépôt public — gardés en local uniquement
 HA-Serveur-Setup.iss
 HA-Serveur-MiseAJour.iss
@@ -13,12 +18,21 @@ output/
 # Outils tiers binaires (nssm.exe) et certificat — pas du code source
 _setup/
 
-# Suite Vigie n'a pas de payload/ dupliqué ailleurs (contrairement aux autres
-# apps) — son _setup/setup-app.ps1 est du vrai code source, donc on le garde
-# malgré la règle _setup/ ci-dessus. Le certificat reste exclu, comme partout.
+# Suite Vigie, Vigie Parc et Vigie Inventory n'ont pas de payload/ dupliqué
+# ailleurs (contrairement à Billets/Simulation) — leurs scripts _setup/setup-app*.ps1
+# sont du vrai code source, donc on les garde malgré la règle _setup/ ci-dessus.
+# Les binaires tiers (nssm.exe, certificat, installateur Node.js) restent exclus.
 !payload-suite/_setup/
 payload-suite/_setup/*
 !payload-suite/_setup/setup-app.ps1
+
+!payload-parc/_setup/
+payload-parc/_setup/*
+!payload-parc/_setup/setup-app-parc.ps1
+
+!payload-inventory/_setup/
+payload-inventory/_setup/*
+!payload-inventory/_setup/setup-app-inventory.ps1
 
 *.exe
 *.msi
