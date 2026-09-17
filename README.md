@@ -124,6 +124,8 @@ Si l'installateur passe avec cette option seule, tant mieux  Smart App Control n
 4. L'installation peut prendre plusieurs minutes (Node.js et PostgreSQL s'installent silencieusement en arrière-plan si absents).
 5. Une fois terminé, l'application s'ouvre automatiquement dans le navigateur à `http://localhost:3500`.
 
+> ⚠️ **Poste tout neuf (sans PostgreSQL) — bug connu de `Vigie-Billets-Installateur.exe`** : l'installation silencieuse de PostgreSQL par ce fichier échoue actuellement avec une erreur du type *« option attendu mais contient Files\PostgreSQL\18 »* (bug de citation PowerShell — corrigé dans le code source, mais le fichier `.exe` de 420 Mo n'a pas pu être reconstruit ici, faute d'accès au binaire PostgreSQL). **Solution en attendant** : sur un poste neuf, installez [PostgreSQL 18](https://www.postgresql.org/download/windows/) manuellement d'abord (port 5432 par défaut, mot de passe superutilisateur **`123`** pour rester cohérent avec les autres postes — sinon définissez la variable d'environnement `PGPASSWORD_EXISTANT` sur le mot de passe choisi avant de lancer l'installateur), puis lancez `Vigie-Billets-MiseAJour.exe` à la place — il détecte PostgreSQL déjà présent et ne touche jamais au code concerné par ce bug.
+
 ### Après l'installation
 
 - Un fichier `IMPORTANT  Identifiants.txt` est créé dans le dossier d'installation (et copié sur le bureau) avec les mots de passe générés (PostgreSQL, secret de sécurité interne)  à conserver en lieu sûr, puis à supprimer du bureau.
