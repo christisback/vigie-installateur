@@ -190,9 +190,16 @@ Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Invento
 
 ### Désinstallation
 
-Désinstaller Suite Vigie (Panneau de configuration → Applications) demande : **« Désinstaller aussi Vigie Billets, Vigie Parc, Vigie Inventory et Vigie Simulation ? »**
-- **Oui** → tous les programmes Vigie présents sur ce poste sont désinstallés (services Windows, fichiers, icônes). **Les bases de données PostgreSQL ne sont jamais touchées**, même en répondant Oui — seuls les programmes eux-mêmes sont retirés.
-- **Non** → seule l'icône Suite Vigie est retirée ; les programmes restent installés et fonctionnels.
+Désinstaller Suite Vigie (Panneau de configuration → Applications) pose deux questions successives :
+
+1. **« Désinstaller aussi Vigie Billets, Vigie Parc, Vigie Inventory et Vigie Simulation ? »**
+   - **Oui** → tous les programmes Vigie présents sur ce poste sont désinstallés (services Windows, fichiers, icônes).
+   - **Non** → seule l'icône Suite Vigie est retirée ; les programmes restent installés et fonctionnels (fin de la désinstallation, la question 2 n'apparaît pas).
+2. *(seulement si Oui à la question 1)* **« Voulez-vous CONSERVER les données existantes (billets, employés, parc, inventaire) ? »**
+   - **Oui (recommandé, bouton par défaut)** → les bases de données PostgreSQL (`tickets_db`, `vigie_inventory_db`) sont conservées intactes ; vous les retrouverez si vous réinstallez plus tard.
+   - **Non** → les bases de données sont **définitivement supprimées**, en plus des programmes. Action irréversible.
+
+En mode silencieux (`/VERYSILENT`), les programmes sont désinstallés mais les données sont **toujours conservées** — la suppression des données n'est jamais automatique, elle demande une confirmation à l'écran.
 
 ## Raccourcis sur les autres postes du réseau
 
