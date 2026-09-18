@@ -131,16 +131,20 @@ function Build-Menu {
 
   $menu.Items.Add("-") | Out-Null
 
-  $quitAllItem = $menu.Items.Add("Tout arrêter et quitter")
+  $quitAllItem = $menu.Items.Add("Quitter et fermer tous les serveurs")
   $quitAllItem.Add_Click({
+    $confirm = [System.Windows.Forms.MessageBox]::Show(
+      "Tous les serveurs vont être arrêtés — les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
+      "Suite Vigie", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+    if ($confirm -ne [System.Windows.Forms.DialogResult]::Yes) { return }
     $svcNamesQuoted = ($Apps | ForEach-Object { "'$($_.Service)'" }) -join ','
-    Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Stop-Service -Name $svcNamesQuoted -Force -ErrorAction SilentlyContinue" -Verb RunAs -Wait
-    $notifyIcon.Visible = $false
-    [System.Windows.Forms.Application]::Exit()
-  })
-
-  $quitIconOnlyItem = $menu.Items.Add("Quitter l'icône seulement (les serveurs continuent)")
-  $quitIconOnlyItem.Add_Click({
+    try {
+      Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Stop-Service -Name $svcNamesQuoted -Force -ErrorAction SilentlyContinue" -Verb RunAs -Wait -ErrorAction Stop
+    } catch {
+      # Autorisation administrateur refusée : les serveurs tournent toujours, on garde l'icône.
+      $notifyIcon.ShowBalloonTip(3000, "Suite Vigie", "Les serveurs n'ont pas été arrêtés (autorisation refusée).", [System.Windows.Forms.ToolTipIcon]::Warning)
+      return
+    }
     $notifyIcon.Visible = $false
     [System.Windows.Forms.Application]::Exit()
   })

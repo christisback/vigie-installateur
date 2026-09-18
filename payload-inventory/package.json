@@ -1,6 +1,6 @@
 {
   "name": "vigie-inventory",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Inventaire de matériel générique — appareils, licences, fournisseurs, contrats (produit autonome)",
   "main": "server.js",
   "scripts": {

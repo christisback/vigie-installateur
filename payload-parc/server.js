@@ -34,7 +34,11 @@ app.use(express.json());
 // contiennent des secrets et ne doivent jamais être accessibles par HTTP.
 app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html' }));
 
-const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false });
+// Calibré pour une moyenne entreprise : la limite est par IP, pas par
+// personne — plusieurs employés derrière la même passerelle réseau
+// partagent le même compteur et peuvent se bloquer mutuellement si le
+// seuil est trop bas. Le vrai frein contre un bruteforce reste bcrypt.
+const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 150, standardHeaders: true, legacyHeaders: false });
 
 // ═════════════════════════════════════════════════════════════════════════════
 // MIGRATIONS — ne touche JAMAIS aux tables de Vigie Billets (employees, clients,

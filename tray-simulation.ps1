@@ -84,8 +84,19 @@ $startItem.Add_Click({
 
 $menu.Items.Add("-") | Out-Null
 
-$quitItem = $menu.Items.Add("Quitter l'icône (le serveur continue)")
+$quitItem = $menu.Items.Add("Quitter et fermer le serveur")
 $quitItem.Add_Click({
+  $confirm = [System.Windows.Forms.MessageBox]::Show(
+    "Le serveur va être arrêté — les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
+    "Vigie Simulation", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+  if ($confirm -ne [System.Windows.Forms.DialogResult]::Yes) { return }
+  try {
+    Start-Process powershell.exe -ArgumentList "-NoProfile -WindowStyle Hidden -Command Stop-Service -Name '$ServiceName' -Force -ErrorAction SilentlyContinue" -Verb RunAs -Wait -ErrorAction Stop
+  } catch {
+    # Autorisation administrateur refusée : le serveur tourne toujours, on garde l'icône.
+    $notifyIcon.ShowBalloonTip(3000, "Vigie Simulation", "Le serveur n'a pas été arrêté (autorisation refusée).", [System.Windows.Forms.ToolTipIcon]::Warning)
+    return
+  }
   $notifyIcon.Visible = $false
   [System.Windows.Forms.Application]::Exit()
 })
