@@ -10,7 +10,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Simulation"
-#define MyAppVersion "1.4"
+#define MyAppVersion "1.7"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -61,6 +61,7 @@ Filename: "powershell.exe"; Parameters: "-NoProfile -WindowStyle Hidden -Command
 [UninstallDelete]
 Type: files; Name: "{commondesktop}\Vigie Simulation.lnk"
 Type: files; Name: "{commonstartup}\Vigie Simulation (icône).lnk"
+Type: filesandordirs; Name: "{commonprograms}\Vigie Simulation"
 
 [Code]
 const

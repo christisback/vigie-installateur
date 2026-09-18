@@ -105,6 +105,29 @@ try {
   Log "⚠️ Icône système non démarrée: $($_.Exception.Message)"
 }
 
+# ── 4c) Raccourcis simples Démarrer/Arrêter/Redémarrer dans le menu Démarrer
+# ── (en plus de l'icône barre système — utile si celle-ci n'apparaît pas ou
+# ── a été fermée par erreur, sans avoir besoin de PowerShell) ─────────────
+$RaccourcisSrc = Join-Path $InstallDir "raccourcis-simples"
+if (Test-Path $RaccourcisSrc) {
+  Log "Configuration des raccourcis Démarrer/Arrêter/Redémarrer..."
+  $StartMenuAppDir = "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\Vigie Simulation"
+  New-Item -ItemType Directory -Path $StartMenuAppDir -Force | Out-Null
+  $SimIconPath = Join-Path $InstallDir "public\brand\vigie-simulation.ico"
+  @(
+    @{ Name = "Démarrer le serveur.lnk";   Target = "Demarrer-Simulation.bat" },
+    @{ Name = "Arrêter le serveur.lnk";    Target = "Arreter-Simulation.bat" },
+    @{ Name = "Redémarrer le serveur.lnk"; Target = "Redemarrer-Simulation.bat" }
+  ) | ForEach-Object {
+    $lnk = $WshShell.CreateShortcut((Join-Path $StartMenuAppDir $_.Name))
+    $lnk.TargetPath = Join-Path $RaccourcisSrc $_.Target
+    $lnk.WorkingDirectory = $RaccourcisSrc
+    if (Test-Path $SimIconPath) { $lnk.IconLocation = $SimIconPath }
+    $lnk.Save()
+  }
+  Log "Raccourcis créés dans le menu Démarrer (dossier 'Vigie Simulation')."
+}
+
 # ── 5) Fichier de récapitulatif ──────────────────────────────────────────
 # Préfère l'adaptateur Wi-Fi/Ethernet réel — sinon, sur un poste avec un VPN
 # actif (NordVPN, Tailscale, etc.), ce filtre pouvait choisir l'adresse du
