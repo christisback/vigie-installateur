@@ -30,7 +30,7 @@
 ; ============================================================================
 
 #define MyAppName "Suite Vigie — Installateur combiné"
-#define MyAppVersion "1.5"
+#define MyAppVersion "1.6"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
