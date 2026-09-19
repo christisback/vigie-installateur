@@ -3,6 +3,11 @@
   [string]$ServiceName = "VigieParc"
 )
 
+# ── Suite Vigie déjà installée ────────────────────────────────────────────
+# C'est la Suite qui affiche l'icône unique dans la barre système : cette icône
+# individuelle s'efface d'elle-même (elle redevient active si la Suite est désinstallée).
+if (Test-Path (Join-Path $env:ProgramFiles 'Suite Vigie\tray.ps1')) { exit }
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 

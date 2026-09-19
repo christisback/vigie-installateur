@@ -10,7 +10,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Parc"
-#define MyAppVersion "2.0"
+#define MyAppVersion "2.1"
 #define MyAppPublisher "C.T Informatique"
 #define MyAppURL "http://localhost:3501"
 

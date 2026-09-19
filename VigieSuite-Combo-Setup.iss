@@ -1,4 +1,4 @@
-; ============================================================================
+﻿; ============================================================================
 ; Suite Vigie — Installateur combiné
 ; ----------------------------------------------------------------------------
 ; Ce n'est PAS un installateur monolithique qui réimplémente chaque produit —
@@ -30,7 +30,7 @@
 ; ============================================================================
 
 #define MyAppName "Suite Vigie — Installateur combiné"
-#define MyAppVersion "2.0"
+#define MyAppVersion "2.1"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
