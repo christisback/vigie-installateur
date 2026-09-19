@@ -154,9 +154,17 @@ if ($schemaAlreadyThere -eq '1') {
 }
 
 # ── 4) Secrets applicatifs ────────────────────────────────────────────────
+# Le secret de session est conservé d'une mise à jour à l'autre (les utilisateurs restent connectés), SAUF une fois :
+# avant la correction de sécurité de septembre 2026, ce secret (et les identifiants) pouvait être lu sans
+# connexion via le serveur web. Le premier passage de cette mise à jour le remplace, puis pose un repère.
+$rotMarker = Join-Path $InstallDir 'secret-renouvele-2026-09.flag'
 $JwtSecret = $existing.JWT_SECRET
-if ($JwtSecret) { Log "Secret de session existant conservé (les utilisateurs restent connectés)." }
-else { $JwtSecret = -join ((48..57)+(65..90)+(97..122) | Get-Random -Count 48 | ForEach-Object {[char]$_}) }
+if ($JwtSecret -and (Test-Path $rotMarker)) { Log "Secret de session existant conservé (les utilisateurs restent connectés)." }
+else {
+  $JwtSecret = -join ((48..57)+(65..90)+(97..122) | Get-Random -Count 48 | ForEach-Object {[char]$_})
+  Set-Content -Path $rotMarker -Value "Secret de session renouvelé le $(Get-Date -Format 'yyyy-MM-dd HH:mm')" -Encoding ASCII
+  Log "Nouveau secret de session généré (correction de sécurité). Les utilisateurs devront se reconnecter une fois."
+}
 [System.Environment]::SetEnvironmentVariable('JWT_SECRET', $JwtSecret, 'Machine')
 [System.Environment]::SetEnvironmentVariable('PGPASSWORD', $PgPassword, 'Machine')
 Log "Variables d'environnement système configurées."
