@@ -19,7 +19,7 @@
 ; ============================================================================
 
 #define MyAppName "Suite Vigie"
-#define MyAppVersion "1.7"
+#define MyAppVersion "1.8"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -48,6 +48,10 @@ Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 Source: "payload-suite\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 
 [Icons]
+; Lanceur dans le menu Démarrer : démarre l'icône de la barre système quand elle n'y est pas
+; (fermée avec « Quitter », ou pas encore démarrée). Sans risque de doublon : l'icône refuse de
+; démarrer si elle tourne déjà.
+Name: "{group}\{#MyAppName}"; Filename: "powershell.exe"; Parameters: "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File ""{app}\tray.ps1"" -InstallDir ""{app}"""; WorkingDir: "{app}"; IconFilename: "{app}\brand\vigie-suite.ico"; Comment: "Démarrer l'icône Suite Vigie dans la barre système"; Flags: runminimized
 Name: "{group}\Désinstaller {#MyAppName}"; Filename: "{uninstallexe}"
 
 [Run]
