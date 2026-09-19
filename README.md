@@ -15,7 +15,7 @@ Système de gestion des billets de service pour une équipe de support technique
 - Gestion des clients et des employés, rôles (technicien / superviseur / admin) avec permissions configurables
 - Messagerie interne entre employés, pièces jointes sur les billets
 - Authentification à deux facteurs (TOTP), historique de connexions
-- Base de connaissances de dépannage (53 solutions françaises et anglaises livrées avec le programme)
+- Base de connaissances de dépannage (plus de 80 solutions en français et en anglais, livrées avec le programme)
 - Sauvegardes SQL automatiques et manuelles, avec choix du dossier de sauvegarde
 - Rapport de billet imprimable en PDF
 - Notifications courriel au client (SMTP configurable)
