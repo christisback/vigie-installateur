@@ -173,6 +173,8 @@ Une mise à jour ne supprime jamais la base de données (employés, clients, bil
 - crée une copie de sécurité `avant-mise-a-jour_....sql` dans le dossier `backups` de l'application (les 3 dernières sont gardées, visibles dans Paramètres > Données),
 - remet en marche l'ancien service si la mise à jour échoue.
 
+Le mot de passe SMTP et les secrets de double authentification (2FA) sont chiffrés dans la base (AES-256). La clé est dans le fichier `data.key` du dossier de l'application : elle est créée automatiquement, jamais copiée dans les sauvegardes `.sql`, et à copier avec la base si on la déplace vers un autre serveur (sinon le mot de passe SMTP est à ressaisir et la 2FA à réinitialiser).
+
 Les nouvelles colonnes et tables sont ajoutées automatiquement au démarrage du serveur, sans toucher aux données existantes.
 
 ## Suite Vigie : une seule icône
