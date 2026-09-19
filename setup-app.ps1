@@ -27,6 +27,44 @@ function Invoke-Nssm {
   }
 }
 
+# ── Mise à jour sans risque pour les données ─────────────────────────────────
+# Lit la configuration du service Windows DÉJÀ installé (mot de passe PostgreSQL et secret de session)
+# pour qu'une mise à jour reprenne exactement les mêmes valeurs : l'accès à la base est garanti
+# (jamais deviné) et les utilisateurs restent connectés.
+function Get-ExistingServiceEnv([string]$Name) {
+  $r = @{ PGPASSWORD = $null; JWT_SECRET = $null }
+  try {
+    $lines = & $script:NssmExe get $Name AppEnvironmentExtra 2>$null
+    foreach ($l in $lines) {
+      $s = "$l".Trim()
+      if ($s -like 'PGPASSWORD=*')  { $r.PGPASSWORD  = $s.Substring(11) }
+      elseif ($s -like 'JWT_SECRET=*') { $r.JWT_SECRET = $s.Substring(11) }
+    }
+  } catch {}
+  return $r
+}
+
+# Copie de sécurité de la base AVANT toute mise à jour (fichier .sql dans le dossier backups de
+# l'application, visible dans Paramètres > Données, 3 dernières conservées). La mise à jour ne modifie
+# jamais les données existantes : cette copie est une assurance supplémentaire. Un échec de copie
+# n'interrompt pas la mise à jour.
+function Backup-DatabaseBeforeUpdate([string]$Psql, [string]$PgDump, [string]$Database, [string]$Dir) {
+  try {
+    $has = (& $Psql -U postgres -h localhost -d $Database -tAc "SELECT 1 FROM information_schema.tables WHERE table_schema='public' LIMIT 1") -join ''
+    if ($has -ne '1') { return }
+    $bdir = Join-Path $Dir 'backups'
+    New-Item -ItemType Directory -Force -Path $bdir | Out-Null
+    $file = Join-Path $bdir ("avant-mise-a-jour_{0}_{1}.sql" -f $Database, (Get-Date -Format 'yyyyMMdd_HHmmss'))
+    & $PgDump -U postgres -h localhost -d $Database -F p -f $file 2>&1 | Out-Null
+    if ((Test-Path $file) -and ((Get-Item $file).Length -gt 0)) {
+      Log "Copie de sécurité de la base créée avant la mise à jour : $file"
+      Get-ChildItem $bdir -Filter 'avant-mise-a-jour_*.sql' | Sort-Object LastWriteTime -Descending | Select-Object -Skip 3 | Remove-Item -Force -ErrorAction SilentlyContinue
+    } else {
+      Log "Copie de sécurité non créée (la mise à jour continue, les données ne sont pas modifiées)."
+    }
+  } catch { Log "Copie de sécurité impossible : $($_.Exception.Message) (la mise à jour continue, les données ne sont pas modifiées)" }
+}
+
 try {
 
 $SetupDir = Join-Path $InstallDir "_setup"
@@ -51,6 +89,8 @@ if (-not $nodeOk) {
 # ── 2) PostgreSQL ─────────────────────────────────────────────────────────
 $PgBin = "C:\Program Files\PostgreSQL\18\bin"
 $psql  = Join-Path $PgBin "psql.exe"
+$PgDump = Join-Path $PgBin "pg_dump.exe"
+$existing = Get-ExistingServiceEnv 'VigieBillets'   # configuration du service déjà installé (mise à jour)
 $pgOk  = Test-Path $psql
 
 if (-not $pgOk) {
@@ -83,6 +123,7 @@ if (-not $pgOk) {
   # reste en silence (c'est exactement ce qui est arrivé la première fois).
   Log "PostgreSQL déjà présent sur ce poste."
   $PgPassword = $env:PGPASSWORD_EXISTANT
+  if (-not $PgPassword) { $PgPassword = $existing.PGPASSWORD }   # celui du service Vigie Billets déjà installé (jamais deviné)
   if (-not $PgPassword) { $PgPassword = "123" }  # mot de passe par défaut historique de l'app, en dernier recours
   $env:PGPASSWORD = $PgPassword
   $testConn = & $psql -U postgres -h localhost -tAc "SELECT 1" 2>&1
@@ -106,13 +147,16 @@ if ($dbExists -ne '1') {
 $schemaAlreadyThere = (& $psql -U postgres -h localhost -d tickets_db -tAc "SELECT 1 FROM information_schema.tables WHERE table_name='employees'") -join ''
 if ($schemaAlreadyThere -eq '1') {
   Log "Des tables existent déjà dans tickets_db - schema.sql NON appliqué (protection des données existantes)."
+  Backup-DatabaseBeforeUpdate $psql $PgDump 'tickets_db' $InstallDir
 } else {
   & $psql -U postgres -h localhost -d tickets_db -f (Join-Path $InstallDir "schema.sql") | Out-Null
   Log "Schéma appliqué."
 }
 
 # ── 4) Secrets applicatifs ────────────────────────────────────────────────
-$JwtSecret = -join ((48..57)+(65..90)+(97..122) | Get-Random -Count 48 | ForEach-Object {[char]$_})
+$JwtSecret = $existing.JWT_SECRET
+if ($JwtSecret) { Log "Secret de session existant conservé (les utilisateurs restent connectés)." }
+else { $JwtSecret = -join ((48..57)+(65..90)+(97..122) | Get-Random -Count 48 | ForEach-Object {[char]$_}) }
 [System.Environment]::SetEnvironmentVariable('JWT_SECRET', $JwtSecret, 'Machine')
 [System.Environment]::SetEnvironmentVariable('PGPASSWORD', $PgPassword, 'Machine')
 Log "Variables d'environnement système configurées."
@@ -229,6 +273,8 @@ Log "=== Installation terminée avec succès ==="
 } catch {
   Log "❌ ERREUR FATALE: $($_.Exception.Message)"
   Log ($_.ScriptStackTrace -replace "`n", " | ")
+  # La mise à jour a échoué : remettre en marche le service déjà installé (les données n'ont pas été modifiées).
+  try { $prev = Get-Service -Name 'VigieBillets' -ErrorAction SilentlyContinue; if ($prev -and $prev.Status -ne 'Running') { Start-Service -Name $prev.Name; Log "Ancien service redémarré : la mise à jour a échoué, les données sont intactes." } } catch {}
   exit 1
 }
 

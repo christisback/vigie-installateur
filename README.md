@@ -164,6 +164,17 @@ Outil de formation indépendant : pas de base de données, pas de compte à cré
 - Raccourci bureau vers l'application.
 - Aucun identifiant à retenir : ouvrez la page et cliquez « Piger un scénario ».
 
+### Mises à jour et données
+
+Une mise à jour ne supprime jamais la base de données (employés, clients, billets, pièces jointes). Avant de modifier quoi que ce soit, l'installateur :
+
+- relit le mot de passe PostgreSQL et le secret de session du service déjà installé (les utilisateurs restent connectés),
+- n'applique jamais `schema.sql` sur une base qui contient déjà des tables,
+- crée une copie de sécurité `avant-mise-a-jour_....sql` dans le dossier `backups` de l'application (les 3 dernières sont gardées, visibles dans Paramètres > Données),
+- remet en marche l'ancien service si la mise à jour échoue.
+
+Les nouvelles colonnes et tables sont ajoutées automatiquement au démarrage du serveur, sans toucher aux données existantes.
+
 ## Suite Vigie : une seule icône
 
 Suite Vigie remplace les icônes individuelles de Vigie Billets, Parc, Inventory et Simulation par **une seule icône** dans la barre système, avec un sous-menu par application (Ouvrir, Redémarrer, Démarrer, Arrêter). Elle ne contient aucun serveur ni base de données : c'est uniquement une icône de gestion.
