@@ -1,7 +1,7 @@
 ; ============================================================================
-; Vigie Parc — Installateur
+; Vigie Parc - Installateur
 ; ----------------------------------------------------------------------------
-; Ne réinstalle ni Node.js ni PostgreSQL — nécessite que Vigie Billets soit
+; Ne réinstalle ni Node.js ni PostgreSQL - nécessite que Vigie Billets soit
 ; déjà installé sur ce poste (il en réutilise le Node.js, le PostgreSQL et
 ; la base de données tickets_db). Voir setup-app-parc.ps1.
 ;
@@ -10,7 +10,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Parc"
-#define MyAppVersion "2.1"
+#define MyAppVersion "2.2"
 #define MyAppPublisher "C.T Informatique"
 #define MyAppURL "http://localhost:3501"
 
@@ -84,7 +84,7 @@ begin
 end;
 
 // Arrête le service et l'icône système d'une installation existante AVANT que
-// Inno ne copie les nouveaux fichiers — sinon node.exe/tray.ps1 gardent des
+// Inno ne copie les nouveaux fichiers - sinon node.exe/tray.ps1 gardent des
 // fichiers ouverts dans {app} et la copie échoue avec une erreur d'accès refusé.
 procedure StopRunningApp(const InstallDir: String);
 var

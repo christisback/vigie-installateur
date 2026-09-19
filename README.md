@@ -38,13 +38,13 @@ Le même type d'inventaire que Vigie Parc, mais pensé comme produit indépendan
 - Actifs, catégories et départements entièrement personnalisables (informatique, outils, véhicules, équipement de cuisine…)
 - Champs personnalisés configurables par catégorie
 - Fournisseurs, contrats, notifications
-- Base de données et comptes complètement séparés — aucune dépendance à Vigie Billets ni Vigie Parc
+- Base de données et comptes complètement séparés - aucune dépendance à Vigie Billets ni Vigie Parc
 
 **Port par défaut :** 3502 · **Base de données :** `vigie_inventory_db` (indépendante)
 
 ### Vigie Simulation  Scénarios de formation
 
-Outil de formation pour équipes de soutien informatique — aucun lien technique avec les trois autres programmes.
+Outil de formation pour équipes de soutien informatique - aucun lien technique avec les trois autres programmes.
 
 - 200 scénarios de mise en situation (140 niveau N1 simple, 60 niveau N2 intermédiaire)
 - Chaque scénario fournit une entreprise et un contact fictifs (nom, courriel, téléphone, adresse, numéro de poste) et un problème décrit du point de vue du client
@@ -56,7 +56,7 @@ Outil de formation pour équipes de soutien informatique — aucun lien techniqu
 ### Stack technique
 
 - **Backend :** Node.js + [Express](https://expressjs.com/)
-- **Base de données :** PostgreSQL pour Billets/Parc/Inventory, via le module [`pg`](https://node-postgres.com/) — requêtes SQL directes (pas d'ORM), migrations idempotentes exécutées au démarrage du serveur. Vigie Simulation n'en a pas besoin.
+- **Base de données :** PostgreSQL pour Billets/Parc/Inventory, via le module [`pg`](https://node-postgres.com/) - requêtes SQL directes (pas d'ORM), migrations idempotentes exécutées au démarrage du serveur. Vigie Simulation n'en a pas besoin.
 - **Authentification :** jetons JWT (`jsonwebtoken`), mots de passe hachés avec `bcryptjs` (sauf Vigie Simulation, sans compte)
 - **Sécurité :** `helmet` (en-têtes HTTP), `express-rate-limit`, secrets (`JWT_SECRET`, `PGPASSWORD`) obligatoires via variables d'environnement pour les apps avec base de données
 - **Frontend :** HTML/CSS/JavaScript "vanilla" (aucun framework), page unique (SPA) servie directement par Express
@@ -77,17 +77,17 @@ Code source des applications : [vigie-suite](https://github.com/christisback/vig
 - `Vigie-Parc-Installateur.exe` (~4 Mo)  **nécessite que Vigie Billets soit déjà installé** sur le même poste (il réutilise son Node.js, son PostgreSQL et sa base de données).
 
 **Vigie Inventory** (inventaire de matériel générique, pour n'importe quelle entreprise  voir sa propre section plus bas)  **aucune dépendance de code** à Vigie Billets ni à Vigie Parc, mais **nécessite qu'une instance PostgreSQL soit déjà présente sur le poste** (via Vigie Billets, par exemple) :
-- `Vigie-Inventory-Installateur.exe` (~36 Mo) — inclut Node.js, mais pas PostgreSQL. Installez Vigie Billets d'abord si PostgreSQL n'est pas déjà sur ce poste.
-- `Vigie-Inventory-MiseAJour.exe` — identique à l'installateur ci-dessus (même détection de Node.js/PostgreSQL déjà présents), gardé sous ce nom pour compatibilité avec `VigieTout-MiseAJour.exe`.
+- `Vigie-Inventory-Installateur.exe` (~36 Mo) - inclut Node.js, mais pas PostgreSQL. Installez Vigie Billets d'abord si PostgreSQL n'est pas déjà sur ce poste.
+- `Vigie-Inventory-MiseAJour.exe` - identique à l'installateur ci-dessus (même détection de Node.js/PostgreSQL déjà présents), gardé sous ce nom pour compatibilité avec `VigieTout-MiseAJour.exe`.
 
 **Vigie Simulation** (scénarios de formation, indépendant  voir sa propre section plus bas) :
 - `Vigie-Simulation-Installateur.exe` (~35 Mo)  sert à la fois pour la première installation et les mises à jour (pas besoin de PostgreSQL, donc pas de gros installateur séparé).
 
 ## Avant d'installer sur un NOUVEAU PC : éviter le blocage de sécurité
 
-Tous les installateurs sont signés numériquement avec le certificat de l'éditeur (**C.T Informatique**), mais ce certificat est auto-généré — il n'est pas encore reconnu par une autorité de certification publique, donc Windows ne lui fait pas automatiquement confiance sur un PC qui ne l'a jamais vu. Sur certains PC Windows 11, une protection appelée **Smart App Control** ("Contrôle d'application intelligente") peut donc quand même bloquer complètement le lancement de l'installateur avant même qu'il ait pu installer son propre certificat dans le magasin de confiance de Windows. Voici comment vérifier et éviter ce problème **avant** de lancer l'installateur.
+Tous les installateurs sont signés numériquement avec le certificat de l'éditeur (**C.T Informatique**), mais ce certificat est auto-généré - il n'est pas encore reconnu par une autorité de certification publique, donc Windows ne lui fait pas automatiquement confiance sur un PC qui ne l'a jamais vu. Sur certains PC Windows 11, une protection appelée **Smart App Control** ("Contrôle d'application intelligente") peut donc quand même bloquer complètement le lancement de l'installateur avant même qu'il ait pu installer son propre certificat dans le magasin de confiance de Windows. Voici comment vérifier et éviter ce problème **avant** de lancer l'installateur.
 
-### Étape 1 — Vérifier si c'est actif
+### Étape 1 - Vérifier si c'est actif
 
 Ouvrez PowerShell **en administrateur** et tapez :
 
@@ -99,9 +99,9 @@ Get-MpComputerStatus | Select-Object SmartAppControlState
 - **`Eval`** → encore en mode évaluation, pas de blocage strict pour l'instant. Vous pouvez généralement installer normalement.
 - **Aucun résultat / erreur** → la fonctionnalité n'existe pas sur ce PC (souvent parce que le matériel ne répond pas aux critères requis, comme le Secure Boot). Aucun blocage de ce type n'est possible ici.
 
-### Étape 2 — Si c'est `On`
+### Étape 2 - Si c'est `On`
 
-**⚠️ Important à savoir avant de choisir une option : Smart App Control ne peut PAS être réactivé après coup.** Une fois désactivé, il ne peut être remis en marche qu'en réinstallant Windows au complet — ce n'est **pas** un interrupteur temporaire comme l'antivirus. Pour cette raison, essayez d'abord l'option réversible ci-dessous.
+**⚠️ Important à savoir avant de choisir une option : Smart App Control ne peut PAS être réactivé après coup.** Une fois désactivé, il ne peut être remis en marche qu'en réinstallant Windows au complet - ce n'est **pas** un interrupteur temporaire comme l'antivirus. Pour cette raison, essayez d'abord l'option réversible ci-dessous.
 
 **Option A  Réversible (à essayer en premier) : désactiver temporairement la protection en temps réel de Windows Defender**
 1. Sécurité Windows → Protection contre les virus et menaces → Gérer les paramètres.
@@ -118,13 +118,13 @@ Si l'installateur passe avec cette option seule, tant mieux  Smart App Control n
 
 ## Installation  Vigie Billets
 
-1. Double-cliquez sur le fichier `.exe` choisi ci-dessus (une fenêtre "Contrôle de compte d'utilisateur" apparaîtra — cliquez **Oui**, l'installation nécessite les droits administrateur).
-2. Suivez l'assistant (langue déjà en français, choix du dossier d'installation — laissez la valeur par défaut sauf raison particulière).
+1. Double-cliquez sur le fichier `.exe` choisi ci-dessus (une fenêtre "Contrôle de compte d'utilisateur" apparaîtra - cliquez **Oui**, l'installation nécessite les droits administrateur).
+2. Suivez l'assistant (langue déjà en français, choix du dossier d'installation - laissez la valeur par défaut sauf raison particulière).
 3. Si une installation existante est détectée, l'assistant propose **Mettre à jour**, **Réinstaller** ou **Désinstaller**  choisissez selon le cas.
 4. L'installation peut prendre plusieurs minutes (Node.js et PostgreSQL s'installent silencieusement en arrière-plan si absents).
 5. Une fois terminé, l'application s'ouvre automatiquement dans le navigateur à `http://localhost:3500`.
 
-> ⚠️ **Poste tout neuf (sans PostgreSQL) — bug connu de `Vigie-Billets-Installateur.exe`** : l'installation silencieuse de PostgreSQL par ce fichier échoue actuellement avec une erreur du type *« option attendu mais contient Files\PostgreSQL\18 »* (bug de citation PowerShell — corrigé dans le code source, mais le fichier `.exe` de 420 Mo n'a pas pu être reconstruit ici, faute d'accès au binaire PostgreSQL). **Solution en attendant** : sur un poste neuf, installez [PostgreSQL 18](https://www.postgresql.org/download/windows/) manuellement d'abord (port 5432 par défaut, mot de passe superutilisateur **`123`** pour rester cohérent avec les autres postes — sinon définissez la variable d'environnement `PGPASSWORD_EXISTANT` sur le mot de passe choisi avant de lancer l'installateur), puis lancez `Vigie-Billets-MiseAJour.exe` à la place — il détecte PostgreSQL déjà présent et ne touche jamais au code concerné par ce bug.
+> ⚠️ **Poste tout neuf (sans PostgreSQL) - bug connu de `Vigie-Billets-Installateur.exe`** : l'installation silencieuse de PostgreSQL par ce fichier échoue actuellement avec une erreur du type *« option attendu mais contient Files\PostgreSQL\18 »* (bug de citation PowerShell - corrigé dans le code source, mais le fichier `.exe` de 420 Mo n'a pas pu être reconstruit ici, faute d'accès au binaire PostgreSQL). **Solution en attendant** : sur un poste neuf, installez [PostgreSQL 18](https://www.postgresql.org/download/windows/) manuellement d'abord (port 5432 par défaut, mot de passe superutilisateur **`123`** pour rester cohérent avec les autres postes - sinon définissez la variable d'environnement `PGPASSWORD_EXISTANT` sur le mot de passe choisi avant de lancer l'installateur), puis lancez `Vigie-Billets-MiseAJour.exe` à la place - il détecte PostgreSQL déjà présent et ne touche jamais au code concerné par ce bug.
 
 ### Après l'installation
 
@@ -146,12 +146,12 @@ Vigie Parc est un compagnon de Vigie Billets pour l'inventaire de parc informati
 ### Après l'installation
 
 - Un fichier `IMPORTANT  Identifiants.txt` est créé dans le dossier d'installation (et copié sur le bureau).
-- Icône dans la barre système (Redémarrer / Démarrer / Arrêter), raccourci bureau, comme pour Vigie Billets — reprise par **Suite Vigie** si elle est installée.
+- Icône dans la barre système (Redémarrer / Démarrer / Arrêter), raccourci bureau, comme pour Vigie Billets - reprise par **Suite Vigie** si elle est installée.
 - Identifiant admin par défaut : `ADMIN001` / `Admin1234!` (changement du mot de passe obligatoire à la première connexion).
 
 ## Installation  Vigie Inventory
 
-Vigie Inventory est un inventaire de matériel générique destiné à n'importe quelle entreprise (articles, licences, fournisseurs, contrats) — **produit autonome**, avec sa propre base de données et ses propres comptes, sans aucun lien avec Vigie Billets ou Vigie Parc. Les catégories de matériel, les départements et des champs personnalisés se configurent dans Paramètres pour adapter l'outil au domaine de l'entreprise (informatique, outils, véhicules, équipement de cuisine…).
+Vigie Inventory est un inventaire de matériel générique destiné à n'importe quelle entreprise (articles, licences, fournisseurs, contrats) - **produit autonome**, avec sa propre base de données et ses propres comptes, sans aucun lien avec Vigie Billets ou Vigie Parc. Les catégories de matériel, les départements et des champs personnalisés se configurent dans Paramètres pour adapter l'outil au domaine de l'entreprise (informatique, outils, véhicules, équipement de cuisine…).
 
 1. Double-cliquez sur le fichier `.exe` choisi ci-dessus (droits administrateur requis).
 2. Suivez l'assistant  même principe que Vigie Billets (Mettre à jour / Réinstaller / Désinstaller si une version existe déjà).
@@ -170,7 +170,7 @@ Vigie Inventory est un inventaire de matériel générique destiné à n'importe
 Vigie Simulation est un outil de formation indépendant  pas de base de données, pas de compte à créer.
 
 1. Double-cliquez sur `Vigie-Simulation-Installateur.exe` (droits administrateur requis). Installation rapide (~1 minute, pas de PostgreSQL à installer).
-2. Suivez l'assistant — même principe que les autres (Node.js s'installe silencieusement si absent).
+2. Suivez l'assistant - même principe que les autres (Node.js s'installe silencieusement si absent).
 3. Une fois terminé, l'application s'ouvre automatiquement à `http://localhost:3503`.
 
 ### Après l'installation
@@ -181,13 +181,13 @@ Vigie Simulation est un outil de formation indépendant  pas de base de données
 
 ## Installation  Suite Vigie
 
-Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Inventory / Simulation par **une seule icône** dans la barre système, avec un sous-menu par application (Ouvrir / Redémarrer / Démarrer / Arrêter). Elle ne contient aucun serveur ni base de données — c'est uniquement une icône de gestion.
+Suite Vigie remplace les icônes individuelles de Vigie Billets / Parc / Inventory / Simulation par **une seule icône** dans la barre système, avec un sous-menu par application (Ouvrir / Redémarrer / Démarrer / Arrêter). Elle ne contient aucun serveur ni base de données - c'est uniquement une icône de gestion.
 
 **Peut s'installer avant ou après les 4 apps, dans n'importe quel ordre.**
 
 1. Double-cliquez sur `Vigie-Suite-Installateur.exe` (droits administrateur requis). Installation quasi instantanée.
-2. L'icône détecte automatiquement, à son démarrage, quelles applications (Billets / Parc / Inventory / Simulation) sont installées sur ce poste — les icônes individuelles existantes sont retirées pour éviter les doublons.
-3. Si une des 4 apps est installée ou mise à jour **après** Suite Vigie, l'icône la détecte d'elle-même dans les 5 secondes suivantes (vérification périodique) — pas besoin de la relancer ni de redémarrer Windows.
+2. L'icône détecte automatiquement, à son démarrage, quelles applications (Billets / Parc / Inventory / Simulation) sont installées sur ce poste - les icônes individuelles existantes sont retirées pour éviter les doublons.
+3. Si une des 4 apps est installée ou mise à jour **après** Suite Vigie, l'icône la détecte d'elle-même dans les 5 secondes suivantes (vérification périodique) - pas besoin de la relancer ni de redémarrer Windows.
 4. Clic droit sur l'icône pour voir le sous-menu de chaque application détectée ; double-clic pour ouvrir la première.
 
 ### Désinstallation
@@ -201,7 +201,7 @@ Désinstaller Suite Vigie (Panneau de configuration → Applications) pose deux 
    - **Oui (recommandé, bouton par défaut)** → les bases de données PostgreSQL (`tickets_db`, `vigie_inventory_db`) sont conservées intactes ; vous les retrouverez si vous réinstallez plus tard.
    - **Non** → les bases de données sont **définitivement supprimées**, en plus des programmes. Action irréversible.
 
-En mode silencieux (`/VERYSILENT`), les programmes sont désinstallés mais les données sont **toujours conservées** — la suppression des données n'est jamais automatique, elle demande une confirmation à l'écran.
+En mode silencieux (`/VERYSILENT`), les programmes sont désinstallés mais les données sont **toujours conservées** - la suppression des données n'est jamais automatique, elle demande une confirmation à l'écran.
 
 ## Raccourcis sur les autres postes du réseau
 

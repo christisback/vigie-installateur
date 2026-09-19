@@ -29,7 +29,7 @@ $SetupDir = Join-Path $InstallDir "_setup"
 $NodeMsi  = Join-Path $SetupDir "node-v24.19.0-x64.msi"
 $NssmExe  = Join-Path $SetupDir "nssm.exe"
 
-Log "=== Installation Vigie Inventory — démarrage ==="
+Log "=== Installation Vigie Inventory - démarrage ==="
 
 # ── 1) Node.js ────────────────────────────────────────────────────────────
 Update-PathFromMachine
@@ -44,7 +44,7 @@ if (-not $nodeOk) {
 }
 
 # ── 2) PostgreSQL ─────────────────────────────────────────────────────────
-# Vigie Inventory ne réinstalle jamais PostgreSQL lui-même — s'il n'est pas
+# Vigie Inventory ne réinstalle jamais PostgreSQL lui-même - s'il n'est pas
 # déjà présent (via Vigie Billets ou une installation manuelle), on demande
 # de l'installer d'abord plutôt que de deviner un mot de passe ou d'en
 # écrire un dans ce script (visible dans le dépôt public vigie-installateur).
@@ -88,7 +88,7 @@ Log "Connexion à PostgreSQL existant vérifiée."
 
 # ── 3) Base de données ────────────────────────────────────────────────────
 # Le schéma (tables) se crée lui-même au premier démarrage du serveur
-# (migrations idempotentes CREATE TABLE IF NOT EXISTS dans server.js) — on
+# (migrations idempotentes CREATE TABLE IF NOT EXISTS dans server.js) - on
 # n'a besoin de créer que la base elle-même ici.
 $dbExists = (& $psql -U postgres -h localhost -tAc "SELECT 1 FROM pg_database WHERE datname='vigie_inventory_db'") -join ''
 if ($dbExists -ne '1') {
@@ -127,7 +127,7 @@ if ($svc -and $svc.Status -eq 'Running') {
   Log "⚠️ Le service ne semble pas démarré (statut: $($svc.Status)). Vérifiez service-err.log."
 }
 
-# ── 5b) Pare-feu — accès depuis le réseau local ──────────────────────────
+# ── 5b) Pare-feu - accès depuis le réseau local ──────────────────────────
 try {
   Get-NetFirewallRule -DisplayName "Vigie Inventory (port 3502)" -ErrorAction Stop | Out-Null
   Log "Règle de pare-feu déjà présente."
@@ -165,7 +165,7 @@ try {
 }
 
 # ── 8) Fichier de récapitulatif ──────────────────────────────────────────
-# Préfère l'adaptateur Wi-Fi/Ethernet réel — sinon, sur un poste avec un VPN
+# Préfère l'adaptateur Wi-Fi/Ethernet réel - sinon, sur un poste avec un VPN
 # actif (NordVPN, Tailscale, etc.), ce filtre pouvait choisir l'adresse du
 # tunnel VPN à la place, une adresse qu'aucun autre appareil du réseau
 # local ne peut jamais joindre.
@@ -181,29 +181,29 @@ if (-not $LanIp) {
 
 $infoPath = Join-Path $InstallDir "IMPORTANT - Identifiants.txt"
 @"
-Vigie Inventory — Installation terminée
+Vigie Inventory - Installation terminée
 ========================================
 Adresse sur ce poste       : http://localhost:3502
 Adresse depuis le réseau local : http://$LanIp`:3502
-  (l'adresse réseau peut changer si le routeur la réattribue — réservez
+  (l'adresse réseau peut changer si le routeur la réattribue - réservez
    cette IP pour ce poste dans les paramètres du routeur pour l'éviter)
 
 Connexion administrateur par défaut :
   Numéro d'employé : ADMIN001
   Mot de passe      : Admin1234!
-  (changement obligatoire à la première connexion — ignorez si ce poste avait déjà des données)
+  (changement obligatoire à la première connexion - ignorez si ce poste avait déjà des données)
 
 Secrets générés automatiquement (gardez ce fichier en lieu sûr, puis supprimez-le du bureau) :
   JWT_SECRET = $JwtSecret
   PGPASSWORD = $PgPassword
 
 Vigie Inventory est un produit autonome : sa propre base de données
-(vigie_inventory_db), ses propres comptes — aucune dépendance à Vigie
+(vigie_inventory_db), ses propres comptes - aucune dépendance à Vigie
 Billets ou Vigie Parc. Les catégories de matériel, départements et champs
 personnalisés se configurent dans Paramètres pour adapter l'outil à
 n'importe quelle entreprise.
 
-Le serveur tourne en service Windows (VigieInventory) — démarre automatiquement avec Windows.
+Le serveur tourne en service Windows (VigieInventory) - démarre automatiquement avec Windows.
 "@ | Out-File -FilePath $infoPath -Encoding UTF8
 Copy-Item -Path $infoPath -Destination "$env:PUBLIC\Desktop\IMPORTANT - Identifiants Vigie Inventory.txt" -Force
 

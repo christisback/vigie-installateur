@@ -5,7 +5,7 @@ if (!process.env.PGPASSWORD) {
   process.exit(1);
 }
 
-// Vigie Inventory est un produit autonome — sa propre base de données,
+// Vigie Inventory est un produit autonome - sa propre base de données,
 // indépendante de Vigie Billets/Vigie Parc, pour qu'il fonctionne seul
 // chez n'importe quelle entreprise.
 const DB_CONFIG = {

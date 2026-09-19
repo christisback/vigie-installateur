@@ -1,22 +1,22 @@
 ﻿; ============================================================================
-; Suite Vigie — Installateur combiné
+; Suite Vigie - Installateur combiné
 ; ----------------------------------------------------------------------------
-; Ce n'est PAS un installateur monolithique qui réimplémente chaque produit —
+; Ce n'est PAS un installateur monolithique qui réimplémente chaque produit -
 ; c'est un SÉLECTEUR : il embarque les installateurs individuels déjà
 ; existants (Vigie-Billets-Installateur.exe, Vigie-Parc-Installateur.exe,
 ; Vigie-Inventory-Installateur.exe, Vigie-Suite-Installateur.exe) et lance,
 ; dans le bon ordre, ceux que l'utilisateur a cochés. Chaque produit garde
 ; ainsi son propre AppId / sa propre entrée de désinstallation / son propre
 ; installateur de mise à jour, exactement comme s'il avait été installé
-; individuellement — la mise à jour d'un produit reste compatible avec son
+; individuellement - la mise à jour d'un produit reste compatible avec son
 ; MiseAJour.exe dédié après coup.
 ;
 ; Vigie Parc partage la base de données de Vigie Billets et ne peut pas
-; s'installer sans lui — le cocher force donc automatiquement Vigie Billets.
+; s'installer sans lui - le cocher force donc automatiquement Vigie Billets.
 ;
 ; Les installateurs enfants gardent leur propre assistant (langue, dossier,
 ; détection "déjà installé" avec sa boîte de dialogue Réinstaller/Mettre à
-; jour/Désinstaller) — on ne les lance PAS en /VERYSILENT, car leur logique
+; jour/Désinstaller) - on ne les lance PAS en /VERYSILENT, car leur logique
 ; d'installation existante peut afficher une boîte de dialogue personnalisée
 ; qui ignore le mode silencieux et bloquerait indéfiniment une exécution
 ; cachée. /SP- supprime seulement l'invite "Ceci va installer..." d'Inno.
@@ -29,8 +29,8 @@
 ; GetBilletsInstallerFile dans [Code].
 ; ============================================================================
 
-#define MyAppName "Suite Vigie — Installateur combiné"
-#define MyAppVersion "2.1"
+#define MyAppName "Suite Vigie - Installateur combiné"
+#define MyAppVersion "2.2"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -61,11 +61,11 @@ Name: "full"; Description: "Tout installer"
 Name: "custom"; Description: "Sélection personnalisée"; Flags: iscustom
 
 [Components]
-Name: "billets"; Description: "Vigie Billets — billetterie de support (port 3500)"; Types: full custom
-Name: "parc"; Description: "Vigie Parc — inventaire de parc informatique (port 3501, nécessite Vigie Billets)"; Types: full custom
-Name: "inventory"; Description: "Vigie Inventory — inventaire générique autonome (port 3502)"; Types: full custom
-Name: "simulation"; Description: "Vigie Simulation — scénarios de soutien informatique pour la formation (port 3503)"; Types: full custom
-Name: "suite"; Description: "Suite Vigie — icône unifiée dans la barre système"; Types: full custom
+Name: "billets"; Description: "Vigie Billets - billetterie de support (port 3500)"; Types: full custom
+Name: "parc"; Description: "Vigie Parc - inventaire de parc informatique (port 3501, nécessite Vigie Billets)"; Types: full custom
+Name: "inventory"; Description: "Vigie Inventory - inventaire générique autonome (port 3502)"; Types: full custom
+Name: "simulation"; Description: "Vigie Simulation - scénarios de soutien informatique pour la formation (port 3503)"; Types: full custom
+Name: "suite"; Description: "Suite Vigie - icône unifiée dans la barre système"; Types: full custom
 
 [Files]
 Source: "..\Vigie-Billets-Installateur.exe";     DestDir: "{tmp}"; Flags: dontcopy; Components: billets
@@ -91,14 +91,14 @@ const
   IdxSimulation = 3;
   IdxSuite      = 4;
 
-// Vigie Parc partage la base de données de Vigie Billets — il ne peut pas
+// Vigie Parc partage la base de données de Vigie Billets - il ne peut pas
 // s'installer seul. Cocher Parc force donc Billets automatiquement.
 procedure EnforceParcRequiresBillets;
 begin
   if WizardForm.ComponentsList.Checked[IdxParc] and not WizardForm.ComponentsList.Checked[IdxBillets] then
   begin
     WizardForm.ComponentsList.Checked[IdxBillets] := True;
-    MsgBox('Vigie Parc utilise la même base de données que Vigie Billets — Vigie Billets a été coché automatiquement.',
+    MsgBox('Vigie Parc utilise la même base de données que Vigie Billets - Vigie Billets a été coché automatiquement.',
       mbInformation, MB_OK);
   end;
 end;
@@ -116,7 +116,7 @@ end;
 // Vigie-Billets-Installateur.exe (le gros fichier avec PostgreSQL intégré)
 // contient un bug connu : son installation silencieuse de PostgreSQL échoue
 // sur un poste qui ne l'a pas encore ("option attendu mais contient
-// Files\PostgreSQL\18" — bug de citation PowerShell). Vigie-Billets-MiseAJour.exe
+// Files\PostgreSQL\18" - bug de citation PowerShell). Vigie-Billets-MiseAJour.exe
 // contient le correctif mais suppose PostgreSQL déjà présent. On choisit
 // donc automatiquement le bon fichier selon ce qui est réellement présent
 // sur CE poste, pour éviter le bug dans le cas le plus courant (PostgreSQL
@@ -152,7 +152,7 @@ begin
 end;
 
 // Les fichiers marqués "dontcopy" dans [Files] ne sont JAMAIS extraits
-// automatiquement (contrairement à un [Files] normal) — sans cet appel
+// automatiquement (contrairement à un [Files] normal) - sans cet appel
 // explicite, {tmp}\Vigie-*.exe n'existe pas quand [Run] essaie de le
 // lancer, et l'installation échoue ("fichier introuvable"). On extrait
 // seulement ce qui a été coché, juste avant que [Run] ne s'exécute.

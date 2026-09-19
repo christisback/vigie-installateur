@@ -4,7 +4,7 @@
 
 # ── Instance unique ───────────────────────────────────────────────────────
 # Empêche deux icônes Suite Vigie de tourner en même temps (ex. relancée par
-# plusieurs installateurs d'affilée, ou lancée deux fois par erreur) — si une
+# plusieurs installateurs d'affilée, ou lancée deux fois par erreur) - si une
 # autre instance tourne déjà, celle-ci se ferme immédiatement sans rien faire.
 $MyProcessId = $PID
 $AlreadyRunning = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
@@ -36,7 +36,7 @@ $g.Dispose()
 $iconColor = [System.Drawing.Icon]::FromHandle($bmpColor.GetHicon())
 $iconGrey  = [System.Drawing.Icon]::FromHandle($bmpGrey.GetHicon())
 
-# ── Applications de la suite — seules celles réellement installées (service
+# ── Applications de la suite - seules celles réellement installées (service
 # Windows présent sur ce poste) apparaissent dans le menu ───────────────────
 $AllApps = @(
   @{ Name = "Vigie Billets";    Service = "VigieBillets";    Url = "http://localhost:3500" },
@@ -78,13 +78,13 @@ function Update-Status {
     $lines += "  $($app.Name) : $(if ($running) { 'en cours' } else { 'arrêté' })"
   }
   $notifyIcon.Icon = $(if ($allRunning) { $iconColor } else { $iconGrey })
-  # NotifyIcon.Text est limité à 63 caractères sous Windows — on garde court.
-  $notifyIcon.Text = $(if ($allRunning) { "Suite Vigie — tout fonctionne" } else { "Suite Vigie — attention requise" })
+  # NotifyIcon.Text est limité à 63 caractères sous Windows - on garde court.
+  $notifyIcon.Text = $(if ($allRunning) { "Suite Vigie - tout fonctionne" } else { "Suite Vigie - attention requise" })
 }
 
 # ── Menu contextuel (clic droit) : un sous-menu par application détectée ────
 # Reconstruit à chaque changement de la liste d'apps détectées (voir la
-# vérification périodique plus bas) — sinon une app installée/mise à jour
+# vérification périodique plus bas) - sinon une app installée/mise à jour
 # après le démarrage de l'icône n'apparaîtrait jamais dans le menu tant que
 # l'icône n'est pas relancée manuellement.
 function Build-Menu {
@@ -134,7 +134,7 @@ function Build-Menu {
   $quitAllItem = $menu.Items.Add("Quitter et fermer tous les serveurs")
   $quitAllItem.Add_Click({
     $confirm = [System.Windows.Forms.MessageBox]::Show(
-      "Tous les serveurs vont être arrêtés — les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
+      "Tous les serveurs vont être arrêtés - les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
       "Suite Vigie", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
     if ($confirm -ne [System.Windows.Forms.DialogResult]::Yes) { return }
     $svcNamesQuoted = ($Apps | ForEach-Object { "'$($_.Service)'" }) -join ','

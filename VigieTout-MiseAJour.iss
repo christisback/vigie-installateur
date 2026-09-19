@@ -1,23 +1,23 @@
 ; ============================================================================
-; Vigie Tout — Mise à jour groupée
+; Vigie Tout - Mise à jour groupée
 ; ----------------------------------------------------------------------------
 ; Met à jour Vigie Billets, Vigie Parc, Vigie Inventory et Vigie Simulation en
-; une seule exécution. Ne fait JAMAIS de première installation — un programme
+; une seule exécution. Ne fait JAMAIS de première installation - un programme
 ; non détecté sur ce poste est simplement ignoré (voir InitializeSetup).
 ;
 ; Détection par présence du fichier server.js dans le dossier d'installation
-; standard de chaque produit (plutôt que par AppId de registre) — évite toute
+; standard de chaque produit (plutôt que par AppId de registre) - évite toute
 ; dépendance à un identifiant qu'on ne connaît pas forcément pour un produit
 ; donné, et reflète l'état réel du poste plutôt qu'une entrée de registre qui
 ; pourrait être désynchronisée.
 ;
 ; Équivalent à lancer Vigie-Billets-MiseAJour.exe, Vigie-Parc-Installateur.exe
-; et Vigie-Inventory-MiseAJour.exe un par un — chacun garde son propre
+; et Vigie-Inventory-MiseAJour.exe un par un - chacun garde son propre
 ; assistant (pas de mode silencieux, pour la même raison que le sélecteur
 ; combiné : leur boîte "déjà installé ?" ignorerait /VERYSILENT).
 ; ============================================================================
 
-#define MyAppName "Vigie Tout — Mise à jour groupée"
+#define MyAppName "Vigie Tout - Mise à jour groupée"
 #define MyAppVersion "1.0"
 #define MyAppPublisher "C.T Informatique"
 
@@ -97,7 +97,7 @@ begin
   if N = 0 then
   begin
     MsgBox('Aucun des programmes Vigie Billets / Vigie Parc / Vigie Inventory / Vigie Simulation n''a été détecté sur ce poste.' + #13#10#13#10 +
-      'Cet outil ne fait jamais de première installation — utilisez l''installateur individuel du programme voulu ' +
+      'Cet outil ne fait jamais de première installation - utilisez l''installateur individuel du programme voulu ' +
       '(ou l''installateur combiné Suite Vigie) pour une première installation.',
       mbError, MB_OK);
     Result := False;
@@ -108,7 +108,7 @@ begin
   Result := (MsgBox(Msg, mbConfirmation, MB_YESNO) = IDYES);
 end;
 
-// Les fichiers "dontcopy" ne sont jamais extraits automatiquement — sans cet
+// Les fichiers "dontcopy" ne sont jamais extraits automatiquement - sans cet
 // appel explicite, {tmp}\Vigie-*.exe n'existe pas quand [Run] essaie de le
 // lancer, et la mise à jour échoue ("fichier introuvable").
 procedure CurStepChanged(CurStep: TSetupStep);

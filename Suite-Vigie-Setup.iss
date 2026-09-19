@@ -1,7 +1,7 @@
 ; ============================================================================
-; Suite Vigie — Icône unifiée barre système
+; Suite Vigie - Icône unifiée barre système
 ; ----------------------------------------------------------------------------
-; Aucun serveur, aucune base de données — juste un script PowerShell (tray.ps1)
+; Aucun serveur, aucune base de données - juste un script PowerShell (tray.ps1)
 ; qui affiche une icône dans la barre système avec un sous-menu par application
 ; Vigie réellement détectée sur ce poste (Billets/Parc/Inventory/Simulation,
 ; via leurs services Windows). Remplace les icônes individuelles de chaque app
@@ -14,12 +14,12 @@
 ; La désinstallation propose de tout désinstaller en cascade (Billets/Parc/
 ; Inventory/Simulation), puis demande séparément si les données (bases
 ; PostgreSQL tickets_db et vigie_inventory_db) doivent être conservées ou
-; supprimées définitivement — conservées par défaut/en mode silencieux.
+; supprimées définitivement - conservées par défaut/en mode silencieux.
 ; Voir CurUninstallStepChanged dans [Code].
 ; ============================================================================
 
 #define MyAppName "Suite Vigie"
-#define MyAppVersion "1.6"
+#define MyAppVersion "1.7"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -111,11 +111,11 @@ begin
 end;
 
 // ── Désinstallation en cascade ──────────────────────────────────────────
-// Suite Vigie n'est qu'une icône — mais pour l'utilisateur, "désinstaller
+// Suite Vigie n'est qu'une icône - mais pour l'utilisateur, "désinstaller
 // Suite Vigie" doit pouvoir vouloir dire "tout enlever d'un coup". On
 // propose donc de désinstaller aussi Billets/Parc/Inventory/Simulation
 // (ceux réellement présents sur ce poste), sans jamais toucher à leurs
-// bases de données — chaque désinstalleur individuel ne retire que son
+// bases de données - chaque désinstalleur individuel ne retire que son
 // service Windows, ses fichiers et son icône, jamais les données PostgreSQL.
 const
   AppId_Billets    = '{8F3C1A2B-6D4E-4A7F-9B12-3E5C7D9A1F00}';
@@ -164,7 +164,7 @@ begin
   Result := s;
 end;
 
-// Lit PGPASSWORD depuis la configuration NSSM du service déjà installé —
+// Lit PGPASSWORD depuis la configuration NSSM du service déjà installé -
 // jamais écrit en clair ici, pour ne pas exposer ce secret dans un dépôt
 // public. Doit être appelée AVANT de désinstaller Billets/Inventory, sinon
 // leur nssm.exe (sous Program Files) n'existe plus pour le lire.
@@ -257,7 +257,7 @@ begin
       begin
         DataResponse := MsgBox(
           'Voulez-vous CONSERVER les données existantes (billets, employés, parc, inventaire) ?' + #13#10 + #13#10 +
-          'Oui = les données sont conservées (recommandé) — vous les retrouverez si vous réinstallez plus tard.' + #13#10 +
+          'Oui = les données sont conservées (recommandé) - vous les retrouverez si vous réinstallez plus tard.' + #13#10 +
           'Non = les données sont DÉFINITIVEMENT supprimées, en plus des programmes. Action irréversible.',
           mbConfirmation, MB_YESNO or MB_DEFBUTTON1);
         DeleteData := (DataResponse = IDNO);

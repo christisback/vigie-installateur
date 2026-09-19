@@ -12,13 +12,13 @@ function Log($msg) {
 
 try {
 
-Log "=== Installation Suite Vigie — démarrage ==="
+Log "=== Installation Suite Vigie - démarrage ==="
 
 $StartupFolder = "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp"
 
 # ── Retrait des anciennes icônes individuelles (une par application) ────────
 # Vigie Billets / Vigie Parc / Vigie Inventory installaient chacun leur propre
-# icône dans la barre système avant la Suite — on les retire pour éviter les
+# icône dans la barre système avant la Suite - on les retire pour éviter les
 # doublons. Les serveurs eux-mêmes (services Windows) ne sont PAS touchés,
 # seules les icônes de la barre système le sont.
 $OldTrayShortcuts = @(

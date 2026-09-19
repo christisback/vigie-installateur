@@ -1,7 +1,7 @@
 {
   "name": "vigie-parc",
-  "version": "0.5",
-  "description": "Gestion de parc informatique — inventaire, licences, contrats (connecté à la base de données de Vigie Billets)",
+  "version": "0.6",
+  "description": "Gestion de parc informatique - inventaire, licences, contrats (connecté à la base de données de Vigie Billets)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

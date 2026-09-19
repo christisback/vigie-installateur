@@ -113,7 +113,7 @@ tr.clickable:hover td{background:var(--bg3)}
   <div class="lcard">
     <div class="lhead">
       <h1>Vigie <span>Inventory</span></h1>
-      <p>Inventaire de matériel — articles, fournisseurs, contrats</p>
+      <p>Inventaire de matériel - articles, fournisseurs, contrats</p>
     </div>
     <div class="lerr" id="loginError"></div>
     <div class="fg"><label>Numéro d'employé</label><input type="text" id="loginEmpNum" autocomplete="username"></div>
@@ -192,7 +192,7 @@ tr.clickable:hover td{background:var(--bg3)}
     </div>
 
     <div class="page" id="page-parametres">
-      <div class="ph"><h2>Paramètres — Permissions</h2></div>
+      <div class="ph"><h2>Paramètres - Permissions</h2></div>
       <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
         Choisis ce que les techniciens et superviseurs ont le droit de créer, modifier ou supprimer.
         L'administrateur a toujours accès à tout. Tout le monde peut consulter (voir) les listes, peu importe ces réglages.
@@ -204,7 +204,7 @@ tr.clickable:hover td{background:var(--bg3)}
 
       <div class="ph" style="margin-top:1.75rem"><h2 style="font-size:1.1rem">Catégories de matériel</h2><button class="btn bp" id="newCategoryBtn">+ Nouvelle catégorie</button></div>
       <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
-        Les types d'articles proposés à la création (ex. Ordinateur portable, Outil, Véhicule, Équipement de cuisine…) — adapte-les à ton domaine.
+        Les types d'articles proposés à la création (ex. Ordinateur portable, Outil, Véhicule, Équipement de cuisine…) - adapte-les à ton domaine.
       </p>
       <div class="tw"><table>
         <thead><tr><th>Nom</th><th>Code</th><th>Actions</th></tr></thead>
@@ -231,14 +231,14 @@ tr.clickable:hover td{background:var(--bg3)}
     </div>
 
   </div>
-  <footer id="footerBar">© Vigie Inventory By C.T Informatique 2026 — Tous droits réservés</footer>
+  <footer id="footerBar">© Vigie Inventory By C.T Informatique 2026 - Tous droits réservés</footer>
 </div>
 
 <div class="mo" id="modal-asset">
   <div class="modal">
     <div class="mh"><h3 id="assetModalTitle">+ Nouvel article</h3><button class="mc" id="closeAssetModal">×</button></div>
     <div class="mb">
-      <div class="fg"><label>Type *</label><select id="as-type"><option value="">— Choisir —</option></select></div>
+      <div class="fg"><label>Type *</label><select id="as-type"><option value="">- Choisir -</option></select></div>
       <div class="fr">
         <div class="fg"><label>Marque</label><input type="text" id="as-brand"></div>
         <div class="fg"><label>Modèle</label><input type="text" id="as-model"></div>
@@ -253,7 +253,7 @@ tr.clickable:hover td{background:var(--bg3)}
         <div class="fg"><label>Prix de vente ($)</label><input type="number" id="as-sale-price" step="0.01" min="0"></div>
       </div>
       <div class="fr">
-        <div class="fg"><label>Département</label><select id="as-department"><option value="">— Aucun —</option></select></div>
+        <div class="fg"><label>Département</label><select id="as-department"><option value="">- Aucun -</option></select></div>
         <div class="fg">
           <label>Code d'inventaire</label>
           <div style="display:flex;gap:.5rem">
@@ -304,7 +304,7 @@ tr.clickable:hover td{background:var(--bg3)}
   <div class="modal">
     <div class="mh"><h3 id="contractModalTitle">+ Nouveau contrat</h3><button class="mc" id="closeContractModal">×</button></div>
     <div class="mb">
-      <div class="fg"><label>Titre *</label><input type="text" id="co-title" placeholder="Entretien annuel — serveurs"></div>
+      <div class="fg"><label>Titre *</label><input type="text" id="co-title" placeholder="Entretien annuel - serveurs"></div>
       <div class="fr">
         <div class="fg"><label>Type</label>
           <select id="co-type">
@@ -315,7 +315,7 @@ tr.clickable:hover td{background:var(--bg3)}
             <option value="autre">Autre</option>
           </select>
         </div>
-        <div class="fg"><label>Fournisseur</label><select id="co-vendor"><option value="">— Aucun —</option></select></div>
+        <div class="fg"><label>Fournisseur</label><select id="co-vendor"><option value="">- Aucun -</option></select></div>
       </div>
       <div class="fr">
         <div class="fg"><label>Date de début</label><input type="date" id="co-start"></div>
@@ -486,7 +486,7 @@ var MY_PERMS = {};
 function can(perm){ return ME && (ME.role==='admin' || !!MY_PERMS[perm]); }
 
 function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function fmtDate(d){ if(!d) return '—'; var dt=new Date(d); return dt.toLocaleDateString('fr-CA'); }
+function fmtDate(d){ if(!d) return '-'; var dt=new Date(d); return dt.toLocaleDateString('fr-CA'); }
 
 // ── Formatage automatique (téléphone, adresse, code postal) ──────────────
 function formatPhone(id) {
@@ -668,7 +668,7 @@ function loadDashboard(){
   });
 }
 
-var DASH_FILTER = null; // { page, label } — filtre "d'un clic" venant du dashboard
+var DASH_FILTER = null; // { page, label } - filtre "d'un clic" venant du dashboard
 
 var DASH_EXPIRY_LABELS = {
   warranty: 'Garantie expirant dans moins de 60 jours',
@@ -721,7 +721,7 @@ function loadVendorDropdowns(){
   apiFetch('/api/vendors', function(vendors){
     if(!vendors) return;
     VENDOR_CACHE = vendors;
-    var opts = '<option value="">— Aucun —</option>' + vendors.map(function(v){ return '<option value="'+v.id+'">'+esc(v.name)+'</option>'; }).join('');
+    var opts = '<option value="">- Aucun -</option>' + vendors.map(function(v){ return '<option value="'+v.id+'">'+esc(v.name)+'</option>'; }).join('');
     document.getElementById('co-vendor').innerHTML = opts;
   });
 }
@@ -736,9 +736,9 @@ function loadVendors(){
     tbody.innerHTML = vendors.map(function(v){
       return '<tr class="clickable" data-vendor-id="'+v.id+'">'+
         '<td>'+esc(v.name)+'</td>'+
-        '<td>'+esc(v.contactName||'—')+'</td>'+
-        '<td>'+esc(v.phone||'—')+'</td>'+
-        '<td>'+esc(v.email||'—')+'</td>'+
+        '<td>'+esc(v.contactName||'-')+'</td>'+
+        '<td>'+esc(v.phone||'-')+'</td>'+
+        '<td>'+esc(v.email||'-')+'</td>'+
       '</tr>';
     }).join('');
     tbody.querySelectorAll('[data-vendor-id]').forEach(function(row){
@@ -818,9 +818,9 @@ function loadContracts(){
       return '<tr class="clickable" data-contract-id="'+c.id+'">'+
         '<td>'+esc(c.title)+'</td>'+
         '<td>'+contractTypeLabel(c.type)+'</td>'+
-        '<td>'+esc(c.vendorName||'—')+'</td>'+
+        '<td>'+esc(c.vendorName||'-')+'</td>'+
         '<td>'+fmtDate(c.endDate)+'</td>'+
-        '<td>'+(c.cost!=null?('$'+c.cost.toFixed(2)):'—')+'</td>'+
+        '<td>'+(c.cost!=null?('$'+c.cost.toFixed(2)):'-')+'</td>'+
       '</tr>';
     }).join('');
     tbody.querySelectorAll('[data-contract-id]').forEach(function(row){
@@ -992,7 +992,7 @@ function loadCategoryDropdown(){
     CATEGORY_CACHE = cats;
     var sel = document.getElementById('as-type');
     var current = sel.value;
-    sel.innerHTML = '<option value="">— Choisir —</option>' + cats.map(function(c){
+    sel.innerHTML = '<option value="">- Choisir -</option>' + cats.map(function(c){
       return '<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>';
     }).join('') + '<option value="__new__">+ Ajouter un type…</option>';
     sel.value = current;
@@ -1017,7 +1017,7 @@ function loadCategoriesPage(){
     });
     var asTypeSel = document.getElementById('as-type');
     var current = asTypeSel.value;
-    asTypeSel.innerHTML = '<option value="">— Choisir —</option>' + cats.map(function(c){
+    asTypeSel.innerHTML = '<option value="">- Choisir -</option>' + cats.map(function(c){
       return '<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>';
     }).join('') + '<option value="__new__">+ Ajouter un type…</option>';
     asTypeSel.value = current;
@@ -1078,7 +1078,7 @@ function loadDepartmentDropdown(){
     DEPARTMENT_CACHE = depts;
     var sel = document.getElementById('as-department');
     var current = sel.value;
-    sel.innerHTML = '<option value="">— Aucun —</option>' + depts.map(function(d){
+    sel.innerHTML = '<option value="">- Aucun -</option>' + depts.map(function(d){
       return '<option value="'+esc(d.name)+'">'+esc(d.name)+'</option>';
     }).join('');
     sel.value = current;
@@ -1103,7 +1103,7 @@ function loadDepartmentsPage(){
     });
     var asDeptSel = document.getElementById('as-department');
     var current = asDeptSel.value;
-    asDeptSel.innerHTML = '<option value="">— Aucun —</option>' + depts.map(function(d){
+    asDeptSel.innerHTML = '<option value="">- Aucun -</option>' + depts.map(function(d){
       return '<option value="'+esc(d.name)+'">'+esc(d.name)+'</option>';
     }).join('');
     asDeptSel.value = current;
@@ -1276,7 +1276,7 @@ function savePwChange(){
   });
 }
 
-function fmtPrice(v){ return v!=null ? ('$'+parseFloat(v).toFixed(2)) : '—'; }
+function fmtPrice(v){ return v!=null ? ('$'+parseFloat(v).toFixed(2)) : '-'; }
 
 function loadAssets(){
   var tbody = document.getElementById('assetTableBody');
@@ -1293,10 +1293,10 @@ function loadAssets(){
     if(!assets.length){ tbody.innerHTML = '<tr><td colspan="8" class="empty">Aucun article trouvé.</td></tr>'; return; }
     tbody.innerHTML = assets.map(function(a){
       return '<tr class="clickable" data-asset-id="'+a.id+'">'+
-        '<td><code>'+esc(a.tag||'—')+'</code></td>'+
+        '<td><code>'+esc(a.tag||'-')+'</code></td>'+
         '<td>'+esc(a.type)+'</td>'+
-        '<td>'+esc([a.brand,a.model].filter(Boolean).join(' — ')||'—')+'</td>'+
-        '<td><code>'+esc(a.serialNumber||'—')+'</code></td>'+
+        '<td>'+esc([a.brand,a.model].filter(Boolean).join(' - ')||'-')+'</td>'+
+        '<td><code>'+esc(a.serialNumber||'-')+'</code></td>'+
         '<td>'+(a.quantity!=null?a.quantity:1)+'</td>'+
         '<td>'+fmtPrice(a.purchasePrice)+'</td>'+
         '<td>'+fmtPrice(a.salePrice)+'</td>'+
@@ -1309,7 +1309,7 @@ function loadAssets(){
   });
 }
 
-// Scanner Bluetooth/USB (mode clavier) : tape le code puis Entrée — on
+// Scanner Bluetooth/USB (mode clavier) : tape le code puis Entrée - on
 // cherche une correspondance exacte (code d'inventaire ou n° de série).
 function scanForAsset(){
   var input = document.getElementById('scanInput');
@@ -1449,7 +1449,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('saveVendorBtn').addEventListener('click', saveVendor);
   document.getElementById('deleteVendorBtn').addEventListener('click', deleteVendor);
 
-  // Formatage automatique — téléphone, majuscules, code postal, adresse
+  // Formatage automatique - téléphone, majuscules, code postal, adresse
   ['ve-phone'].forEach(function(id){ document.getElementById(id).addEventListener('input', function(){ formatPhone(id); }); });
   ['ve-postal'].forEach(function(id){ document.getElementById(id).addEventListener('input', function(){ formatPostal(id); }); });
   ['ve-name','ve-contact','em-name','as-brand','as-model','as-location','li-name','co-title'].forEach(function(id){

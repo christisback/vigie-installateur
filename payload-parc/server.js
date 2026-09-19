@@ -28,22 +28,22 @@ app.use(helmet({
   }
 }));
 app.use(express.json());
-// Sert UNIQUEMENT public/ (index.html + brand/) — jamais server.js, db.js,
+// Sert UNIQUEMENT public/ (index.html + brand/) - jamais server.js, db.js,
 // node_modules, _setup/, ni les fichiers écrits par l'installateur
 // (IMPORTANT - Identifiants.txt, install-log.txt, service-*.log) qui
 // contiennent des secrets et ne doivent jamais être accessibles par HTTP.
 app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html' }));
 
 // Calibré pour une moyenne entreprise : la limite est par IP, pas par
-// personne — plusieurs employés derrière la même passerelle réseau
+// personne - plusieurs employés derrière la même passerelle réseau
 // partagent le même compteur et peuvent se bloquer mutuellement si le
 // seuil est trop bas. Le vrai frein contre un bruteforce reste bcrypt.
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 150, standardHeaders: true, legacyHeaders: false });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// MIGRATIONS — ne touche JAMAIS aux tables de Vigie Billets (employees, clients,
+// MIGRATIONS - ne touche JAMAIS aux tables de Vigie Billets (employees, clients,
 // tickets, messages…) : seulement de nouvelles tables propres à Vigie Parc.
-// Vigie Parc a ses PROPRES comptes (vp_employees) — séparés de Vigie Billets.
+// Vigie Parc a ses PROPRES comptes (vp_employees) - séparés de Vigie Billets.
 // Seuls les clients restent partagés (mêmes clients réels dans les deux outils).
 // ═════════════════════════════════════════════════════════════════════════════
 async function migrate() {
@@ -179,7 +179,7 @@ async function migrate() {
   `);
 
   // Les colonnes assignedemployee/createdby référençaient l'ancienne table
-  // employees (celle de Vigie Billets) avant la séparation des comptes —
+  // employees (celle de Vigie Billets) avant la séparation des comptes -
   // on retire cette contrainte (les FK Postgres ne se "changent" pas, on
   // doit les enlever puis en remettre une propre vers vp_employees).
   await pool.query(`
@@ -191,7 +191,7 @@ async function migrate() {
   `);
 
   // Les anciennes valeurs (créées avant la séparation) pointaient vers des
-  // employés de Vigie Billets qui n'existent pas dans vp_employees — on les
+  // employés de Vigie Billets qui n'existent pas dans vp_employees - on les
   // vide pour ne pas casser la nouvelle contrainte (les données de l'appareil
   // lui-même restent intactes, seul le lien "assigné à / créé par" est effacé).
   await pool.query(`
@@ -218,7 +218,7 @@ async function migrate() {
       'INSERT INTO vp_employees (id, employeenumber, name, role, password, mustchangepassword) VALUES ($1,$2,$3,$4,$5,$6)',
       [uuidv4(), 'ADMIN001', 'Administrateur', 'admin', hash, true]
     );
-    console.log('👤 Compte admin par défaut créé — ADMIN001 / Admin1234! (à changer à la première connexion)');
+    console.log('👤 Compte admin par défaut créé - ADMIN001 / Admin1234! (à changer à la première connexion)');
   }
 
   // Départements par défaut si aucun n'existe encore (modifiables ensuite par un admin)
@@ -246,7 +246,7 @@ async function migrate() {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// AUTH — comptes propres à Vigie Parc (vp_employees)
+// AUTH - comptes propres à Vigie Parc (vp_employees)
 // ═════════════════════════════════════════════════════════════════════════════
 function auth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
@@ -262,7 +262,7 @@ function adminOnly(req, res, next) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// PERMISSIONS PAR RÔLE — admin a toujours tout ; technicien/superviseur
+// PERMISSIONS PAR RÔLE - admin a toujours tout ; technicien/superviseur
 // configurables par un admin (page Paramètres)
 // ═════════════════════════════════════════════════════════════════════════════
 const PERMISSION_KEYS = ['manage_assets', 'manage_licenses', 'manage_vendors', 'manage_contracts'];
@@ -324,7 +324,7 @@ app.put('/api/change-password', auth, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// ÉQUIPE VIGIE PARC (vp_employees) — gestion complète réservée aux admins
+// ÉQUIPE VIGIE PARC (vp_employees) - gestion complète réservée aux admins
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/employees', auth, async (req, res) => {
   try {
@@ -410,7 +410,7 @@ app.put('/api/permissions', auth, adminOnly, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// DÉPARTEMENTS — catalogue utilisé par le générateur de code d'inventaire
+// DÉPARTEMENTS - catalogue utilisé par le générateur de code d'inventaire
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/departments', auth, async (req, res) => {
   try {
@@ -449,7 +449,7 @@ app.delete('/api/departments/:id', auth, adminOnly, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// CATÉGORIES — types d'appareils, personnalisables/complétables par un admin
+// CATÉGORIES - types d'appareils, personnalisables/complétables par un admin
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/categories', auth, async (req, res) => {
   try {
@@ -488,7 +488,7 @@ app.delete('/api/categories/:id', auth, adminOnly, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// CLIENTS — lecture seule, partagés avec Vigie Billets
+// CLIENTS - lecture seule, partagés avec Vigie Billets
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/clients', auth, async (req, res) => {
   try {
@@ -561,7 +561,7 @@ app.get('/api/assets/next-tag', auth, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
 });
 
-// Recherche exacte par code scanné (douchette/scanner Bluetooth = clavier) —
+// Recherche exacte par code scanné (douchette/scanner Bluetooth = clavier) -
 // cherche d'abord le code d'inventaire généré, sinon le numéro de série du
 // fabricant (utile si l'appareil a déjà son propre code-barres imprimé).
 app.get('/api/assets/scan', auth, async (req, res) => {
@@ -668,7 +668,7 @@ app.delete('/api/vendors/:id', auth, requirePermission('manage_vendors'), async 
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// GÉOCODAGE — suggestions d'adresses (OpenStreetMap Nominatim, gratuit, sans clé)
+// GÉOCODAGE - suggestions d'adresses (OpenStreetMap Nominatim, gratuit, sans clé)
 // ═════════════════════════════════════════════════════════════════════════════
 const PROVINCE_CODES = {
   'quebec': 'QC', 'québec': 'QC', 'ontario': 'ON', 'british columbia': 'BC',
@@ -699,7 +699,7 @@ app.get('/api/geocode/suggest', auth, async (req, res) => {
     res.json(suggestions);
   } catch (e) {
     console.error('Geocode error:', e.message);
-    res.json([]); // dégradation silencieuse — la saisie manuelle reste possible
+    res.json([]); // dégradation silencieuse - la saisie manuelle reste possible
   }
 });
 
@@ -723,7 +723,7 @@ app.get('/api/licenses', auth, async (req, res) => {
     let licenses = r.rows.map(hydrateLicense);
     // La clé de licence est masquée pour qui n'a pas le droit manage_licenses
     // (elle reste visible dans la fiche complète seulement pour ceux qui peuvent
-    // la gérer) — le reste de l'information (nom, fournisseur, expiration) reste
+    // la gérer) - le reste de l'information (nom, fournisseur, expiration) reste
     // utile à toute l'équipe sans exposer le matériel réutilisable/revendable.
     if (!(await hasPermission(req.user.role, 'manage_licenses'))) {
       licenses = licenses.map(l => ({ ...l, licenseKey: l.licenseKey ? '••••••••' : null }));
@@ -841,7 +841,7 @@ app.get('/api/stats', auth, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// NOTIFICATIONS INTERNES (propres à Vigie Parc — indépendantes de Vigie Billets)
+// NOTIFICATIONS INTERNES (propres à Vigie Parc - indépendantes de Vigie Billets)
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/notifications', auth, async (req, res) => {
   try {
@@ -863,7 +863,7 @@ app.put('/api/notifications/mark-read', auth, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// ALERTES D'EXPIRATION — garanties, licences, contrats
+// ALERTES D'EXPIRATION - garanties, licences, contrats
 // Notifie chaque admin/superviseur de Vigie Parc (ses propres comptes, pas
 // ceux de Vigie Billets), une seule fois par élément.
 // ═════════════════════════════════════════════════════════════════════════════
@@ -885,7 +885,7 @@ async function checkExpirations() {
     for (const a of assets.rows) {
       const label = [a.type, a.brand, a.model].filter(Boolean).join(' ') + (a.serialnumber ? ` (n° série ${a.serialnumber})` : '');
       const expired = new Date(a.warrantyuntil) < new Date();
-      await notifyVpAdmins(`🔔 Garantie ${expired ? 'expirée' : 'expire bientôt'} : ${label} — ${expired ? 'expirée le' : 'jusqu\'au'} ${new Date(a.warrantyuntil).toLocaleDateString('fr-CA')}.`);
+      await notifyVpAdmins(`🔔 Garantie ${expired ? 'expirée' : 'expire bientôt'} : ${label} - ${expired ? 'expirée le' : 'jusqu\'au'} ${new Date(a.warrantyuntil).toLocaleDateString('fr-CA')}.`);
       await pool.query('UPDATE assets SET warrantynotified=true WHERE id=$1', [a.id]);
     }
 
@@ -895,7 +895,7 @@ async function checkExpirations() {
     );
     for (const l of licenses.rows) {
       const expired = new Date(l.expiresat) < new Date();
-      await notifyVpAdmins(`🔔 Licence ${expired ? 'expirée' : 'expire bientôt'} : ${l.name} — ${expired ? 'expirée le' : 'jusqu\'au'} ${new Date(l.expiresat).toLocaleDateString('fr-CA')}.`);
+      await notifyVpAdmins(`🔔 Licence ${expired ? 'expirée' : 'expire bientôt'} : ${l.name} - ${expired ? 'expirée le' : 'jusqu\'au'} ${new Date(l.expiresat).toLocaleDateString('fr-CA')}.`);
       await pool.query('UPDATE licenses SET expirynotified=true WHERE id=$1', [l.id]);
     }
 
@@ -905,7 +905,7 @@ async function checkExpirations() {
     );
     for (const c of contracts.rows) {
       const expired = new Date(c.enddate) < new Date();
-      await notifyVpAdmins(`🔔 Contrat ${expired ? 'expiré' : 'expire bientôt'} : ${c.title} — ${expired ? 'expiré le' : 'jusqu\'au'} ${new Date(c.enddate).toLocaleDateString('fr-CA')}.`);
+      await notifyVpAdmins(`🔔 Contrat ${expired ? 'expiré' : 'expire bientôt'} : ${c.title} - ${expired ? 'expiré le' : 'jusqu\'au'} ${new Date(c.enddate).toLocaleDateString('fr-CA')}.`);
       await pool.query('UPDATE contracts SET expirynotified=true WHERE id=$1', [c.id]);
     }
 

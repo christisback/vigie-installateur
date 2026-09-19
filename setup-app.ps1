@@ -15,7 +15,7 @@ function Update-PathFromMachine {
 }
 
 # Exécute nssm.exe en tolérant les erreurs (nssm écrit sur stderr même pour des
-# opérations bénignes comme "stop" un service qui n'existe pas encore — sous
+# opérations bénignes comme "stop" un service qui n'existe pas encore - sous
 # PowerShell 5.1 ceci peut se transformer en erreur bloquante si on la laisse
 # remonter, d'où le try/catch systématique ici).
 function Invoke-Nssm {
@@ -34,7 +34,7 @@ $NodeMsi  = Join-Path $SetupDir "node-v24.19.0-x64.msi"
 $PgExe    = Join-Path $SetupDir "postgresql-18.6-1-windows-x64.exe"
 $NssmExe  = Join-Path $SetupDir "nssm.exe"
 
-Log "=== Installation Vigie Billets — démarrage ==="
+Log "=== Installation Vigie Billets - démarrage ==="
 
 # ── 1) Node.js ────────────────────────────────────────────────────────────
 Update-PathFromMachine
@@ -57,7 +57,7 @@ if (-not $pgOk) {
   $PgPassword = -join ((48..57)+(65..90)+(97..122) | Get-Random -Count 24 | ForEach-Object {[char]$_})
   Log "Installation de PostgreSQL 18 (peut prendre quelques minutes)..."
   # Les valeurs contenant des espaces (chemins sous "Program Files") doivent être
-  # explicitement entre guillemets ICI — Start-Process -ArgumentList ne met PAS
+  # explicitement entre guillemets ICI - Start-Process -ArgumentList ne met PAS
   # automatiquement des guillemets autour des éléments d'un tableau qui en
   # contiennent, il les joint tel quel par un espace. Sans ces guillemets,
   # "C:\Program Files\PostgreSQL\18" devient DEUX arguments distincts pour
@@ -78,7 +78,7 @@ if (-not $pgOk) {
   Start-Sleep -Seconds 5
 } else {
   # PostgreSQL est déjà là (ex: réinstallation sur un poste déjà configuré).
-  # On ne connaît PAS son mot de passe superutilisateur — on ne le devine
+  # On ne connaît PAS son mot de passe superutilisateur - on ne le devine
   # jamais au hasard, car un mauvais mot de passe ferait planter tout le
   # reste en silence (c'est exactement ce qui est arrivé la première fois).
   Log "PostgreSQL déjà présent sur ce poste."
@@ -101,11 +101,11 @@ if ($dbExists -ne '1') {
 }
 
 # Protection anti-écrasement : si la table employees existe déjà, la base
-# contient probablement de vraies données — on n'applique JAMAIS schema.sql
+# contient probablement de vraies données - on n'applique JAMAIS schema.sql
 # dessus (il commence par des DROP TABLE).
 $schemaAlreadyThere = (& $psql -U postgres -h localhost -d tickets_db -tAc "SELECT 1 FROM information_schema.tables WHERE table_name='employees'") -join ''
 if ($schemaAlreadyThere -eq '1') {
-  Log "Des tables existent déjà dans tickets_db — schema.sql NON appliqué (protection des données existantes)."
+  Log "Des tables existent déjà dans tickets_db - schema.sql NON appliqué (protection des données existantes)."
 } else {
   & $psql -U postgres -h localhost -d tickets_db -f (Join-Path $InstallDir "schema.sql") | Out-Null
   Log "Schéma appliqué."
@@ -131,7 +131,7 @@ Invoke-Nssm @('set', $ServiceName, 'AppDirectory', $InstallDir)
 # AppParameters en chemin RELATIF ("server.js", pas le chemin complet) : le
 # dossier de travail (AppDirectory) est déjà réglé sur $InstallDir, donc
 # node.exe trouve le fichier sans qu'on ait à gérer les guillemets autour
-# d'un chemin contenant des espaces ("C:\Program Files\...") — la tentative
+# d'un chemin contenant des espaces ("C:\Program Files\...") - la tentative
 # précédente avec le chemin complet entre guillemets échouait encore
 # (MODULE_NOT_FOUND) à cause d'un problème de citation PowerShell → nssm.exe.
 Invoke-Nssm @('set', $ServiceName, 'AppParameters', 'server.js')
@@ -149,7 +149,7 @@ if ($svc -and $svc.Status -eq 'Running') {
   Log "⚠️ Le service ne semble pas démarré (statut: $($svc.Status)). Vérifiez service-err.log."
 }
 
-# ── 5b) Pare-feu — accès depuis le réseau local ──────────────────────────
+# ── 5b) Pare-feu - accès depuis le réseau local ──────────────────────────
 try {
   Get-NetFirewallRule -DisplayName "Vigie Billets (port 3500)" -ErrorAction Stop | Out-Null
   Log "Règle de pare-feu déjà présente."
@@ -188,7 +188,7 @@ try {
 }
 
 # ── 8) Fichier de récapitulatif ──────────────────────────────────────────
-# Préfère l'adaptateur Wi-Fi/Ethernet réel — sinon, sur un poste avec un VPN
+# Préfère l'adaptateur Wi-Fi/Ethernet réel - sinon, sur un poste avec un VPN
 # actif (NordVPN, Tailscale, etc.), ce filtre pouvait choisir l'adresse du
 # tunnel VPN à la place (ex: 10.5.0.2 via NordLynx), une adresse qu'aucun
 # autre appareil du réseau local ne peut jamais joindre.
@@ -204,23 +204,23 @@ if (-not $LanIp) {
 
 $infoPath = Join-Path $InstallDir "IMPORTANT - Identifiants.txt"
 @"
-Vigie Billets — Installation terminée
+Vigie Billets - Installation terminée
 =====================================
 Adresse sur ce poste       : http://localhost:3500
 Adresse depuis le réseau local : http://$LanIp`:3500
-  (l'adresse réseau peut changer si le routeur la réattribue — réservez
+  (l'adresse réseau peut changer si le routeur la réattribue - réservez
    cette IP pour ce poste dans les paramètres du routeur pour l'éviter)
 
 Connexion administrateur par défaut :
   Numéro d'employé : ADMIN001
   Mot de passe      : Admin1234!
-  (changement obligatoire à la première connexion — ignorez si ce poste avait déjà des données)
+  (changement obligatoire à la première connexion - ignorez si ce poste avait déjà des données)
 
 Secrets générés automatiquement (gardez ce fichier en lieu sûr, puis supprimez-le du bureau) :
   JWT_SECRET = $JwtSecret
   PGPASSWORD = $PgPassword
 
-Le serveur tourne en service Windows ($ServiceName) — démarre automatiquement avec Windows.
+Le serveur tourne en service Windows ($ServiceName) - démarre automatiquement avec Windows.
 "@ | Out-File -FilePath $infoPath -Encoding UTF8
 Copy-Item -Path $infoPath -Destination "$env:PUBLIC\Desktop\IMPORTANT - Identifiants Vigie Billets.txt" -Force
 

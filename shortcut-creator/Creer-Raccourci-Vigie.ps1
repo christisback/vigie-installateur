@@ -3,7 +3,7 @@
   ----------------------------
   À exécuter sur N'IMPORTE QUEL poste du réseau (pas besoin d'avoir l'application
   installée dessus) pour créer un raccourci bureau vers une appli Vigie qui tourne
-  sur un autre poste (le serveur), avec le vrai logo de l'appli — téléchargé
+  sur un autre poste (le serveur), avec le vrai logo de l'appli - téléchargé
   directement depuis le serveur au moment de créer le raccourci.
 #>
 

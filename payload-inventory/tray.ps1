@@ -46,10 +46,10 @@ function Get-ServerRunning {
 function Update-Status {
   if (Get-ServerRunning) {
     $notifyIcon.Icon = $iconColor
-    $notifyIcon.Text = "Vigie Inventory — en cours"
+    $notifyIcon.Text = "Vigie Inventory - en cours"
   } else {
     $notifyIcon.Icon = $iconGrey
-    $notifyIcon.Text = "Vigie Inventory — arrêté"
+    $notifyIcon.Text = "Vigie Inventory - arrêté"
   }
 }
 
@@ -90,7 +90,7 @@ $menu.Items.Add("-") | Out-Null
 $quitItem = $menu.Items.Add("Quitter et fermer le serveur")
 $quitItem.Add_Click({
   $confirm = [System.Windows.Forms.MessageBox]::Show(
-    "Le serveur va être arrêté — les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
+    "Le serveur va être arrêté - les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
     "Vigie Inventory", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
   if ($confirm -ne [System.Windows.Forms.DialogResult]::Yes) { return }
   try {

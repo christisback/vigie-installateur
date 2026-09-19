@@ -13,7 +13,7 @@ Add-Type -AssemblyName System.Drawing
 
 # ── Icônes (couleur = en cours, gris = arrêté) ───────────────────────────────
 # Chargées via un MemoryStream (et non le chemin de fichier directement) pour
-# ne PAS garder le fichier verrouillé pendant toute la durée de vie du script —
+# ne PAS garder le fichier verrouillé pendant toute la durée de vie du script -
 # sinon un installateur de mise à jour ne peut plus remplacer public\brand\favicon-32.png
 # tant que l'icône système tourne encore (erreur "DeleteFile a échoué; code 32").
 $IconPath = Join-Path $InstallDir "public\brand\favicon-32.png"
@@ -48,10 +48,10 @@ function Get-ServerRunning {
 function Update-Status {
   if (Get-ServerRunning) {
     $notifyIcon.Icon = $iconColor
-    $notifyIcon.Text = "Vigie Simulation — en cours"
+    $notifyIcon.Text = "Vigie Simulation - en cours"
   } else {
     $notifyIcon.Icon = $iconGrey
-    $notifyIcon.Text = "Vigie Simulation — arrêté"
+    $notifyIcon.Text = "Vigie Simulation - arrêté"
   }
 }
 
@@ -92,7 +92,7 @@ $menu.Items.Add("-") | Out-Null
 $quitItem = $menu.Items.Add("Quitter et fermer le serveur")
 $quitItem.Add_Click({
   $confirm = [System.Windows.Forms.MessageBox]::Show(
-    "Le serveur va être arrêté — les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
+    "Le serveur va être arrêté - les utilisateurs connectés seront déconnectés.`n`nQuitter quand même ?",
     "Vigie Simulation", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
   if ($confirm -ne [System.Windows.Forms.DialogResult]::Yes) { return }
   try {

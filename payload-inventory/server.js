@@ -28,20 +28,20 @@ app.use(helmet({
   }
 }));
 app.use(express.json());
-// Sert UNIQUEMENT public/ (index.html + brand/) — jamais server.js, db.js,
+// Sert UNIQUEMENT public/ (index.html + brand/) - jamais server.js, db.js,
 // node_modules, _setup/, ni les fichiers écrits par l'installateur
 // (IMPORTANT - Identifiants.txt, install-log.txt, service-*.log) qui
 // contiennent des secrets et ne doivent jamais être accessibles par HTTP.
 app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html' }));
 
 // Calibré pour une moyenne entreprise : la limite est par IP, pas par
-// personne — plusieurs employés derrière la même passerelle réseau
+// personne - plusieurs employés derrière la même passerelle réseau
 // partagent le même compteur et peuvent se bloquer mutuellement si le
 // seuil est trop bas. Le vrai frein contre un bruteforce reste bcrypt.
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 150, standardHeaders: true, legacyHeaders: false });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// MIGRATIONS — Vigie Inventory est un produit autonome : sa propre base de
+// MIGRATIONS - Vigie Inventory est un produit autonome : sa propre base de
 // données, ses propres comptes, aucune dépendance à Vigie Billets/Vigie Parc.
 // Catégories, départements et champs personnalisés sont gérables par un admin
 // (page Paramètres) pour que n'importe quelle entreprise adapte l'outil à son
@@ -174,11 +174,11 @@ async function migrate() {
       'INSERT INTO employees (id, employeenumber, name, role, password, mustchangepassword) VALUES ($1,$2,$3,$4,$5,$6)',
       [uuidv4(), 'ADMIN001', 'Administrateur', 'admin', hash, true]
     );
-    console.log('👤 Compte admin par défaut créé — ADMIN001 / Admin1234! (à changer à la première connexion)');
+    console.log('👤 Compte admin par défaut créé - ADMIN001 / Admin1234! (à changer à la première connexion)');
   }
 
   // Catégories de matériel par défaut si aucune n'existe encore (typiques
-  // d'un parc informatique — entièrement modifiables/remplaçables ensuite
+  // d'un parc informatique - entièrement modifiables/remplaçables ensuite
   // par un admin selon le domaine de l'entreprise : outils, véhicules,
   // équipement de cuisine, matériel médical…).
   const catExisting = await pool.query('SELECT COUNT(*) AS c FROM categories');
@@ -221,7 +221,7 @@ function adminOnly(req, res, next) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// PERMISSIONS PAR RÔLE — admin a toujours tout ; technicien/superviseur
+// PERMISSIONS PAR RÔLE - admin a toujours tout ; technicien/superviseur
 // configurables par un admin (page Paramètres)
 // ═════════════════════════════════════════════════════════════════════════════
 const PERMISSION_KEYS = ['manage_assets', 'manage_vendors', 'manage_contracts'];
@@ -283,7 +283,7 @@ app.put('/api/change-password', auth, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// ÉQUIPE — gestion complète réservée aux admins
+// ÉQUIPE - gestion complète réservée aux admins
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/employees', auth, async (req, res) => {
   try {
@@ -369,7 +369,7 @@ app.put('/api/permissions', auth, adminOnly, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// CATÉGORIES — types de matériel, personnalisables selon le domaine de
+// CATÉGORIES - types de matériel, personnalisables selon le domaine de
 // l'entreprise (informatique, outils, véhicules, cuisine…)
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/categories', auth, async (req, res) => {
@@ -409,7 +409,7 @@ app.delete('/api/categories/:id', auth, adminOnly, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// DÉPARTEMENTS — catalogue utilisé par le générateur de code d'inventaire
+// DÉPARTEMENTS - catalogue utilisé par le générateur de code d'inventaire
 // ═════════════════════════════════════════════════════════════════════════════
 app.get('/api/departments', auth, async (req, res) => {
   try {
@@ -448,7 +448,7 @@ app.delete('/api/departments/:id', auth, adminOnly, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// CHAMPS PERSONNALISÉS — définitions ajoutées par l'admin (ex. "Kilométrage"
+// CHAMPS PERSONNALISÉS - définitions ajoutées par l'admin (ex. "Kilométrage"
 // pour un véhicule, "Date de calibration" pour un outil). Les valeurs sont
 // stockées par article dans assets.customfields (JSONB), indexées par label.
 // ═════════════════════════════════════════════════════════════════════════════
@@ -535,7 +535,7 @@ app.get('/api/assets/next-tag', auth, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
 });
 
-// Recherche exacte par code scanné (douchette/scanner Bluetooth = clavier) —
+// Recherche exacte par code scanné (douchette/scanner Bluetooth = clavier) -
 // cherche d'abord le code d'inventaire généré, sinon le numéro de série du
 // fabricant (utile si l'appareil a déjà son propre code-barres imprimé).
 app.get('/api/assets/scan', auth, async (req, res) => {
@@ -644,7 +644,7 @@ app.delete('/api/vendors/:id', auth, requirePermission('manage_vendors'), async 
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// GÉOCODAGE — suggestions d'adresses (OpenStreetMap Nominatim, gratuit, sans clé)
+// GÉOCODAGE - suggestions d'adresses (OpenStreetMap Nominatim, gratuit, sans clé)
 // ═════════════════════════════════════════════════════════════════════════════
 const PROVINCE_CODES = {
   'quebec': 'QC', 'québec': 'QC', 'ontario': 'ON', 'british columbia': 'BC',
@@ -675,7 +675,7 @@ app.get('/api/geocode/suggest', auth, async (req, res) => {
     res.json(suggestions);
   } catch (e) {
     console.error('Geocode error:', e.message);
-    res.json([]); // dégradation silencieuse — la saisie manuelle reste possible
+    res.json([]); // dégradation silencieuse - la saisie manuelle reste possible
   }
 });
 
@@ -773,7 +773,7 @@ app.put('/api/notifications/mark-read', auth, async (req, res) => {
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// ALERTES D'EXPIRATION — garanties, contrats
+// ALERTES D'EXPIRATION - garanties, contrats
 // ═════════════════════════════════════════════════════════════════════════════
 const EXPIRY_ALERT_DAYS = 30;
 
@@ -793,7 +793,7 @@ async function checkExpirations() {
     for (const a of assets.rows) {
       const label = [a.type, a.brand, a.model].filter(Boolean).join(' ') + (a.serialnumber ? ` (n° série ${a.serialnumber})` : '');
       const expired = new Date(a.warrantyuntil) < new Date();
-      await notifyAdmins(`Garantie ${expired ? 'expirée' : 'expire bientôt'} : ${label} — ${expired ? 'expirée le' : 'jusqu\'au'} ${new Date(a.warrantyuntil).toLocaleDateString('fr-CA')}.`);
+      await notifyAdmins(`Garantie ${expired ? 'expirée' : 'expire bientôt'} : ${label} - ${expired ? 'expirée le' : 'jusqu\'au'} ${new Date(a.warrantyuntil).toLocaleDateString('fr-CA')}.`);
       await pool.query('UPDATE assets SET warrantynotified=true WHERE id=$1', [a.id]);
     }
 
@@ -803,7 +803,7 @@ async function checkExpirations() {
     );
     for (const c of contracts.rows) {
       const expired = new Date(c.enddate) < new Date();
-      await notifyAdmins(`Contrat ${expired ? 'expiré' : 'expire bientôt'} : ${c.title} — ${expired ? 'expiré le' : 'jusqu\'au'} ${new Date(c.enddate).toLocaleDateString('fr-CA')}.`);
+      await notifyAdmins(`Contrat ${expired ? 'expiré' : 'expire bientôt'} : ${c.title} - ${expired ? 'expiré le' : 'jusqu\'au'} ${new Date(c.enddate).toLocaleDateString('fr-CA')}.`);
       await pool.query('UPDATE contracts SET expirynotified=true WHERE id=$1', [c.id]);
     }
 

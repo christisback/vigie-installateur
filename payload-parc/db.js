@@ -6,7 +6,7 @@ if (!process.env.PGPASSWORD) {
 }
 
 // Vigie Parc se connecte volontairement à LA MÊME base de données que
-// Vigie Billets (tickets_db par défaut) — c'est ce qui lui permet de
+// Vigie Billets (tickets_db par défaut) - c'est ce qui lui permet de
 // réutiliser directement les employés et les clients déjà existants,
 // sans avoir à les ressaisir ni les synchroniser.
 const DB_CONFIG = {

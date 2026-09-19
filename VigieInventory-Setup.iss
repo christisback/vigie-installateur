@@ -1,11 +1,11 @@
 ; ============================================================================
-; Vigie Inventory — Installateur
+; Vigie Inventory - Installateur
 ; ----------------------------------------------------------------------------
-; Produit autonome (aucune dépendance à Billets/Parc) — bundle Node.js mais
+; Produit autonome (aucune dépendance à Billets/Parc) - bundle Node.js mais
 ; PAS PostgreSQL : nécessite qu'une instance PostgreSQL soit déjà présente
 ; sur ce poste (via Vigie Billets, ou une autre app Vigie déjà installée).
 ; Voir setup-app-inventory.ps1 pour le détail (aucun mot de passe codé en
-; dur — toujours lu depuis une installation existante ou fourni par
+; dur - toujours lu depuis une installation existante ou fourni par
 ; PGPASSWORD_EXISTANT).
 ;
 ; AppId identique à l'installation existante (retrouvé dans le registre de
@@ -13,7 +13,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Inventory"
-#define MyAppVersion "2.1"
+#define MyAppVersion "2.2"
 #define MyAppPublisher "C.T Informatique"
 #define MyAppURL "http://localhost:3502"
 
@@ -52,7 +52,7 @@ Filename: "certutil.exe"; Parameters: "-addstore Root ""{app}\_setup\ct-informat
 Filename: "certutil.exe"; Parameters: "-addstore TrustedPublisher ""{app}\_setup\ct-informatique.cer"""; StatusMsg: "Installation du certificat de l'éditeur..."; Flags: runhidden
 Filename: "powershell.exe"; \
   Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\_setup\setup-app-inventory.ps1"" -InstallDir ""{app}"""; \
-  StatusMsg: "Configuration de Node.js et du service — cela peut prendre quelques minutes..."; \
+  StatusMsg: "Configuration de Node.js et du service - cela peut prendre quelques minutes..."; \
   Flags: runhidden waituntilterminated
 Filename: "http://localhost:3502"; Description: "Ouvrir {#MyAppName} maintenant"; Flags: postinstall shellexec skipifsilent nowait
 

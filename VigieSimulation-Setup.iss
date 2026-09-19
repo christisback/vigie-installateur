@@ -1,16 +1,16 @@
 ; ============================================================================
-; Vigie Simulation — Installateur
+; Vigie Simulation - Installateur
 ; ----------------------------------------------------------------------------
 ; Contrairement à Vigie Billets/Parc/Inventory, cette application n'a PAS
-; besoin de PostgreSQL — les 100 scénarios sont un simple fichier de données
+; besoin de PostgreSQL - les 100 scénarios sont un simple fichier de données
 ; chargé au démarrage. Un seul installateur sert donc à la fois pour la
 ; première installation et les mises à jour (Node.js est petit et détecté/
-; sauté automatiquement s'il est déjà présent — inutile de séparer en deux
+; sauté automatiquement s'il est déjà présent - inutile de séparer en deux
 ; installateurs comme pour les applications avec PostgreSQL).
 ; ============================================================================
 
 #define MyAppName "Vigie Simulation"
-#define MyAppVersion "2.0"
+#define MyAppVersion "2.1"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -94,7 +94,7 @@ begin
   else
     Exec('net.exe', 'stop VigieSimulation', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
 
-  // Tue l'icône système (nom de script distinct des autres apps — tray-simulation.ps1 —
+  // Tue l'icône système (nom de script distinct des autres apps - tray-simulation.ps1 -
   // pour ne jamais tuer par erreur l'icône de Billets/Parc/Inventory par ce même motif).
   Exec('powershell.exe',
     '-NoProfile -WindowStyle Hidden -Command "Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like ''*tray-simulation.ps1*'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"',

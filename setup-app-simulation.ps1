@@ -29,7 +29,7 @@ $SetupDir = Join-Path $InstallDir "_setup"
 $NodeMsi  = Join-Path $SetupDir "node-v24.19.0-x64.msi"
 $NssmExe  = Join-Path $SetupDir "nssm.exe"
 
-Log "=== Installation Vigie Simulation — démarrage ==="
+Log "=== Installation Vigie Simulation - démarrage ==="
 
 # ── 1) Node.js (aucune base de données requise pour cette application) ──────
 Update-PathFromMachine
@@ -69,7 +69,7 @@ if ($svc -and $svc.Status -eq 'Running') {
   Log "⚠️ Le service ne semble pas démarré (statut: $($svc.Status)). Vérifiez service-err.log."
 }
 
-# ── 3) Pare-feu — accès depuis le réseau local ──────────────────────────
+# ── 3) Pare-feu - accès depuis le réseau local ──────────────────────────
 try {
   Get-NetFirewallRule -DisplayName "Vigie Simulation (port 3503)" -ErrorAction Stop | Out-Null
   Log "Règle de pare-feu déjà présente."
@@ -106,7 +106,7 @@ try {
 }
 
 # ── 4c) Raccourcis simples Démarrer/Arrêter/Redémarrer dans le menu Démarrer
-# ── (en plus de l'icône barre système — utile si celle-ci n'apparaît pas ou
+# ── (en plus de l'icône barre système - utile si celle-ci n'apparaît pas ou
 # ── a été fermée par erreur, sans avoir besoin de PowerShell) ─────────────
 $RaccourcisSrc = Join-Path $InstallDir "raccourcis-simples"
 if (Test-Path $RaccourcisSrc) {
@@ -129,7 +129,7 @@ if (Test-Path $RaccourcisSrc) {
 }
 
 # ── 5) Fichier de récapitulatif ──────────────────────────────────────────
-# Préfère l'adaptateur Wi-Fi/Ethernet réel — sinon, sur un poste avec un VPN
+# Préfère l'adaptateur Wi-Fi/Ethernet réel - sinon, sur un poste avec un VPN
 # actif (NordVPN, Tailscale, etc.), ce filtre pouvait choisir l'adresse du
 # tunnel VPN à la place, une adresse qu'aucun autre appareil du réseau
 # local ne peut jamais joindre.
@@ -145,13 +145,13 @@ if (-not $LanIp) {
 
 $infoPath = Join-Path $InstallDir "IMPORTANT - Installation.txt"
 @"
-Vigie Simulation — Installation terminée
+Vigie Simulation - Installation terminée
 =========================================
 Adresse sur ce poste       : http://localhost:3503
 Adresse depuis le réseau local : http://$LanIp`:3503
 
-Aucun compte, aucune base de données — l'outil charge directement ses 100 scénarios.
-Le serveur tourne en service Windows ($ServiceName) — démarre automatiquement avec Windows.
+Aucun compte, aucune base de données - l'outil charge directement ses 100 scénarios.
+Le serveur tourne en service Windows ($ServiceName) - démarre automatiquement avec Windows.
 "@ | Out-File -FilePath $infoPath -Encoding UTF8
 
 Log "=== Installation terminée avec succès ==="

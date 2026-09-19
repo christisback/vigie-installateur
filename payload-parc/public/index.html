@@ -114,7 +114,7 @@ tr.clickable:hover td{background:var(--bg3)}
   <div class="lcard">
     <div class="lhead">
       <h1>Vigie <span>Parc</span></h1>
-      <p>Gestion de parc informatique — compte Vigie Parc (séparé de Vigie Billets)</p>
+      <p>Gestion de parc informatique - compte Vigie Parc (séparé de Vigie Billets)</p>
     </div>
     <div class="lerr" id="loginError"></div>
     <div class="fg"><label>Numéro d'employé</label><input type="text" id="loginEmpNum" autocomplete="username"></div>
@@ -212,7 +212,7 @@ tr.clickable:hover td{background:var(--bg3)}
     </div>
 
     <div class="page" id="page-parametres">
-      <div class="ph"><h2>Paramètres — Permissions</h2></div>
+      <div class="ph"><h2>Paramètres - Permissions</h2></div>
       <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
         Choisis ce que les techniciens et superviseurs ont le droit de créer, modifier ou supprimer.
         L'administrateur a toujours accès à tout. Tout le monde peut consulter (voir) les listes, peu importe ces réglages.
@@ -224,7 +224,7 @@ tr.clickable:hover td{background:var(--bg3)}
 
       <div class="ph" style="margin-top:1.75rem"><h2 style="font-size:1.1rem">Catégories d'appareils</h2><button class="btn bp" id="newCategoryBtn">+ Nouvelle catégorie</button></div>
       <p style="color:var(--txt2);font-size:.85rem;margin-bottom:1rem">
-        Les types d'appareils proposés à la création (ex. Ordinateur portable, Écran, Clavier…) — ajoute ou modifie-les selon tes besoins.
+        Les types d'appareils proposés à la création (ex. Ordinateur portable, Écran, Clavier…) - ajoute ou modifie-les selon tes besoins.
       </p>
       <div class="tw"><table>
         <thead><tr><th>Nom</th><th>Code</th><th>Actions</th></tr></thead>
@@ -242,7 +242,7 @@ tr.clickable:hover td{background:var(--bg3)}
     </div>
 
   </div>
-  <footer id="footerBar">© Vigie Parc By C.T Informatique 2026 — Tous droits réservés</footer>
+  <footer id="footerBar">© Vigie Parc By C.T Informatique 2026 - Tous droits réservés</footer>
 </div>
 
 <div class="mo" id="modal-asset">
@@ -250,7 +250,7 @@ tr.clickable:hover td{background:var(--bg3)}
     <div class="mh"><h3 id="assetModalTitle">+ Nouvel appareil</h3><button class="mc" id="closeAssetModal">×</button></div>
     <div class="mb">
       <div class="fr">
-        <div class="fg"><label>Type *</label><select id="as-type"><option value="">— Choisir —</option></select></div>
+        <div class="fg"><label>Type *</label><select id="as-type"><option value="">- Choisir -</option></select></div>
         <div class="fg"><label>Statut</label>
           <select id="as-status">
             <option value="en-service">En service</option>
@@ -269,7 +269,7 @@ tr.clickable:hover td{background:var(--bg3)}
         <div class="fg"><label>Garantie jusqu'à</label><input type="date" id="as-warranty"></div>
       </div>
       <div class="fr">
-        <div class="fg"><label>Département</label><select id="as-department"><option value="">— Aucun —</option></select></div>
+        <div class="fg"><label>Département</label><select id="as-department"><option value="">- Aucun -</option></select></div>
         <div class="fg">
           <label>Code d'inventaire</label>
           <div style="display:flex;gap:.5rem">
@@ -279,8 +279,8 @@ tr.clickable:hover td{background:var(--bg3)}
         </div>
       </div>
       <div class="fr">
-        <div class="fg"><label>Assigné à un employé</label><select id="as-employee"><option value="">— Aucun —</option></select></div>
-        <div class="fg"><label>Assigné à un client</label><select id="as-client"><option value="">— Aucun —</option></select></div>
+        <div class="fg"><label>Assigné à un employé</label><select id="as-employee"><option value="">- Aucun -</option></select></div>
+        <div class="fg"><label>Assigné à un client</label><select id="as-client"><option value="">- Aucun -</option></select></div>
       </div>
       <div class="fg"><label>Emplacement</label><input type="text" id="as-location" placeholder="Bureau 204, Entrepôt A…"></div>
       <div class="fg"><label>Notes</label><textarea id="as-notes" style="min-height:80px"></textarea></div>
@@ -302,7 +302,7 @@ tr.clickable:hover td{background:var(--bg3)}
         <div class="fg"><label>Clé de licence</label><input type="text" id="li-key"></div>
         <div class="fg"><label>Nombre de postes</label><input type="number" id="li-seats" min="1"></div>
       </div>
-      <div class="fg"><label>Fournisseur</label><select id="li-vendor"><option value="">— Aucun —</option></select></div>
+      <div class="fg"><label>Fournisseur</label><select id="li-vendor"><option value="">- Aucun -</option></select></div>
       <div class="fr">
         <div class="fg"><label>Date d'achat</label><input type="date" id="li-purchase"></div>
         <div class="fg"><label>Date d'expiration</label><input type="date" id="li-expires"></div>
@@ -347,7 +347,7 @@ tr.clickable:hover td{background:var(--bg3)}
   <div class="modal">
     <div class="mh"><h3 id="contractModalTitle">+ Nouveau contrat</h3><button class="mc" id="closeContractModal">×</button></div>
     <div class="mb">
-      <div class="fg"><label>Titre *</label><input type="text" id="co-title" placeholder="Entretien annuel — serveurs"></div>
+      <div class="fg"><label>Titre *</label><input type="text" id="co-title" placeholder="Entretien annuel - serveurs"></div>
       <div class="fr">
         <div class="fg"><label>Type</label>
           <select id="co-type">
@@ -358,7 +358,7 @@ tr.clickable:hover td{background:var(--bg3)}
             <option value="autre">Autre</option>
           </select>
         </div>
-        <div class="fg"><label>Fournisseur</label><select id="co-vendor"><option value="">— Aucun —</option></select></div>
+        <div class="fg"><label>Fournisseur</label><select id="co-vendor"><option value="">- Aucun -</option></select></div>
       </div>
       <div class="fr">
         <div class="fg"><label>Date de début</label><input type="date" id="co-start"></div>
@@ -509,7 +509,7 @@ var MY_PERMS = {};
 function can(perm){ return ME && (ME.role==='admin' || !!MY_PERMS[perm]); }
 
 function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function fmtDate(d){ if(!d) return '—'; var dt=new Date(d); return dt.toLocaleDateString('fr-CA'); }
+function fmtDate(d){ if(!d) return '-'; var dt=new Date(d); return dt.toLocaleDateString('fr-CA'); }
 
 // ── Formatage automatique (téléphone, adresse, code postal) ──────────────
 function formatPhone(id) {
@@ -694,7 +694,7 @@ function loadDashboard(){
   });
 }
 
-var DASH_FILTER = null; // { page, label } — filtre "d'un clic" venant du dashboard
+var DASH_FILTER = null; // { page, label } - filtre "d'un clic" venant du dashboard
 
 var DASH_EXPIRY_LABELS = {
   warranty: 'Garantie expirant dans moins de 60 jours',
@@ -750,7 +750,7 @@ function loadVendorDropdowns(){
   apiFetch('/api/vendors', function(vendors){
     if(!vendors) return;
     VENDOR_CACHE = vendors;
-    var opts = '<option value="">— Aucun —</option>' + vendors.map(function(v){ return '<option value="'+v.id+'">'+esc(v.name)+'</option>'; }).join('');
+    var opts = '<option value="">- Aucun -</option>' + vendors.map(function(v){ return '<option value="'+v.id+'">'+esc(v.name)+'</option>'; }).join('');
     document.getElementById('li-vendor').innerHTML = opts;
     document.getElementById('co-vendor').innerHTML = opts;
   });
@@ -767,12 +767,12 @@ function loadLicenses(){
     LICENSE_CACHE = licenses;
     if(!licenses.length){ tbody.innerHTML = '<tr><td colspan="5" class="empty">Aucune licence trouvée.</td></tr>'; return; }
     tbody.innerHTML = licenses.map(function(l){
-      var expBadge = l.expiresAt ? fmtDate(l.expiresAt) : '—';
+      var expBadge = l.expiresAt ? fmtDate(l.expiresAt) : '-';
       return '<tr class="clickable" data-license-id="'+l.id+'">'+
         '<td>'+esc(l.name)+'</td>'+
-        '<td><code>'+esc(l.licenseKey||'—')+'</code></td>'+
-        '<td>'+(l.seats||'—')+'</td>'+
-        '<td>'+esc(l.vendorName||'—')+'</td>'+
+        '<td><code>'+esc(l.licenseKey||'-')+'</code></td>'+
+        '<td>'+(l.seats||'-')+'</td>'+
+        '<td>'+esc(l.vendorName||'-')+'</td>'+
         '<td>'+expBadge+'</td>'+
       '</tr>';
     }).join('');
@@ -836,9 +836,9 @@ function loadVendors(){
     tbody.innerHTML = vendors.map(function(v){
       return '<tr class="clickable" data-vendor-id="'+v.id+'">'+
         '<td>'+esc(v.name)+'</td>'+
-        '<td>'+esc(v.contactName||'—')+'</td>'+
-        '<td>'+esc(v.phone||'—')+'</td>'+
-        '<td>'+esc(v.email||'—')+'</td>'+
+        '<td>'+esc(v.contactName||'-')+'</td>'+
+        '<td>'+esc(v.phone||'-')+'</td>'+
+        '<td>'+esc(v.email||'-')+'</td>'+
       '</tr>';
     }).join('');
     tbody.querySelectorAll('[data-vendor-id]').forEach(function(row){
@@ -918,9 +918,9 @@ function loadContracts(){
       return '<tr class="clickable" data-contract-id="'+c.id+'">'+
         '<td>'+esc(c.title)+'</td>'+
         '<td>'+contractTypeLabel(c.type)+'</td>'+
-        '<td>'+esc(c.vendorName||'—')+'</td>'+
+        '<td>'+esc(c.vendorName||'-')+'</td>'+
         '<td>'+fmtDate(c.endDate)+'</td>'+
-        '<td>'+(c.cost!=null?('$'+c.cost.toFixed(2)):'—')+'</td>'+
+        '<td>'+(c.cost!=null?('$'+c.cost.toFixed(2)):'-')+'</td>'+
       '</tr>';
     }).join('');
     tbody.querySelectorAll('[data-contract-id]').forEach(function(row){
@@ -979,7 +979,7 @@ function loadEmployeesForDropdown(){
     if(!emps) return;
     ALL_EMPS = emps;
     var sel = document.getElementById('as-employee');
-    sel.innerHTML = '<option value="">— Aucun —</option>' + emps.map(function(e){ return '<option value="'+e.id+'">'+esc(e.name)+' ('+esc(e.employeeNumber)+')</option>'; }).join('');
+    sel.innerHTML = '<option value="">- Aucun -</option>' + emps.map(function(e){ return '<option value="'+e.id+'">'+esc(e.name)+' ('+esc(e.employeeNumber)+')</option>'; }).join('');
   });
 }
 
@@ -1101,7 +1101,7 @@ function loadDepartmentDropdown(){
     DEPARTMENT_CACHE = depts;
     var sel = document.getElementById('as-department');
     var current = sel.value;
-    sel.innerHTML = '<option value="">— Aucun —</option>' + depts.map(function(d){
+    sel.innerHTML = '<option value="">- Aucun -</option>' + depts.map(function(d){
       return '<option value="'+esc(d.name)+'">'+esc(d.name)+'</option>';
     }).join('');
     sel.value = current;
@@ -1126,7 +1126,7 @@ function loadDepartmentsPage(){
     });
     var asDeptSel = document.getElementById('as-department');
     var current = asDeptSel.value;
-    asDeptSel.innerHTML = '<option value="">— Aucun —</option>' + depts.map(function(d){
+    asDeptSel.innerHTML = '<option value="">- Aucun -</option>' + depts.map(function(d){
       return '<option value="'+esc(d.name)+'">'+esc(d.name)+'</option>';
     }).join('');
     asDeptSel.value = current;
@@ -1181,7 +1181,7 @@ function loadCategoryDropdown(){
     CATEGORY_CACHE = cats;
     var sel = document.getElementById('as-type');
     var current = sel.value;
-    sel.innerHTML = '<option value="">— Choisir —</option>' + cats.map(function(c){
+    sel.innerHTML = '<option value="">- Choisir -</option>' + cats.map(function(c){
       return '<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>';
     }).join('');
     sel.value = current;
@@ -1206,7 +1206,7 @@ function loadCategoriesPage(){
     });
     var asTypeSel = document.getElementById('as-type');
     var current = asTypeSel.value;
-    asTypeSel.innerHTML = '<option value="">— Choisir —</option>' + cats.map(function(c){
+    asTypeSel.innerHTML = '<option value="">- Choisir -</option>' + cats.map(function(c){
       return '<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>';
     }).join('');
     asTypeSel.value = current;
@@ -1312,7 +1312,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var clientSel = document.getElementById('as-client');
   apiFetch('/api/clients', function(clients){
     if(!clients) return;
-    clientSel.innerHTML = '<option value="">— Aucun —</option>' + clients.map(function(c){ return '<option value="'+c.id+'">'+esc(c.name)+'</option>'; }).join('');
+    clientSel.innerHTML = '<option value="">- Aucun -</option>' + clients.map(function(c){ return '<option value="'+c.id+'">'+esc(c.name)+'</option>'; }).join('');
   });
 });
 
@@ -1341,12 +1341,12 @@ function loadAssets(){
     ASSET_CACHE = assets;
     if(!assets.length){ tbody.innerHTML = '<tr><td colspan="7" class="empty">Aucun appareil trouvé.</td></tr>'; return; }
     tbody.innerHTML = assets.map(function(a){
-      var assignedTo = a.assignedEmployeeName ? esc(a.assignedEmployeeName) : (a.assignedClientName ? esc(a.assignedClientName) : '—');
+      var assignedTo = a.assignedEmployeeName ? esc(a.assignedEmployeeName) : (a.assignedClientName ? esc(a.assignedClientName) : '-');
       return '<tr class="clickable" data-asset-id="'+a.id+'">'+
-        '<td><code>'+esc(a.tag||'—')+'</code></td>'+
+        '<td><code>'+esc(a.tag||'-')+'</code></td>'+
         '<td>'+esc(a.type)+'</td>'+
-        '<td>'+esc([a.brand,a.model].filter(Boolean).join(' — ')||'—')+'</td>'+
-        '<td><code>'+esc(a.serialNumber||'—')+'</code></td>'+
+        '<td>'+esc([a.brand,a.model].filter(Boolean).join(' - ')||'-')+'</td>'+
+        '<td><code>'+esc(a.serialNumber||'-')+'</code></td>'+
         '<td>'+statusBadge(a.status)+'</td>'+
         '<td>'+assignedTo+'</td>'+
         '<td>'+fmtDate(a.warrantyUntil)+'</td>'+
@@ -1358,7 +1358,7 @@ function loadAssets(){
   });
 }
 
-// Scanner Bluetooth/USB (mode clavier) : tape le code puis Entrée — on
+// Scanner Bluetooth/USB (mode clavier) : tape le code puis Entrée - on
 // cherche une correspondance exacte (code d'inventaire ou n° de série).
 function scanForAsset(){
   var input = document.getElementById('scanInput');
@@ -1489,7 +1489,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('saveVendorBtn').addEventListener('click', saveVendor);
   document.getElementById('deleteVendorBtn').addEventListener('click', deleteVendor);
 
-  // Formatage automatique — téléphone, majuscules, code postal, adresse
+  // Formatage automatique - téléphone, majuscules, code postal, adresse
   ['ve-phone'].forEach(function(id){ document.getElementById(id).addEventListener('input', function(){ formatPhone(id); }); });
   ['ve-postal'].forEach(function(id){ document.getElementById(id).addEventListener('input', function(){ formatPostal(id); }); });
   ['ve-name','ve-contact','em-name','as-brand','as-model','as-location','li-name','co-title'].forEach(function(id){
