@@ -1,4 +1,4 @@
-; ============================================================================
+﻿; ============================================================================
 ; Vigie Inventory - Installateur
 ; ----------------------------------------------------------------------------
 ; Produit autonome (aucune dépendance à Billets/Parc) - bundle Node.js mais
@@ -13,7 +13,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Inventory"
-#define MyAppVersion "2.3"
+#define MyAppVersion "2.4"
 #define MyAppPublisher "C.T Informatique"
 #define MyAppURL "http://localhost:3502"
 

@@ -1,4 +1,4 @@
-; ============================================================================
+﻿; ============================================================================
 ; Vigie Parc - Installateur
 ; ----------------------------------------------------------------------------
 ; Ne réinstalle ni Node.js ni PostgreSQL - nécessite que Vigie Billets soit
@@ -10,7 +10,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Parc"
-#define MyAppVersion "2.3"
+#define MyAppVersion "2.5"
 #define MyAppPublisher "C.T Informatique"
 #define MyAppURL "http://localhost:3501"
 

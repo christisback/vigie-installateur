@@ -130,7 +130,7 @@ Si l'installateur passe avec cette option seule, tant mieux : Smart App Control 
 4. Prévoyez plusieurs minutes pour Vigie Billets (Node.js et PostgreSQL peuvent s'installer silencieusement en arrière-plan s'ils sont absents).
 5. À la fin, chaque application s'ouvre dans le navigateur : `http://localhost:3500` (Billets), `3501` (Parc), `3502` (Inventory), `3503` (Simulation).
 
-> ⚠️ **Poste tout neuf (sans PostgreSQL) : bug connu de l'installateur complet de Vigie Billets inclus dans le combiné.** Son installation silencieuse de PostgreSQL peut échouer avec une erreur du type *« option attendu mais contient Files\PostgreSQL\18 »* (problème de guillemets PowerShell, corrigé dans le code source, mais le gros fichier n'a pas pu être reconstruit faute d'accès au binaire PostgreSQL). **Solution :** sur un poste neuf, installez d'abord [PostgreSQL 18](https://www.postgresql.org/download/windows/) manuellement (port 5432 par défaut, mot de passe superutilisateur **`123`** pour rester cohérent avec les autres postes; sinon, définissez la variable d'environnement `PGPASSWORD_EXISTANT` sur le mot de passe choisi avant de lancer l'installateur), puis lancez le combiné. Quand PostgreSQL est déjà présent, le combiné utilise automatiquement la version légère et corrigée de l'installateur de Vigie Billets. Il affiche un avertissement si PostgreSQL est absent.
+> ⚠️ **Poste tout neuf (sans PostgreSQL) : bug connu de l'installateur complet de Vigie Billets inclus dans le combiné.** Son installation silencieuse de PostgreSQL peut échouer avec une erreur du type *« option attendu mais contient Files\PostgreSQL\18 »* (problème de guillemets PowerShell, corrigé dans le code source, mais le gros fichier n'a pas pu être reconstruit faute d'accès au binaire PostgreSQL). Un correctif d'encodage (accents mal affichés pendant l'installation) est aussi corrigé dans le code source de ce même fichier, pour la même raison en attente d'une reconstruction. **Solution :** sur un poste neuf, installez d'abord [PostgreSQL 18](https://www.postgresql.org/download/windows/) manuellement (port 5432 par défaut, mot de passe superutilisateur **`123`** pour rester cohérent avec les autres postes; sinon, définissez la variable d'environnement `PGPASSWORD_EXISTANT` sur le mot de passe choisi avant de lancer l'installateur), puis lancez le combiné. Quand PostgreSQL est déjà présent, le combiné utilise automatiquement la version légère et corrigée de l'installateur de Vigie Billets. Il affiche un avertissement si PostgreSQL est absent.
 
 ### Après l'installation de Vigie Billets
 
@@ -201,6 +201,8 @@ Désinstaller Suite Vigie (Panneau de configuration → Applications) pose deux 
    - **Non** → les bases de données sont **définitivement supprimées**, en plus des programmes. Action irréversible.
 
 En mode silencieux (`/VERYSILENT`), les programmes sont désinstallés mais les données sont **toujours conservées**. La suppression des données n'est jamais automatique, elle demande une confirmation à l'écran.
+
+Chaque programme est désinstallé l'un après l'autre, et Suite Vigie attend que chacun soit **réellement terminé** (pas seulement lancé) avant de passer au suivant ou de toucher aux bases de données - un problème pouvait auparavant laisser des services ou des fichiers derrière si la désinstallation en cascade allait trop vite.
 
 ## Raccourcis sur les autres postes du réseau
 

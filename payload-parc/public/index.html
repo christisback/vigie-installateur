@@ -641,6 +641,7 @@ function showApp(){
   loadVendorDropdowns();
   loadDepartmentDropdown();
   loadCategoryDropdown();
+  loadClientDropdown();
   apiFetch('/api/my-permissions', function(perms){
     if(perms) MY_PERMS = perms;
     applyPermissionUI();
@@ -1308,13 +1309,13 @@ function savePwChange(){
   });
 }
 var clientSearchTimer = null;
-document.addEventListener('DOMContentLoaded', function(){
+function loadClientDropdown(){
   var clientSel = document.getElementById('as-client');
   apiFetch('/api/clients', function(clients){
     if(!clients) return;
     clientSel.innerHTML = '<option value="">- Aucun -</option>' + clients.map(function(c){ return '<option value="'+c.id+'">'+esc(c.name)+'</option>'; }).join('');
   });
-});
+}
 
 function statusBadge(status){
   var map = {

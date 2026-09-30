@@ -1,4 +1,4 @@
-; ============================================================================
+﻿; ============================================================================
 ; Vigie Tout - Mise à jour groupée
 ; ----------------------------------------------------------------------------
 ; Met à jour Vigie Billets, Vigie Parc, Vigie Inventory et Vigie Simulation en
@@ -18,7 +18,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Tout - Mise à jour groupée"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.1"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]

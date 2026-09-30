@@ -1,4 +1,4 @@
-; ============================================================================
+﻿; ============================================================================
 ; Suite Vigie - Icône unifiée barre système
 ; ----------------------------------------------------------------------------
 ; Aucun serveur, aucune base de données - juste un script PowerShell (tray.ps1)
@@ -19,7 +19,7 @@
 ; ============================================================================
 
 #define MyAppName "Suite Vigie"
-#define MyAppVersion "1.8"
+#define MyAppVersion "1.9"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
@@ -139,14 +139,29 @@ end;
 procedure RunAppUninstaller(AppId: String);
 var
   UninstStr, Exe: String;
-  ResultCode: Integer;
+  ResultCode, Waited: Integer;
 begin
   UninstStr := GetAppUninstallString(AppId);
   if UninstStr <> '' then
   begin
     Exe := RemoveQuotes(UninstStr);
     if FileExists(Exe) then
+    begin
       Exec(Exe, '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+      // Un désinstalleur Inno Setup se copie dans un dossier temporaire puis se relance pour pouvoir
+      // supprimer son propre .exe - Exec revient donc dès que cette copie de départ se termine, pas
+      // quand la vraie désinstallation (service, fichiers) est réellement finie. Sans cette attente,
+      // l'étape suivante (désinstaller l'app suivante, ou supprimer les bases de données) pouvait
+      // démarrer alors que celle-ci tournait encore, laissant des services ou fichiers derrière.
+      // On attend donc que la clé de désinstallation de cette app disparaisse du registre, ce qui est
+      // la toute dernière chose qu'un désinstalleur Inno Setup fait.
+      Waited := 0;
+      while (GetAppUninstallString(AppId) <> '') and (Waited < 30000) do
+      begin
+        Sleep(250);
+        Waited := Waited + 250;
+      end;
+    end;
   end;
 end;
 

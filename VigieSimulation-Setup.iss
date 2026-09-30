@@ -1,4 +1,4 @@
-; ============================================================================
+﻿; ============================================================================
 ; Vigie Simulation - Installateur
 ; ----------------------------------------------------------------------------
 ; Contrairement à Vigie Billets/Parc/Inventory, cette application n'a PAS
@@ -10,7 +10,7 @@
 ; ============================================================================
 
 #define MyAppName "Vigie Simulation"
-#define MyAppVersion "2.1"
+#define MyAppVersion "2.3"
 #define MyAppPublisher "C.T Informatique"
 
 [Setup]
