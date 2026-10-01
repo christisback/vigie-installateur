@@ -1,25 +1,25 @@
-# Copie de travail temporaire assemblée avant compilation — contient node_modules
+# Copie de travail temporaire assemblée avant compilation - contient node_modules
 # et une copie complète du code de chaque appli, déjà versionné dans son propre dépôt
 payload/
 payload-simulation/
 
-# payload-parc/ et payload-inventory/ NE sont PAS ignorés en entier (leur
-# setup-app*.ps1 est du vrai code source, voir plus bas) — mais leur
+# payload-parc/, payload-inventory/ et payload-centreappel/ NE sont PAS ignorés en entier
+# (leur setup-app*.ps1 est du vrai code source, voir plus bas) - mais leur
 # node_modules doit rester exclu comme pour tous les autres payloads.
 node_modules/
 
-# Scripts HA-Serveur retirés volontairement du dépôt public — gardés en local uniquement
+# Scripts HA-Serveur retirés volontairement du dépôt public - gardés en local uniquement
 HA-Serveur-Setup.iss
 HA-Serveur-MiseAJour.iss
 
 # Sortie de compilation (fichiers .exe générés par Inno Setup)
 output/
 
-# Outils tiers binaires (nssm.exe) et certificat — pas du code source
+# Outils tiers binaires (nssm.exe) et certificat - pas du code source
 _setup/
 
-# Suite Vigie, Vigie Parc et Vigie Inventory n'ont pas de payload/ dupliqué
-# ailleurs (contrairement à Billets/Simulation) — leurs scripts _setup/setup-app*.ps1
+# Suite Vigie, Vigie Parc, Vigie Inventory et Vigie Centre d'Appel n'ont pas de payload/
+# dupliqué ailleurs (contrairement à Billets/Simulation) - leurs scripts _setup/setup-app*.ps1
 # sont du vrai code source, donc on les garde malgré la règle _setup/ ci-dessus.
 # Les binaires tiers (nssm.exe, certificat, installateur Node.js) restent exclus.
 !payload-suite/_setup/
@@ -33,6 +33,10 @@ payload-parc/_setup/*
 !payload-inventory/_setup/
 payload-inventory/_setup/*
 !payload-inventory/_setup/setup-app-inventory.ps1
+
+!payload-centreappel/_setup/
+payload-centreappel/_setup/*
+!payload-centreappel/_setup/setup-app-centreappel.ps1
 
 *.exe
 *.msi

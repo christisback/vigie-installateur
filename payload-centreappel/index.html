@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vigie Centre d'Appel (bêta)</title>
+<style>
+:root{color-scheme:dark;--bg:#211f1c;--bg2:#2a2723;--bg3:#34302a;--bdr:#454038;--ac:#4d8cf0;--ac2:#6da3f5;--grn:#22c55e;--red:#f4776b;--org:#f2914a;--txt:#ffffff;--txt2:#e8e4dc;--txt3:#d8d2c6;--card:#2a2723;--r:10px;--sh:0 1px 2px rgba(0,0,0,.35),0 3px 8px -3px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+.wrap{max-width:720px;margin:0 auto;padding:24px 16px}
+h1{font-size:20px;font-weight:600;margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;box-shadow:var(--sh);margin-bottom:16px}
+label{display:block;font-size:13px;color:var(--txt3);margin:0 0 4px}
+input{width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:10px 12px;color:var(--txt);font-size:15px;margin-bottom:14px}
+input:focus{outline:2px solid var(--ac);outline-offset:-1px}
+button{cursor:pointer;border:none;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;background:var(--ac);color:#fff}
+button:hover{background:var(--ac2)}
+button.sec{background:var(--bg3);color:var(--txt)}
+button.ok{background:var(--grn)}
+button.danger{background:var(--red)}
+button:disabled{opacity:.5;cursor:default}
+.err{color:var(--red);font-size:13px;margin:-6px 0 14px;min-height:16px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.row:last-child{border-bottom:none}
+.name{font-weight:600}
+.sub{font-size:12px;color:var(--txt3)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--txt3)}
+.dot.on{background:var(--grn)}
+#hidden{display:none}
+select{background:var(--bg3);border:1px solid var(--bdr);color:var(--txt);border-radius:8px;padding:8px;font-size:14px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.ver{font-size:12px;color:var(--txt3)}
+.ext{font-size:12px;color:var(--ac2);font-variant-numeric:tabular-nums}
+.myext{display:flex;gap:8px;align-items:center}
+.myext input{width:110px;margin:0;font-variant-numeric:tabular-nums;letter-spacing:1px}
+.myext button{white-space:nowrap}
+.phone{max-width:280px;margin:0 auto}
+.display{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:14px;text-align:center;font-size:24px;font-variant-numeric:tabular-nums;letter-spacing:3px;min-height:30px;margin-bottom:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.display.callmode{font-size:14px;letter-spacing:0;font-variant-numeric:normal;font-weight:600}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.key{aspect-ratio:1;border-radius:50%;background:var(--bg3);border:1px solid var(--bdr);color:var(--txt);font-size:20px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.key:hover{background:var(--bdr)}
+.key small{display:block;font-size:9px;color:var(--txt3);font-weight:400;letter-spacing:1px}
+.phonebtns{display:flex;gap:10px;justify-content:center}
+.dialbtn{width:56px;height:56px;border-radius:50%;background:var(--grn);font-size:20px}
+.dialbtn:hover{background:#1ca34f}
+.backbtn{width:56px;height:56px;border-radius:50%;background:var(--bg3)}
+.redbtn{width:56px;height:56px;border-radius:50%;background:var(--red);font-size:20px;color:#fff}
+.redbtn:hover{background:#e05a4e}
+.greybtn{width:56px;height:56px;border-radius:50%;background:var(--bg3);font-size:20px;color:var(--txt)}
+.greybtn:hover{background:var(--bdr)}
+.calltransfer{display:flex;gap:8px;justify-content:center;margin-top:14px}
+.modalbg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:10}
+.modal{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);padding:20px;width:100%;max-width:480px;max-height:80vh;overflow:auto}
+.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="loginView">
+    <h1>Vigie Centre d'Appel <span style="font-size:13px;color:var(--txt3);font-weight:400">(bêta)</span></h1>
+    <div class="card">
+      <label>Numéro d'employé</label>
+      <input id="loginNum" autocomplete="username">
+      <label>Mot de passe</label>
+      <input id="loginPass" type="password" autocomplete="current-password">
+      <label>Code 2FA (si activé)</label>
+      <input id="loginTotp" inputmode="numeric" placeholder="optionnel">
+      <div class="err" id="loginErr"></div>
+      <button id="loginBtn" style="width:100%">Se connecter</button>
+    </div>
+  </div>
+
+  <div id="appView" style="display:none">
+    <div class="topbar">
+      <h1 style="margin:0">Vigie Centre d'Appel <span style="font-size:12px;color:var(--txt3);font-weight:400">(bêta)</span></h1>
+      <div>
+        <span class="ver" id="verTag"></span>
+        <button class="sec" id="dirBtn">📇 Annuaire</button>
+        <button class="sec" id="logoutBtn">Déconnexion</button>
+      </div>
+    </div>
+    <div class="card myext">
+      <label style="margin:0;white-space:nowrap">Mon numéro de poste</label>
+      <input id="myExtInput" maxlength="6" placeholder="ex. 101">
+      <button class="sec" id="saveExtBtn">Enregistrer</button>
+      <span class="err" id="extErr" style="margin:0"></span>
+    </div>
+
+    <div class="card phone">
+      <div class="display" id="dialDisplay">&nbsp;</div>
+      <div class="keypad" id="keypad"></div>
+      <div class="phonebtns">
+        <button class="backbtn" id="dialBackBtn">⌫</button>
+        <button class="redbtn" id="redBtn">✕</button>
+        <button class="dialbtn" id="greenBtn">📞</button>
+      </div>
+      <div class="calltransfer" id="callExtraRow" style="display:none">
+        <button class="sec" id="holdBtn"></button>
+        <select id="transferSel"></select>
+        <button class="sec" id="transferBtn">Transférer</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modalbg" id="dirModalBg" style="display:none">
+  <div class="modal">
+    <div class="modalhead">
+      <h1 style="margin:0;font-size:17px">📇 Annuaire</h1>
+      <button class="sec" id="dirCloseBtn">Fermer</button>
+    </div>
+    <div id="empList"></div>
+  </div>
+</div>
+
+<audio id="remoteAudio" autoplay></audio>
+
+<script>
+'use strict';
+
+// ── État de connexion ────────────────────────────────────────────────────
+let token = localStorage.getItem('vca_token') || '';
+let me = null; // {id, name, role, employeeNumber}
+let employees = [];
+let iceServers = [];
+
+const $ = id => document.getElementById(id);
+
+async function api(path, opts) {
+  opts = opts || {};
+  opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {}, token ? { Authorization: 'Bearer ' + token } : {});
+  const r = await fetch(path, opts);
+  let data = {};
+  try { data = await r.json(); } catch {}
+  if (!r.ok) { const e = new Error(data.error || 'Erreur'); e.code = data.code; e.status = r.status; throw e; }
+  return data;
+}
+
+// ── Connexion ─────────────────────────────────────────────────────────────
+$('loginBtn').onclick = async () => {
+  $('loginErr').textContent = '';
+  const employeeNumber = $('loginNum').value.trim();
+  const password = $('loginPass').value;
+  const totpCode = $('loginTotp').value.trim();
+  if (!employeeNumber || !password) { $('loginErr').textContent = 'Champs requis manquants'; return; }
+  $('loginBtn').disabled = true;
+  try {
+    const body = { employeeNumber, password };
+    if (totpCode) body.totpCode = totpCode;
+    const data = await api('/api/login', { method: 'POST', body: JSON.stringify(body) });
+    if (data.require2FA) { $('loginErr').textContent = 'Entrez votre code 2FA ci-dessus, puis reconnectez-vous.'; return; }
+    token = data.token;
+    localStorage.setItem('vca_token', token);
+    await startApp();
+  } catch (e) {
+    $('loginErr').textContent = e.message || 'Connexion refusée';
+  } finally {
+    $('loginBtn').disabled = false;
+  }
+};
+$('logoutBtn').onclick = () => {
+  localStorage.removeItem('vca_token');
+  location.reload();
+};
+
+async function startApp() {
+  me = parseJwt(token);
+  if (!me) { localStorage.removeItem('vca_token'); return; }
+  $('loginView').style.display = 'none';
+  $('appView').style.display = '';
+  try {
+    const v = await api('/api/version');
+    $('verTag').textContent = 'v' + v.version;
+  } catch {}
+  await loadEmployees();
+  const cfg = await api('/api/callcenter/config');
+  iceServers = cfg.iceServers || [];
+  if (!cfg.canCall) { $('empList').innerHTML = '<div class="sub">Le centre d\'appel n\'est pas activé pour ce compte.</div>'; return; }
+  renderCallbar();
+  connectStream();
+}
+
+function parseJwt(t) {
+  try { return JSON.parse(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); }
+  catch { return null; }
+}
+
+async function loadEmployees() {
+  employees = await api('/api/callcenter/employees');
+  renderEmployees();
+}
+function renderEmployees() {
+  const list = employees.filter(e => e.id !== me.id);
+  $('empList').innerHTML = list.map(e => `
+    <div class="row">
+      <div><span class="dot" id="dot-${e.id}"></span><span class="name">${escapeHtml(e.name)}</span>
+        <div class="sub">${escapeHtml(e.role)}${e.extension ? ' · poste <span class="ext">' + escapeHtml(e.extension) + '</span>' : ''}</div></div>
+      <button onclick="placeCall('${e.id}')">Appeler</button>
+    </div>
+  `).join('') || '<div class="sub">Aucun autre employé.</div>';
+  const mine = employees.find(e => e.id === me.id);
+  if (mine && mine.extension) $('myExtInput').value = mine.extension;
+}
+function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+$('dirBtn').onclick = () => { $('dirModalBg').style.display = 'flex'; };
+$('dirCloseBtn').onclick = () => { $('dirModalBg').style.display = 'none'; };
+$('dirModalBg').onclick = (ev) => { if (ev.target.id === 'dirModalBg') $('dirModalBg').style.display = 'none'; };
+
+$('saveExtBtn').onclick = async () => {
+  $('extErr').textContent = '';
+  try {
+    await api('/api/callcenter/extension', { method: 'PUT', body: JSON.stringify({ extension: $('myExtInput').value.trim() }) });
+    await loadEmployees();
+  } catch (e) { $('extErr').textContent = e.message; }
+};
+
+// ── Clavier numérique (composition d'un poste, look téléphone) ──
+let dialBuffer = '';
+const KEYS = [['1',''],['2','abc'],['3','def'],['4','ghi'],['5','jkl'],['6','mno'],['7','pqrs'],['8','tuv'],['9','wxyz'],['*',''],['0','+'],['#','']];
+$('keypad').innerHTML = KEYS.map(([d, sub]) => `<button class="key" onclick="dialPress('${d}')">${d}${sub ? '<small>' + sub.toUpperCase() + '</small>' : ''}</button>`).join('');
+// Tonalité DTMF (comme un vrai téléphone) à chaque touche composée
+let dtmfCtx = null;
+const DTMF_FREQ = { '1':[697,1209],'2':[697,1336],'3':[697,1477],'4':[770,1209],'5':[770,1336],'6':[770,1477],'7':[852,1209],'8':[852,1336],'9':[852,1477],'*':[941,1209],'0':[941,1336],'#':[941,1477] };
+function playDtmf(d) {
+  const freqs = DTMF_FREQ[d];
+  if (!freqs) return;
+  try {
+    if (!dtmfCtx) dtmfCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (dtmfCtx.state === 'suspended') dtmfCtx.resume().catch(() => {});
+  } catch { return; }
+  const t = dtmfCtx.currentTime;
+  freqs.forEach(freq => {
+    const osc = dtmfCtx.createOscillator(), gain = dtmfCtx.createGain();
+    osc.type = 'sine'; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.09, t);
+    gain.gain.linearRampToValueAtTime(0, t + 0.12);
+    osc.connect(gain).connect(dtmfCtx.destination);
+    osc.start(t); osc.stop(t + 0.12);
+  });
+}
+window.dialPress = (d) => {
+  if (call) return;
+  playDtmf(d);
+  dialBuffer += d; $('dialDisplay').textContent = dialBuffer || ' ';
+};
+$('dialBackBtn').onclick = () => {
+  if (call) return;
+  dialBuffer = dialBuffer.slice(0, -1); $('dialDisplay').textContent = dialBuffer || ' ';
+};
+function dialGo() {
+  if (call || !dialBuffer) return;
+  const target = employees.find(e => e.extension === dialBuffer && e.id !== me.id);
+  if (!target) { alert('Aucun poste ' + dialBuffer); return; }
+  dialBuffer = '';
+  window.placeCall(target.id);
+}
+$('holdBtn').onclick = () => { if (call && call.status === 'active') holdCall(); else if (call && call.status === 'hold' && call.holdByMe) resumeCall(); };
+$('transferBtn').onclick = () => window.transferCall();
+
+// ── Musique d'attente : jouée localement chez la personne qui attend (pas chez celle qui a mis en attente) ──
+// musique-attente.ogg : Canon de Pachelbel (piano), interprété par Lee Galloway, Wikimedia Commons,
+// licence CC BY-SA 3.0 (https://commons.wikimedia.org/wiki/File:Pachelbel's_Canon.ogg) - crédit : LeeGalloway.com
+let holdAudioEl = null;
+function startHoldMusic() {
+  if (!holdAudioEl) {
+    holdAudioEl = new Audio('musique-attente.ogg');
+    holdAudioEl.loop = true;
+  }
+  holdAudioEl.currentTime = 0;
+  holdAudioEl.play().catch(() => {});
+}
+function stopHoldMusic() { if (holdAudioEl) { holdAudioEl.pause(); holdAudioEl.currentTime = 0; } }
+
+// ── Sonnerie : appel entrant (destinataire) et appel en cours de sonnerie (appelant) ──
+let ringAudioCtx = null, ringTimer = null;
+function startRingtone() {
+  if (ringTimer) return;
+  try {
+    if (!ringAudioCtx) ringAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ringAudioCtx.state === 'suspended') ringAudioCtx.resume().catch(() => {});
+  } catch { return; }
+  const ringOnce = () => {
+    if (!ringAudioCtx) return;
+    const t = ringAudioCtx.currentTime;
+    [440, 480].forEach(freq => {
+      const osc = ringAudioCtx.createOscillator(), gain = ringAudioCtx.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.08, t + 0.05);
+      gain.gain.setValueAtTime(0.08, t + 1.6);
+      gain.gain.linearRampToValueAtTime(0, t + 1.8);
+      osc.connect(gain).connect(ringAudioCtx.destination);
+      osc.start(t); osc.stop(t + 1.8);
+    });
+  };
+  ringOnce();
+  ringTimer = setInterval(ringOnce, 3000);
+}
+function stopRingtone() { if (ringTimer) { clearInterval(ringTimer); ringTimer = null; } }
+
+// ── Flux temps réel (SSE lu via fetch, pour pouvoir envoyer l'en-tête Authorization) ──
+let streamAbort = null;
+async function connectStream() {
+  if (streamAbort) streamAbort.abort();
+  streamAbort = new AbortController();
+  try {
+    const resp = await fetch('/api/callcenter/stream', { headers: { Authorization: 'Bearer ' + token }, signal: streamAbort.signal });
+    if (!resp.ok || !resp.body) throw new Error('flux indisponible');
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      let idx;
+      while ((idx = buf.indexOf('\n\n')) >= 0) {
+        handleSseChunk(buf.slice(0, idx));
+        buf = buf.slice(idx + 2);
+      }
+    }
+  } catch (e) {
+    if (streamAbort?.signal.aborted) return;
+  }
+  setTimeout(connectStream, 3000); // reconnexion
+}
+function handleSseChunk(chunk) {
+  let event = 'message', data = '';
+  for (const line of chunk.split('\n')) {
+    if (line.startsWith('event:')) event = line.slice(6).trim();
+    else if (line.startsWith('data:')) data += line.slice(5).trim();
+  }
+  if (!data) return;
+  try { onSseEvent(event, JSON.parse(data)); } catch {}
+}
+
+// ── État d'appel courant (un seul appel actif à la fois côté interface) ──
+let call = null; // {id, peerId, peerName, role:'caller'|'callee', status}
+let pc = null, localStream = null;
+
+function onSseEvent(event, d) {
+  switch (event) {
+    case 'incoming': onIncoming(d); break;
+    case 'accepted': onAccepted(d); break;
+    case 'answered': break; // autre onglet du même compte
+    case 'hold': onHold(d); break;
+    case 'resume': onResume(d); break;
+    case 'transfer-connect': onTransferConnect(d); break;
+    case 'signal': onSignal(d); break;
+    case 'ended': onEnded(d); break;
+  }
+}
+
+function onIncoming(d) {
+  call = { id: d.callId, peerId: d.callerId, peerName: d.callerName, role: 'callee', status: 'ringing' };
+  startRingtone();
+  renderCallbar();
+}
+async function onAccepted(d) {
+  if (!call || call.id !== d.callId) return;
+  call.status = 'active';
+  stopRingtone();
+  await setupPeer(true);
+  renderCallbar();
+}
+function onHold(d) {
+  if (!call || call.id !== d.callId) return;
+  call.status = 'hold'; call.holdByMe = d.byUserId === me.id; call.holdByName = d.byName;
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+  if (call.holdByMe) stopHoldMusic(); else startHoldMusic();
+  renderCallbar();
+}
+function onResume(d) {
+  if (!call || call.id !== d.callId) return;
+  call.status = 'active';
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
+  stopHoldMusic();
+  renderCallbar();
+}
+async function onTransferConnect(d) {
+  teardownPeer();
+  call = { id: d.callId, peerId: d.peerId, peerName: d.peerName, role: 'caller', status: 'active' };
+  await setupPeer(true);
+  renderCallbar();
+}
+let pendingIce = [];
+async function flushPendingIce() {
+  const queued = pendingIce; pendingIce = [];
+  for (const d of queued) { try { await pc.addIceCandidate(d.data); } catch (e) { console.error('ICE en attente ignoré:', e.message); } }
+}
+async function onSignal(d) {
+  // Offre entrante pour un appel qu'on vient tout juste d'accepter (rôle "callee")
+  if (call && call.id === d.callId && d.type === 'offer' && !pc) { await setupPeer(false); }
+  if (!call || call.id !== d.callId || !pc) {
+    // Un candidat ICE peut arriver avant que l'appel/la connexion soit prête côté récepteur (l'appelant peut
+    // commencer à en envoyer dès que son offre part, bien avant que la réponse ait fait l'aller-retour) : sans
+    // le garder pour plus tard, il est perdu pour de bon et la connexion audio ne trouve jamais de chemin.
+    if (d.type === 'ice') pendingIce.push(d);
+    return;
+  }
+  try {
+    // Un même signal peut arriver deux fois (plusieurs onglets ouverts, reconnexion du flux temps réel) : sans
+    // vérifier l'état avant d'appliquer, une offre/réponse déjà traitée fait planter setRemoteDescription
+    // (« Called in wrong state ») et casse la connexion audio même si la sonnerie avait fonctionné.
+    if (d.type === 'offer') {
+      if (!['stable', 'have-remote-offer'].includes(pc.signalingState)) return;
+      await pc.setRemoteDescription(d.data);
+      await flushPendingIce();
+      const ans = await pc.createAnswer();
+      await pc.setLocalDescription(ans);
+      await api(`/api/callcenter/calls/${call.id}/signal`, { method: 'POST', body: JSON.stringify({ type: 'answer', data: ans }) });
+    } else if (d.type === 'answer') {
+      if (pc.signalingState !== 'have-local-offer') return;
+      await pc.setRemoteDescription(d.data);
+      await flushPendingIce();
+    } else if (d.type === 'ice') {
+      if (!pc.remoteDescription) { pendingIce.push(d); return; }
+      await pc.addIceCandidate(d.data);
+    }
+  } catch (e) { console.error('Signal WebRTC ignoré:', e.message); }
+}
+function onEnded(d) {
+  stopRingtone();
+  teardownPeer();
+  call = null;
+  renderCallbar();
+}
+
+async function setupPeer(isOfferer) {
+  teardownPeer();
+  localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  pc = new RTCPeerConnection({ iceServers });
+  localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+  pc.ontrack = ev => { $('remoteAudio').srcObject = ev.streams[0]; };
+  pc.onicecandidate = ev => { if (ev.candidate) api(`/api/callcenter/calls/${call.id}/signal`, { method: 'POST', body: JSON.stringify({ type: 'ice', data: ev.candidate }) }).catch(() => {}); };
+  if (isOfferer) {
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    await api(`/api/callcenter/calls/${call.id}/signal`, { method: 'POST', body: JSON.stringify({ type: 'offer', data: offer }) });
+  }
+}
+function teardownPeer() {
+  if (pc) { try { pc.close(); } catch {} pc = null; }
+  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+  $('remoteAudio').srcObject = null;
+  pendingIce = [];
+  stopHoldMusic();
+  stopRingtone();
+}
+
+// ── Actions ──
+window.placeCall = async (calleeId) => {
+  try {
+    const d = await api('/api/callcenter/calls', { method: 'POST', body: JSON.stringify({ calleeId }) });
+    call = { id: d.callId, peerId: calleeId, peerName: d.peerName, role: 'caller', status: 'ringing' };
+    $('dirModalBg').style.display = 'none';
+    startRingtone();
+    renderCallbar();
+  } catch (e) { alert(e.message); }
+};
+window.acceptCall = async () => {
+  await api(`/api/callcenter/calls/${call.id}/accept`, { method: 'POST' });
+  call.status = 'active';
+  stopRingtone();
+  renderCallbar();
+};
+window.declineCall = async () => { await api(`/api/callcenter/calls/${call.id}/decline`, { method: 'POST' }); stopRingtone(); teardownPeer(); call = null; renderCallbar(); };
+window.cancelCall = async () => { await api(`/api/callcenter/calls/${call.id}/cancel`, { method: 'POST' }); stopRingtone(); teardownPeer(); call = null; renderCallbar(); };
+window.endCall = async () => { await api(`/api/callcenter/calls/${call.id}/end`, { method: 'POST' }); stopRingtone(); teardownPeer(); call = null; renderCallbar(); };
+window.holdCall = async () => { await api(`/api/callcenter/calls/${call.id}/hold`, { method: 'POST' }); };
+window.resumeCall = async () => { await api(`/api/callcenter/calls/${call.id}/resume`, { method: 'POST' }); };
+window.transferCall = async () => {
+  const targetId = $('transferSel').value;
+  if (!targetId) return;
+  try { await api(`/api/callcenter/calls/${call.id}/transfer`, { method: 'POST', body: JSON.stringify({ toEmployeeId: targetId }) }); }
+  catch (e) { alert(e.message); }
+};
+
+function renderCallbar() {
+  const back = $('dialBackBtn'), red = $('redBtn'), green = $('greenBtn');
+  if (!call) {
+    $('dialDisplay').classList.remove('callmode');
+    $('dialDisplay').textContent = dialBuffer || ' ';
+    back.disabled = false;
+    red.disabled = true; red.onclick = null;
+    green.disabled = false; green.onclick = dialGo;
+    $('callExtraRow').style.display = 'none';
+    return;
+  }
+  $('dialDisplay').classList.add('callmode');
+  back.disabled = true;
+
+  const peerExt = (employees.find(e => e.id === call.peerId) || {}).extension;
+  const who = peerExt ? `poste ${peerExt} - ${call.peerName}` : call.peerName;
+  const statusLabel = { ringing: call.role === 'callee' ? `Appel de ${who}` : `Appel vers ${who}...`, active: who + ' - en cours', hold: (call.holdByMe ? 'En attente - ' : 'En attente (par ' + (call.holdByName || 'autre') + ') - ') + who }[call.status] || who;
+  $('dialDisplay').textContent = statusLabel;
+
+  $('callExtraRow').style.display = 'none';
+  if (call.status === 'ringing' && call.role === 'callee') {
+    red.disabled = false; red.onclick = declineCall;
+    green.disabled = false; green.onclick = acceptCall;
+  } else if (call.status === 'ringing' && call.role === 'caller') {
+    red.disabled = false; red.onclick = cancelCall;
+    green.disabled = true; green.onclick = null;
+  } else if (call.status === 'active') {
+    red.disabled = false; red.onclick = endCall;
+    green.disabled = true; green.onclick = null;
+    const others = employees.filter(e => e.id !== me.id && e.id !== call.peerId);
+    $('transferSel').innerHTML = others.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('');
+    $('holdBtn').textContent = 'Attente';
+    $('transferSel').style.display = others.length ? '' : 'none';
+    $('transferBtn').style.display = others.length ? '' : 'none';
+    $('callExtraRow').style.display = 'flex';
+  } else if (call.status === 'hold') {
+    red.disabled = false; red.onclick = endCall;
+    green.disabled = !call.holdByMe; green.onclick = call.holdByMe ? resumeCall : null;
+    if (call.holdByMe) {
+      $('holdBtn').textContent = 'Reprendre';
+      $('transferSel').style.display = 'none';
+      $('transferBtn').style.display = 'none';
+      $('callExtraRow').style.display = 'flex';
+    }
+  }
+}
+
+// ── Démarrage ──
+if (token) startApp().catch(() => {});
+</script>
+</body>
+</html>
